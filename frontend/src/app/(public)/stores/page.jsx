@@ -1,5 +1,9 @@
 import LocationCard from "@/components/LocationCard";
+import Testimonials from "@/components/Testimonials";
+import { fetchServer } from "@/lib/api";
 import { STORE_LOCATIONS } from "@/lib/stores";
+
+export const revalidate = 60;
 
 export const metadata = {
   title: "Store Locations — Samsung Experience Stores in Greater Noida",
@@ -8,7 +12,9 @@ export const metadata = {
   alternates: { canonical: "https://digiconnect.net.in/stores" },
 };
 
-export default function StoresPage() {
+export default async function StoresPage() {
+  const testimonials = await fetchServer("/testimonials?active_only=true");
+
   return (
     <>
       <section
@@ -35,6 +41,8 @@ export default function StoresPage() {
           ))}
         </div>
       </section>
+
+      <Testimonials items={testimonials} variant="stores" />
     </>
   );
 }

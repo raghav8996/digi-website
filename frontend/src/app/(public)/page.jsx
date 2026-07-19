@@ -16,6 +16,9 @@ import Fold8Banner from "@/components/Fold8Banner";
 import AnnouncementStrip from "@/components/AnnouncementStrip";
 import OffersSection from "@/components/OffersSection";
 import LocationCard from "@/components/LocationCard";
+import ProductCard from "@/components/ProductCard";
+import Testimonials from "@/components/Testimonials";
+import InstagramFeed from "@/components/InstagramFeed";
 
 export const revalidate = 60;
 
@@ -47,10 +50,12 @@ const FEATURES = [
 ];
 
 export default async function HomePage() {
-  const [products, announcements, offers] = await Promise.all([
+  const [products, announcements, offers, testimonials, igPosts] = await Promise.all([
     fetchServer("/products?active_only=true"),
     fetchServer("/announcements?active_only=true"),
     fetchServer("/offers?active_only=true"),
+    fetchServer("/testimonials?active_only=true"),
+    fetchServer("/instagram-posts?active_only=true"),
   ]);
 
   return (
@@ -188,38 +193,17 @@ export default async function HomePage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {products.map((p, i) => (
-              <article
-                key={p.id}
-                data-testid={`product-card-${i}`}
-                className="dc-tile overflow-hidden flex flex-col"
-              >
-                <div className="aspect-[4/3] overflow-hidden bg-black relative">
-                  {p.image_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={p.image_url} alt={p.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-white/30">
-                      <Layers size={28} />
-                    </div>
-                  )}
-                </div>
-                <div className="p-6 flex flex-col grow">
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-[#ff007f] font-bold">
-                    {p.category}
-                  </p>
-                  <h3 className="font-display font-bold text-white text-lg mt-1.5">{p.name}</h3>
-                  <p className="text-white/60 text-xs mt-2 leading-relaxed grow">{p.highlight}</p>
-                  {p.price && (
-                    <div className="mt-4 pt-4 border-t border-white/5 text-white/80 text-sm font-semibold">
-                      {p.price}
-                    </div>
-                  )}
-                </div>
-              </article>
+              <ProductCard key={p.id} product={p} index={i} />
             ))}
           </div>
         </div>
       </section>
+
+      {/* TESTIMONIALS */}
+      <Testimonials items={testimonials} variant="home" />
+
+      {/* INSTAGRAM */}
+      <InstagramFeed posts={igPosts} />
 
       {/* VISIT US */}
       <section

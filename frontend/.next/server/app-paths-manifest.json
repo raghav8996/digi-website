@@ -1,7 +1,6 @@
 {
-  "/robots.txt/route": "app/robots.txt/route.js",
-  "/sitemap.xml/route": "app/sitemap.xml/route.js",
   "/admin/page": "app/admin/page.js",
-  "/admin/login/page": "app/admin/login/page.js",
+  "/(public)/stores/page": "app/(public)/stores/page.js",
+  "/(public)/offers/page": "app/(public)/offers/page.js",
   "/(public)/page": "app/(public)/page.js"
 }

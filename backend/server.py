@@ -217,6 +217,70 @@ class OfferUpdate(BaseModel):
     order: Optional[int] = None
 
 
+class Testimonial(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    author: str
+    rating: int = 5  # 1-5
+    text: str
+    store: str = "both"  # both | gaur-city | grand-venice
+    source: str = "Google"  # e.g., Google, Walk-in, Instagram
+    date: str = ""  # display string, e.g., "Nov 2025"
+    avatar_url: str = ""
+    is_active: bool = True
+    order: int = 0
+    created_at: str = Field(default_factory=lambda: now_utc().isoformat())
+
+
+class TestimonialCreate(BaseModel):
+    author: str
+    rating: int = 5
+    text: str
+    store: str = "both"
+    source: str = "Google"
+    date: str = ""
+    avatar_url: str = ""
+    is_active: bool = True
+    order: int = 0
+
+
+class TestimonialUpdate(BaseModel):
+    author: Optional[str] = None
+    rating: Optional[int] = None
+    text: Optional[str] = None
+    store: Optional[str] = None
+    source: Optional[str] = None
+    date: Optional[str] = None
+    avatar_url: Optional[str] = None
+    is_active: Optional[bool] = None
+    order: Optional[int] = None
+
+
+class InstagramPost(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    image_url: str
+    caption: str = ""
+    post_url: str = ""  # link to actual IG post
+    is_active: bool = True
+    order: int = 0
+    created_at: str = Field(default_factory=lambda: now_utc().isoformat())
+
+
+class InstagramPostCreate(BaseModel):
+    image_url: str
+    caption: str = ""
+    post_url: str = ""
+    is_active: bool = True
+    order: int = 0
+
+
+class InstagramPostUpdate(BaseModel):
+    image_url: Optional[str] = None
+    caption: Optional[str] = None
+    post_url: Optional[str] = None
+    is_active: Optional[bool] = None
+    order: Optional[int] = None
+
+
 # ---------- Startup ----------
 async def _seed_defaults():
     # Seed initial announcements, products & offers if empty
@@ -319,6 +383,101 @@ async def _seed_defaults():
         for item in offers:
             o = Offer(**item)
             await db.offers.insert_one(o.model_dump())
+
+    if await db.testimonials.count_documents({}) == 0:
+        testimonials = [
+            {
+                "author": "Rohan Sharma",
+                "rating": 5,
+                "text": "Best Samsung store in Greater Noida. Got a full walkthrough of the S25 Ultra and Watch7 before deciding — no pressure, all facts. Highly recommend.",
+                "store": "gaur-city",
+                "source": "Google",
+                "date": "Dec 2025",
+                "order": 0,
+            },
+            {
+                "author": "Priya Verma",
+                "rating": 5,
+                "text": "The SmartCafé setup is exactly how a Samsung store should feel. Staff let me play with the Z Fold6 for 20 minutes. Ended up buying the Buds3 Pro too!",
+                "store": "grand-venice",
+                "source": "Google",
+                "date": "Nov 2025",
+                "order": 1,
+            },
+            {
+                "author": "Aditya Kapoor",
+                "rating": 5,
+                "text": "Picked up the Galaxy A55 5G here. Genuine stock, quick billing, and they helped me set up everything before I left. 10/10.",
+                "store": "gaur-city",
+                "source": "Google",
+                "date": "Oct 2025",
+                "order": 2,
+            },
+            {
+                "author": "Sneha Iyer",
+                "rating": 5,
+                "text": "The team knows their products inside out. Compared the Tab S10 vs the S9 with me for 15 minutes and helped me pick the right one for my kid’s studies.",
+                "store": "grand-venice",
+                "source": "Google",
+                "date": "Nov 2025",
+                "order": 3,
+            },
+            {
+                "author": "Karan Mehta",
+                "rating": 5,
+                "text": "Reserved the Z Fold8 pre-launch here. Whole process was on WhatsApp, super smooth. Can’t wait to pick it up.",
+                "store": "both",
+                "source": "Google",
+                "date": "Jan 2026",
+                "order": 4,
+            },
+        ]
+        for item in testimonials:
+            t = Testimonial(**item)
+            await db.testimonials.insert_one(t.model_dump())
+
+    if await db.instagram_posts.count_documents({}) == 0:
+        ig_posts = [
+            {
+                "image_url": "https://images.unsplash.com/photo-1610792516307-ea5acd9c3b00?auto=format&fit=crop&w=940&q=80",
+                "caption": "S25 Ultra just landed. Come feel the AI in your hand.",
+                "post_url": "https://www.instagram.com/digi.connect_/",
+                "order": 0,
+            },
+            {
+                "image_url": "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=940&q=80",
+                "caption": "Galaxy Z Fold8 pre-reserves are open at both stores.",
+                "post_url": "https://www.instagram.com/digi.connect_/",
+                "order": 1,
+            },
+            {
+                "image_url": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=940&q=80",
+                "caption": "Buds3 Pro demo bar is now live at the SmartCafé.",
+                "post_url": "https://www.instagram.com/digi.connect_/",
+                "order": 2,
+            },
+            {
+                "image_url": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=940&q=80",
+                "caption": "Watch7 straps — pick your color, live at Grand Venice.",
+                "post_url": "https://www.instagram.com/digi.connect_/",
+                "order": 3,
+            },
+            {
+                "image_url": "https://images.unsplash.com/photo-1592286927505-1def25115558?auto=format&fit=crop&w=940&q=80",
+                "caption": "A-series deals of the week — trade-in bonus at Gaur City.",
+                "post_url": "https://www.instagram.com/digi.connect_/",
+                "order": 4,
+            },
+            {
+                "image_url": "https://images.unsplash.com/photo-1561154464-82e9adf32764?auto=format&fit=crop&w=940&q=80",
+                "caption": "Tab S10 x S Pen. Studio in your bag.",
+                "post_url": "https://www.instagram.com/digi.connect_/",
+                "order": 5,
+            },
+        ]
+        for item in ig_posts:
+            ip = InstagramPost(**item)
+            await db.instagram_posts.insert_one(ip.model_dump())
 
 
 # ---------- Routes: Auth ----------
@@ -447,6 +606,80 @@ async def delete_offer(offer_id: str, _: dict = Depends(get_current_admin)):
     result = await db.offers.delete_one({"id": offer_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Offer not found")
+    return {"success": True}
+
+
+# ---------- Routes: Testimonials ----------
+@api_router.get("/testimonials")
+async def list_testimonials(active_only: bool = False, store: Optional[str] = None):
+    query = {}
+    if active_only:
+        query["is_active"] = True
+    if store and store != "all":
+        query["store"] = {"$in": [store, "both"]}
+    cursor = db.testimonials.find(query, {"_id": 0}).sort("order", 1)
+    return await cursor.to_list(500)
+
+
+@api_router.post("/testimonials", status_code=201)
+async def create_testimonial(data: TestimonialCreate, _: dict = Depends(get_current_admin)):
+    t = Testimonial(**data.model_dump())
+    await db.testimonials.insert_one(t.model_dump())
+    return t.model_dump()
+
+
+@api_router.patch("/testimonials/{testimonial_id}")
+async def update_testimonial(testimonial_id: str, data: TestimonialUpdate, _: dict = Depends(get_current_admin)):
+    updates = {k: v for k, v in data.model_dump(exclude_unset=True).items()}
+    if not updates:
+        raise HTTPException(status_code=400, detail="No fields to update")
+    result = await db.testimonials.update_one({"id": testimonial_id}, {"$set": updates})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Testimonial not found")
+    updated = await db.testimonials.find_one({"id": testimonial_id}, {"_id": 0})
+    return updated
+
+
+@api_router.delete("/testimonials/{testimonial_id}")
+async def delete_testimonial(testimonial_id: str, _: dict = Depends(get_current_admin)):
+    result = await db.testimonials.delete_one({"id": testimonial_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Testimonial not found")
+    return {"success": True}
+
+
+# ---------- Routes: Instagram Posts ----------
+@api_router.get("/instagram-posts")
+async def list_instagram_posts(active_only: bool = False):
+    query = {"is_active": True} if active_only else {}
+    cursor = db.instagram_posts.find(query, {"_id": 0}).sort("order", 1)
+    return await cursor.to_list(500)
+
+
+@api_router.post("/instagram-posts", status_code=201)
+async def create_instagram_post(data: InstagramPostCreate, _: dict = Depends(get_current_admin)):
+    p = InstagramPost(**data.model_dump())
+    await db.instagram_posts.insert_one(p.model_dump())
+    return p.model_dump()
+
+
+@api_router.patch("/instagram-posts/{post_id}")
+async def update_instagram_post(post_id: str, data: InstagramPostUpdate, _: dict = Depends(get_current_admin)):
+    updates = {k: v for k, v in data.model_dump(exclude_unset=True).items()}
+    if not updates:
+        raise HTTPException(status_code=400, detail="No fields to update")
+    result = await db.instagram_posts.update_one({"id": post_id}, {"$set": updates})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Instagram post not found")
+    updated = await db.instagram_posts.find_one({"id": post_id}, {"_id": 0})
+    return updated
+
+
+@api_router.delete("/instagram-posts/{post_id}")
+async def delete_instagram_post(post_id: str, _: dict = Depends(get_current_admin)):
+    result = await db.instagram_posts.delete_one({"id": post_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Instagram post not found")
     return {"success": True}
 
 

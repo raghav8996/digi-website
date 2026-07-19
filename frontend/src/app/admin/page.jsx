@@ -4,13 +4,15 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { LogOut, Megaphone, ShoppingBag, Tag } from "lucide-react";
+import { LogOut, Megaphone, ShoppingBag, Tag, Star, Instagram } from "lucide-react";
 import api, { formatApiErrorDetail } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { LOGO_URL } from "@/lib/stores";
 import ProductsPanel from "@/components/admin/ProductsPanel";
 import OffersPanel from "@/components/admin/OffersPanel";
 import AnnouncementsPanel from "@/components/admin/AnnouncementsPanel";
+import TestimonialsPanel from "@/components/admin/TestimonialsPanel";
+import InstagramPanel from "@/components/admin/InstagramPanel";
 
 export default function AdminDashboardPage() {
   const { admin, checked, logout } = useAuth();
@@ -102,6 +104,8 @@ export default function AdminDashboardPage() {
         <div className="mt-10 flex flex-wrap gap-2">
           <TabBtn active={tab === "products"} onClick={() => setTab("products")} icon={ShoppingBag} label="Products" testId="tab-products" />
           <TabBtn active={tab === "offers"} onClick={() => setTab("offers")} icon={Tag} label="Offers" testId="tab-offers" />
+          <TabBtn active={tab === "testimonials"} onClick={() => setTab("testimonials")} icon={Star} label="Reviews" testId="tab-testimonials" />
+          <TabBtn active={tab === "instagram"} onClick={() => setTab("instagram")} icon={Instagram} label="Instagram" testId="tab-instagram" />
           <TabBtn active={tab === "announcements"} onClick={() => setTab("announcements")} icon={Megaphone} label="Announcements" testId="tab-announcements" />
         </div>
 
@@ -111,6 +115,12 @@ export default function AdminDashboardPage() {
           )}
           {tab === "offers" && (
             <OffersPanel items={offers} reload={() => load("/offers", setOffers)} showToast={showToast} />
+          )}
+          {tab === "testimonials" && (
+            <TestimonialsPanel items={testimonials} reload={() => load("/testimonials", setTestimonials)} showToast={showToast} />
+          )}
+          {tab === "instagram" && (
+            <InstagramPanel items={igPosts} reload={() => load("/instagram-posts", setIgPosts)} showToast={showToast} />
           )}
           {tab === "announcements" && (
             <AnnouncementsPanel items={anns} reload={() => load("/announcements", setAnns)} showToast={showToast} />

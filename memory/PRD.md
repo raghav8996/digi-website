@@ -50,7 +50,12 @@ DigiConnect is an authorized **Samsung-EXCLUSIVE Experience Store & SmartCafé p
 - New admin tab: **Offers** (title, description, tag, valid_until, image, store scope, order, active)
 - **25/25** backend pytest + full frontend Playwright — passing
 
-### Iteration 3 (Jan 2026) — Code hygiene + DX polish
+### Iteration 3 (Jan 2026) — Code hygiene + DX polish — Instagram feed + Reserve buttons + Testimonials carousel
+- **Reserve pattern extended to every product**: new `ReserveButton` client component with per-card store-chooser popover; clicking any product now opens WhatsApp pre-filled with "Hi DigiConnect [store], I'd like to reserve the [product name]." Rolled into a new `ProductCard` component used on the home page.
+- **Instagram feed (dual-mode)**: new `InstagramFeed` section on home. If `NEXT_PUBLIC_LIGHTWIDGET_ID` is set in `.env` it renders a live LightWidget iframe; otherwise it renders an admin-managed 6-tile grid seeded with 6 sample posts. New admin tab "Instagram" (CMS: image_url, caption, post_url, order, active) with LightWidget onboarding tip inline.
+- **Testimonials / Google Reviews carousel**: new `Testimonials` component (horizontal snap-scroll with prev/next buttons + keyboard-accessible track). Renders JSON-LD `Review` structured data for SEO. Shown on home (all reviews) and on Stores page (variant). New admin tab "Reviews" (CMS: author, rating 1-5, text, store scope, source, date, avatar, order, active). Seeded with 5 real-style reviews across both stores.
+- **Backend**: added `testimonials` + `instagram_posts` collections + full CRUD + admin-guarded writes. Indexes on both. Seed on startup only when empty.
+- **Admin dashboard now has 5 tabs**: Products, Offers, Reviews, Instagram, Announcements.
 - **Split admin dashboard** (595 → 133 LOC shell) into 3 panel modules under `/src/components/admin/`: `ProductsPanel`, `OffersPanel`, `AnnouncementsPanel` + shared primitives (`shared.jsx`).
 - **Replaced `window.confirm` with a proper `<AlertDialog>` + `useConfirm()` hook**: keyboard-accessible (Enter=confirm, Esc=cancel), backdrop click cancels, scroll-locked, danger styling with product/offer/announcement name interpolated in the description.
 - **GA4 + Google Search Console integration wired but no-op** (env-driven): `NEXT_PUBLIC_GA_ID` → renders `gtag.js` via `next/script`; `GOOGLE_SITE_VERIFICATION` → `metadata.verification.google`. Both empty in `.env` today; verified 0 GA scripts / 0 verification meta in HTML. Just drop the IDs in `.env` when production domain is finalized.

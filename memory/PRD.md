@@ -4,66 +4,70 @@
 > Build a redefined, modern, elegant, SEO-optimized website to redesign https://digiconnect.net.in/ so it ranks well on Google and appears in AI search results (ChatGPT, Gemini, Claude).
 
 ## Company Snapshot
-DigiConnect is an authorized **Samsung Experience Store & SmartCafé partner** in Greater Noida, India (established 2021, sole proprietorship). Two mall locations:
-- **Gaur City Mall** — GF 29, Greater Noida West · +91 7302441893 · digiconnect.gm@gmail.com
-- **Grand Venice Mall** — LGF 57, Greater Noida · +91 9205497881 · digiconnect.gv@gmail.com
+DigiConnect is an authorized **Samsung-EXCLUSIVE Experience Store & SmartCafé partner** in Greater Noida, India (established 2021, sole proprietorship). Two mall locations:
+- **Gaur City Mall** — GF 29, Ground Floor, Samsung Store, Greater Noida West · +91 7302441893 · digiconnect.gm@gmail.com
+- **Grand Venice Mall** — LGF 57, Lower Ground Floor, Samsung Store, Greater Noida · +91 9205497881 · digiconnect.gv@gmail.com
 - Instagram: `@digi.connect_`
 
 ## User Personas
-1. **Local shopper (Greater Noida)** — searches "Samsung store near me" and wants directions, price info, and a WhatsApp chat.
-2. **Enthusiast** — wants to touch the latest Galaxy device before buying, values a demo experience.
-3. **Admin (store owner)** — updates featured products & rolling announcements without dev help.
+1. **Local shopper (Greater Noida)** — searches "Samsung store near me", wants location, offers, WhatsApp chat.
+2. **Enthusiast** — wants to demo the latest Galaxy (S25 Ultra, Fold, A-series) before buying.
+3. **Pre-launch reservation seeker** — hunting for Galaxy Z Fold8 pre-reserve.
+4. **Store owner (admin)** — updates featured products, in-store offers, and announcements without dev help.
 
 ## Core Requirements (Static)
-- Full React 19 rebuild, FastAPI + MongoDB backend
+- **Next.js 15 App Router** frontend (SSR/ISR for SEO) + FastAPI + MongoDB backend
+- Samsung-EXCLUSIVE positioning (no "multi-brand", no "after sales/service center" language)
+- Live demos across S, Z, **and A series** + tablets, wearables, audio
 - Contact ONLY via Instagram + per-location WhatsApp (no email forms)
-- Two-location prominence with per-store CTAs
-- Admin dashboard (JWT email+password) to manage featured products + announcements
-- SEO first: semantic HTML, meta tags, LocalBusiness JSON-LD schema x2, sitemap-ready
-- Design: dark obsidian (#050505) + laser magenta (#FF007F) accent · Outfit / Manrope fonts · no blue, no amber/gold
-- Distinctive motion, glassmorphism, bento layouts, floating WhatsApp CTA with store chooser
+- Two-location prominence ("Visit Us")
+- **In-Store Offers** section — admin-managed with title, description, tag, valid-until, image, per-store scope
+- **Galaxy Z Fold8 pre-reserve banner** with per-store WhatsApp CTAs
+- Admin dashboard (JWT email+password) — Products / Offers / Announcements
+- SEO-first: SSR HTML, next-metadata, LocalBusiness JSON-LD x2, sitemap.xml, robots.txt (disallow /admin)
+- Design: obsidian black (#050505) + laser magenta (#FF007F) · Outfit / Manrope · aurora backdrops, glassmorphism, static chip announcements (replaced marquee)
 
 ## Architecture
-- **Backend** (`/app/backend/server.py`): FastAPI · motor (MongoDB async) · JWT (HS256, 12h) · bcrypt · idempotent admin seed on startup · CRUD APIs for products & announcements
-- **Frontend** (`/app/frontend`): React 19 · react-router-dom v7 · Tailwind CSS · react-helmet-async (SEO) · axios · lucide-react icons
-- **DB collections**: `users`, `products`, `announcements`
-- **Auth flow**: `POST /api/auth/login` → JWT stored in `localStorage[dc_admin_token]` → sent as `Authorization: Bearer` header via axios interceptor
+- **Backend** (`/app/backend/server.py`): FastAPI · motor · JWT (HS256, 12h) · bcrypt · idempotent admin seed on startup · CRUD APIs for `products`, `announcements`, and `offers`
+- **Frontend** (`/app/frontend`): **Next.js 15 App Router** · React 19 · Tailwind CSS · lucide-react · axios · next/font (Outfit + Manrope) · ISR revalidate=60 on public pages
+- **Route groups**: `(public)/` for public pages (Header/Footer/FloatingWhatsApp), `admin/` for CMS
+- **Auth**: JWT stored in `localStorage[dc_admin_token]` → sent via axios `Authorization: Bearer` interceptor
+- **SEO**: root-layout metadata, per-page metadata, JSON-LD (ElectronicsStore x2), `app/sitemap.js`, `app/robots.js`
 
-## What's Been Implemented (Jan 2026)
-### Public site
-- Home: hero (huge display type + gradient), animated marquee, bento "Why DigiConnect", featured products (live from DB), 2-location cards, WhatsApp CTA section, footer
-- Stores page with both location cards (WhatsApp + Get Directions)
-- About & Vision (story, 6 core values, mission)
-- Contact (location cards + Instagram CTA)
-- Floating WhatsApp FAB with store chooser popover
-- 404 page
-- SEO: title, meta description, canonical, OG/Twitter, LocalBusiness JSON-LD for both stores, Manrope/Outfit fonts preconnected
+## Implementation History
+### Iteration 1 (Jan 2026) — CRA + FastAPI MVP
+- Home, Stores, About, Contact + Admin (Products/Announcements)
+- 17/17 backend + 19/19 frontend passing
 
-### Admin CMS (`/admin/login`, `/admin`)
-- JWT login, protected dashboard route
-- Products: create/edit/delete/toggle-active, ordering, image URL, price display text, category, highlight
-- Announcements: create/edit/delete/toggle-active, ordering — powers the marquee banner
-- Logout, view-site shortcut, toast notifications
+### Iteration 2 (Jan 2026) — Next.js migration + brand refinement
+- **Migrated frontend from CRA → Next.js 15 App Router** for SSR/ISR SEO
+- Removed "after sales/service" and "multi-brand" language site-wide
+- Updated product roster: added **Galaxy A55 5G**, **Galaxy Tab S10**; S25 Ultra + Fold6 + Buds3 Pro + Watch7
+- Added **Galaxy Z Fold8 pre-reserve banner** (home + /offers) with per-store WhatsApp deep links
+- Added **In-Store Offers** collection + `/offers` page + home slice
+- Replaced top scrolling marquee with subtle static **AnnouncementStrip** chips inside hero (more premium)
+- Added `sitemap.xml`, `robots.txt` (disallow /admin)
+- New admin tab: **Offers** (title, description, tag, valid_until, image, store scope, order, active)
+- **25/25** backend pytest + full frontend Playwright — passing
 
 ## Testing Status
-- Backend: **17/17** pytest passing (auth, CRUD, seeding, indexes, guards)
-- Frontend: **19/19** Playwright checks passing (all pages, admin flows, protected routes, SEO, mobile menu)
-- Regression suite at `/app/backend/tests/backend_test.py`
+- Backend: `pytest /app/backend/tests/backend_test.py -v` → 25/25 passing (auth, CRUD for products/announcements/offers, seeding, indexes, guards)
+- Frontend: full Playwright suite — all pages, admin flows, protected routes, SEO (JSON-LD, sitemap, robots), Fold8 CTAs, mobile menu — passing
 
 ## Backlog / Next Actions
-### P1 (nice to have soon)
-- Skeleton loaders in Admin panels (products/announcements briefly show empty state before fetch resolves)
-- Migrate FastAPI startup/shutdown to lifespan context manager
-- Replace `window.confirm` with shadcn `AlertDialog` for delete actions
+### P1
+- Split `/app/frontend/src/app/admin/page.jsx` (595 LOC) into `ProductsPanel.jsx`, `OffersPanel.jsx`, `AnnouncementsPanel.jsx`
+- Replace `window.confirm` with shadcn `AlertDialog`
+- Migrate FastAPI startup/shutdown to lifespan context manager (deprecation)
+- Tighten CORS_ORIGINS from `*` when moving to cookie-based auth
 
-### P2 (future)
-- Blog/insights section for SEO long-tail (Samsung tips, comparison guides)
-- Newsletter capture (WhatsApp opt-in flow)
-- In-store appointment / demo booking system
+### P2
+- **Instagram feed embed** — user asked about fetching latest IG posts. Options for a future pass: LightWidget/SnapWidget iframe embed (no API tokens) OR Instagram Graph API for verified business account (requires FB Business setup + long-lived token)
 - Google Analytics 4 + Search Console verification tag
-- Sitemap.xml + robots.txt generation
-- Multi-brand support (once DigiConnect onboards new brands beyond Samsung)
-- Google reviews / testimonial carousel
+- Newsletter / WhatsApp opt-in flow
+- In-store appointment / demo booking system with calendar
+- Google reviews / testimonial carousel per store
+- OpenGraph image auto-generation per page (Next.js `opengraph-image.tsx`)
 
-## Enhancement Idea
-**"Book a live demo"** — a one-click WhatsApp intent that pre-fills the customer's device of interest (e.g., "I'd like to demo the Galaxy Z Fold6 at Gaur City today at 5 PM"). This turns your site into a conversion tool: browsers pick a Samsung device from the featured grid, tap "Book demo", and land in WhatsApp with a ready-to-send message — no forms, no friction.
+## Enhancement Idea (for future roadmap)
+**"Reserve any device"** — expand the Fold8 pre-reserve pattern into a small per-product reservation flow. Click any Galaxy product → pick store → land in WhatsApp with a pre-filled message including device name, colour, and preferred pickup time. Same zero-friction pattern, applied across the whole catalogue. Turns the site into a real conversion engine.

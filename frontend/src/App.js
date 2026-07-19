@@ -1,55 +1,116 @@
-import { useEffect } from "react";
 import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
-import { HOME } from "@/constants/testIds";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
+import { useEffect } from "react";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import { AuthProvider } from "@/context/AuthContext";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import AnnouncementMarquee from "@/components/AnnouncementMarquee";
+import FloatingWhatsApp from "@/components/FloatingWhatsApp";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
+import Home from "@/pages/Home";
+import Stores from "@/pages/Stores";
+import About from "@/pages/About";
+import Contact from "@/pages/Contact";
+import AdminLogin from "@/pages/AdminLogin";
+import AdminDashboard from "@/pages/AdminDashboard";
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
   useEffect(() => {
-    helloWorldApi();
-  }, []);
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
 
+function PublicLayout({ children }) {
   return (
-    <div>
-      <header className="App-header">
-        <a
-          data-testid={HOME.emergentLink}
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
+    <>
+      <AnnouncementMarquee />
+      <Header />
+      <main>{children}</main>
+      <Footer />
+      <FloatingWhatsApp />
+    </>
   );
-};
+}
 
 function App() {
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <HelmetProvider>
+      <AuthProvider>
+        <div className="App">
+          <BrowserRouter>
+            <ScrollToTop />
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <PublicLayout>
+                    <Home />
+                  </PublicLayout>
+                }
+              />
+              <Route
+                path="/stores"
+                element={
+                  <PublicLayout>
+                    <Stores />
+                  </PublicLayout>
+                }
+              />
+              <Route
+                path="/about"
+                element={
+                  <PublicLayout>
+                    <About />
+                  </PublicLayout>
+                }
+              />
+              <Route
+                path="/contact"
+                element={
+                  <PublicLayout>
+                    <Contact />
+                  </PublicLayout>
+                }
+              />
+              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="*"
+                element={
+                  <PublicLayout>
+                    <div className="min-h-[60vh] flex flex-col items-center justify-center px-5 text-center">
+                      <p className="overline">404</p>
+                      <h1 className="font-display text-5xl font-black text-white mt-3">
+                        Page not found
+                      </h1>
+                      <p className="text-white/60 mt-3">The page you&apos;re looking for isn&apos;t here.</p>
+                      <a
+                        href="/"
+                        className="mt-8 inline-flex rounded-full px-6 py-3 bg-[#ff007f] text-white font-bold text-sm hover:bg-[#e60073]"
+                      >
+                        Back to home
+                      </a>
+                    </div>
+                  </PublicLayout>
+                }
+              />
+            </Routes>
+          </BrowserRouter>
+        </div>
+      </AuthProvider>
+    </HelmetProvider>
   );
 }
 

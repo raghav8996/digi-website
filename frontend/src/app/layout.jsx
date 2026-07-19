@@ -18,7 +18,7 @@ const manrope = Manrope({
   display: "swap",
 });
 
-const SITE_URL = "https://digiconnect.net.in";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://digiconnect.net.in";
 const LOGO_URL =
   "https://customer-assets-0z36b82j.emergentagent.net/job_modern-digiconnect/artifacts/5a35ubtx_Group27.png";
 

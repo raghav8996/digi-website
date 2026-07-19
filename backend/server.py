@@ -36,6 +36,7 @@ logger = logging.getLogger("digiconnect")
 async def lifespan(_: FastAPI):
     # ---- Startup ----
     await db.users.create_index("email", unique=True)
+    await db.users.create_index("id", unique=True)
     await db.products.create_index([("order", 1)])
     await db.announcements.create_index([("order", 1)])
     await db.offers.create_index([("order", 1)])

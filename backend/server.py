@@ -284,203 +284,116 @@ class InstagramPostUpdate(BaseModel):
 
 
 # ---------- Startup ----------
+async def _seed_announcements():
+    if await db.announcements.count_documents({}) != 0:
+        return
+    defaults = [
+        "Galaxy Z Fold8 — Pre-reserve now at DigiConnect",
+        "Live demos daily: Galaxy S, Z & A series",
+        "Now open at Gaur City Mall & Grand Venice Mall — Greater Noida",
+        "Authorized Samsung Experience Store & SmartCafé partner",
+    ]
+    for i, msg in enumerate(defaults):
+        await db.announcements.insert_one(Announcement(message=msg, order=i).model_dump())
+
+
+async def _seed_products():
+    if await db.products.count_documents({}) != 0:
+        return
+    sample = [
+        {"name": "Galaxy S25 Ultra", "category": "Smartphone", "price": "From ₹1,29,999",
+         "image_url": "https://images.unsplash.com/photo-1610792516307-ea5acd9c3b00?auto=format&fit=crop&w=940&q=80",
+         "highlight": "The new AI flagship. Experience it live in store.", "order": 0},
+        {"name": "Galaxy Z Fold6", "category": "Foldable", "price": "From ₹1,64,999",
+         "image_url": "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=940&q=80",
+         "highlight": "Unfold the future. Hands-on demo available.", "order": 1},
+        {"name": "Galaxy A55 5G", "category": "Smartphone", "price": "From ₹39,999",
+         "image_url": "https://images.unsplash.com/photo-1592286927505-1def25115558?auto=format&fit=crop&w=940&q=80",
+         "highlight": "Flagship-grade design, everyday value. A-series demo in store.", "order": 2},
+        {"name": "Galaxy Buds3 Pro", "category": "Audio", "price": "From ₹24,999",
+         "image_url": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=940&q=80",
+         "highlight": "Studio-grade sound. Try them at the SmartCafé.", "order": 3},
+        {"name": "Galaxy Watch7", "category": "Wearable", "price": "From ₹32,999",
+         "image_url": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=940&q=80",
+         "highlight": "Your health, elevated. Fit it live in store.", "order": 4},
+        {"name": "Galaxy Tab S10", "category": "Tablet", "price": "From ₹1,04,999",
+         "image_url": "https://images.unsplash.com/photo-1561154464-82e9adf32764?auto=format&fit=crop&w=940&q=80",
+         "highlight": "Studio meets pocket. Demo the Tab S10 today.", "order": 5},
+    ]
+    for item in sample:
+        await db.products.insert_one(Product(**item).model_dump())
+
+
+async def _seed_offers():
+    if await db.offers.count_documents({}) != 0:
+        return
+    offers = [
+        {"title": "Pre-reserve Galaxy Z Fold8",
+         "description": "Be first in line for India’s most anticipated foldable. Reserve at DigiConnect and unlock exclusive launch-day pickup + a Galaxy gift bundle in store.",
+         "tag": "Coming soon · Pre-reserve", "valid_until": "",
+         "image_url": "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=940&q=80",
+         "store": "both", "order": 0},
+        {"title": "Galaxy S25 Ultra — In-store bundle",
+         "description": "Walk in to demo the S25 Ultra and unlock a bundled Galaxy Buds3 offer, exclusive to DigiConnect Greater Noida stores.",
+         "tag": "Limited time · In-store only", "valid_until": "",
+         "image_url": "https://images.unsplash.com/photo-1610792516307-ea5acd9c3b00?auto=format&fit=crop&w=940&q=80",
+         "store": "both", "order": 1},
+        {"title": "A-series trade-in bonus",
+         "description": "Trade in your old phone at Grand Venice Mall and get an extra bonus on the Galaxy A55 & A35 series. Available only in store.",
+         "tag": "In-store only", "valid_until": "",
+         "image_url": "https://images.unsplash.com/photo-1592286927505-1def25115558?auto=format&fit=crop&w=940&q=80",
+         "store": "grand-venice", "order": 2},
+    ]
+    for item in offers:
+        await db.offers.insert_one(Offer(**item).model_dump())
+
+
+async def _seed_testimonials():
+    if await db.testimonials.count_documents({}) != 0:
+        return
+    testimonials = [
+        {"author": "Rohan Sharma", "rating": 5, "store": "gaur-city", "source": "Google", "date": "Dec 2025", "order": 0,
+         "text": "Best Samsung store in Greater Noida. Got a full walkthrough of the S25 Ultra and Watch7 before deciding — no pressure, all facts. Highly recommend."},
+        {"author": "Priya Verma", "rating": 5, "store": "grand-venice", "source": "Google", "date": "Nov 2025", "order": 1,
+         "text": "The SmartCafé setup is exactly how a Samsung store should feel. Staff let me play with the Z Fold6 for 20 minutes. Ended up buying the Buds3 Pro too!"},
+        {"author": "Aditya Kapoor", "rating": 5, "store": "gaur-city", "source": "Google", "date": "Oct 2025", "order": 2,
+         "text": "Picked up the Galaxy A55 5G here. Genuine stock, quick billing, and they helped me set up everything before I left. 10/10."},
+        {"author": "Sneha Iyer", "rating": 5, "store": "grand-venice", "source": "Google", "date": "Nov 2025", "order": 3,
+         "text": "The team knows their products inside out. Compared the Tab S10 vs the S9 with me for 15 minutes and helped me pick the right one for my kid’s studies."},
+        {"author": "Karan Mehta", "rating": 5, "store": "both", "source": "Google", "date": "Jan 2026", "order": 4,
+         "text": "Reserved the Z Fold8 pre-launch here. Whole process was on WhatsApp, super smooth. Can’t wait to pick it up."},
+    ]
+    for item in testimonials:
+        await db.testimonials.insert_one(Testimonial(**item).model_dump())
+
+
+async def _seed_instagram_posts():
+    if await db.instagram_posts.count_documents({}) != 0:
+        return
+    ig_posts = [
+        {"image_url": "https://images.unsplash.com/photo-1610792516307-ea5acd9c3b00?auto=format&fit=crop&w=940&q=80",
+         "caption": "S25 Ultra just landed. Come feel the AI in your hand.", "post_url": "https://www.instagram.com/digi.connect_/", "order": 0},
+        {"image_url": "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=940&q=80",
+         "caption": "Galaxy Z Fold8 pre-reserves are open at both stores.", "post_url": "https://www.instagram.com/digi.connect_/", "order": 1},
+        {"image_url": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=940&q=80",
+         "caption": "Buds3 Pro demo bar is now live at the SmartCafé.", "post_url": "https://www.instagram.com/digi.connect_/", "order": 2},
+        {"image_url": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=940&q=80",
+         "caption": "Watch7 straps — pick your color, live at Grand Venice.", "post_url": "https://www.instagram.com/digi.connect_/", "order": 3},
+        {"image_url": "https://images.unsplash.com/photo-1592286927505-1def25115558?auto=format&fit=crop&w=940&q=80",
+         "caption": "A-series deals of the week — trade-in bonus at Gaur City.", "post_url": "https://www.instagram.com/digi.connect_/", "order": 4},
+        {"image_url": "https://images.unsplash.com/photo-1561154464-82e9adf32764?auto=format&fit=crop&w=940&q=80",
+         "caption": "Tab S10 x S Pen. Studio in your bag.", "post_url": "https://www.instagram.com/digi.connect_/", "order": 5},
+    ]
+    for item in ig_posts:
+        await db.instagram_posts.insert_one(InstagramPost(**item).model_dump())
+
+
 async def _seed_defaults():
-    # Seed initial announcements, products & offers if empty
-    if await db.announcements.count_documents({}) == 0:
-        defaults = [
-            "Galaxy Z Fold8 — Pre-reserve now at DigiConnect",
-            "Live demos daily: Galaxy S, Z & A series",
-            "Now open at Gaur City Mall & Grand Venice Mall — Greater Noida",
-            "Authorized Samsung Experience Store & SmartCafé partner",
-        ]
-        for i, msg in enumerate(defaults):
-            ann = Announcement(message=msg, order=i)
-            await db.announcements.insert_one(ann.model_dump())
-
-    if await db.products.count_documents({}) == 0:
-        sample = [
-            {
-                "name": "Galaxy S25 Ultra",
-                "category": "Smartphone",
-                "price": "From ₹1,29,999",
-                "image_url": "https://images.unsplash.com/photo-1610792516307-ea5acd9c3b00?auto=format&fit=crop&w=940&q=80",
-                "highlight": "The new AI flagship. Experience it live in store.",
-                "order": 0,
-            },
-            {
-                "name": "Galaxy Z Fold6",
-                "category": "Foldable",
-                "price": "From ₹1,64,999",
-                "image_url": "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=940&q=80",
-                "highlight": "Unfold the future. Hands-on demo available.",
-                "order": 1,
-            },
-            {
-                "name": "Galaxy A55 5G",
-                "category": "Smartphone",
-                "price": "From ₹39,999",
-                "image_url": "https://images.unsplash.com/photo-1592286927505-1def25115558?auto=format&fit=crop&w=940&q=80",
-                "highlight": "Flagship-grade design, everyday value. A-series demo in store.",
-                "order": 2,
-            },
-            {
-                "name": "Galaxy Buds3 Pro",
-                "category": "Audio",
-                "price": "From ₹24,999",
-                "image_url": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=940&q=80",
-                "highlight": "Studio-grade sound. Try them at the SmartCafé.",
-                "order": 3,
-            },
-            {
-                "name": "Galaxy Watch7",
-                "category": "Wearable",
-                "price": "From ₹32,999",
-                "image_url": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=940&q=80",
-                "highlight": "Your health, elevated. Fit it live in store.",
-                "order": 4,
-            },
-            {
-                "name": "Galaxy Tab S10",
-                "category": "Tablet",
-                "price": "From ₹1,04,999",
-                "image_url": "https://images.unsplash.com/photo-1561154464-82e9adf32764?auto=format&fit=crop&w=940&q=80",
-                "highlight": "Studio meets pocket. Demo the Tab S10 today.",
-                "order": 5,
-            },
-        ]
-        for item in sample:
-            p = Product(**item)
-            await db.products.insert_one(p.model_dump())
-
-    if await db.offers.count_documents({}) == 0:
-        offers = [
-            {
-                "title": "Pre-reserve Galaxy Z Fold8",
-                "description": "Be first in line for India’s most anticipated foldable. Reserve at DigiConnect and unlock exclusive launch-day pickup + a Galaxy gift bundle in store.",
-                "tag": "Coming soon · Pre-reserve",
-                "valid_until": "",
-                "image_url": "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=940&q=80",
-                "store": "both",
-                "order": 0,
-            },
-            {
-                "title": "Galaxy S25 Ultra — In-store bundle",
-                "description": "Walk in to demo the S25 Ultra and unlock a bundled Galaxy Buds3 offer, exclusive to DigiConnect Greater Noida stores.",
-                "tag": "Limited time · In-store only",
-                "valid_until": "",
-                "image_url": "https://images.unsplash.com/photo-1610792516307-ea5acd9c3b00?auto=format&fit=crop&w=940&q=80",
-                "store": "both",
-                "order": 1,
-            },
-            {
-                "title": "A-series trade-in bonus",
-                "description": "Trade in your old phone at Grand Venice Mall and get an extra bonus on the Galaxy A55 & A35 series. Available only in store.",
-                "tag": "In-store only",
-                "valid_until": "",
-                "image_url": "https://images.unsplash.com/photo-1592286927505-1def25115558?auto=format&fit=crop&w=940&q=80",
-                "store": "grand-venice",
-                "order": 2,
-            },
-        ]
-        for item in offers:
-            o = Offer(**item)
-            await db.offers.insert_one(o.model_dump())
-
-    if await db.testimonials.count_documents({}) == 0:
-        testimonials = [
-            {
-                "author": "Rohan Sharma",
-                "rating": 5,
-                "text": "Best Samsung store in Greater Noida. Got a full walkthrough of the S25 Ultra and Watch7 before deciding — no pressure, all facts. Highly recommend.",
-                "store": "gaur-city",
-                "source": "Google",
-                "date": "Dec 2025",
-                "order": 0,
-            },
-            {
-                "author": "Priya Verma",
-                "rating": 5,
-                "text": "The SmartCafé setup is exactly how a Samsung store should feel. Staff let me play with the Z Fold6 for 20 minutes. Ended up buying the Buds3 Pro too!",
-                "store": "grand-venice",
-                "source": "Google",
-                "date": "Nov 2025",
-                "order": 1,
-            },
-            {
-                "author": "Aditya Kapoor",
-                "rating": 5,
-                "text": "Picked up the Galaxy A55 5G here. Genuine stock, quick billing, and they helped me set up everything before I left. 10/10.",
-                "store": "gaur-city",
-                "source": "Google",
-                "date": "Oct 2025",
-                "order": 2,
-            },
-            {
-                "author": "Sneha Iyer",
-                "rating": 5,
-                "text": "The team knows their products inside out. Compared the Tab S10 vs the S9 with me for 15 minutes and helped me pick the right one for my kid’s studies.",
-                "store": "grand-venice",
-                "source": "Google",
-                "date": "Nov 2025",
-                "order": 3,
-            },
-            {
-                "author": "Karan Mehta",
-                "rating": 5,
-                "text": "Reserved the Z Fold8 pre-launch here. Whole process was on WhatsApp, super smooth. Can’t wait to pick it up.",
-                "store": "both",
-                "source": "Google",
-                "date": "Jan 2026",
-                "order": 4,
-            },
-        ]
-        for item in testimonials:
-            t = Testimonial(**item)
-            await db.testimonials.insert_one(t.model_dump())
-
-    if await db.instagram_posts.count_documents({}) == 0:
-        ig_posts = [
-            {
-                "image_url": "https://images.unsplash.com/photo-1610792516307-ea5acd9c3b00?auto=format&fit=crop&w=940&q=80",
-                "caption": "S25 Ultra just landed. Come feel the AI in your hand.",
-                "post_url": "https://www.instagram.com/digi.connect_/",
-                "order": 0,
-            },
-            {
-                "image_url": "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=940&q=80",
-                "caption": "Galaxy Z Fold8 pre-reserves are open at both stores.",
-                "post_url": "https://www.instagram.com/digi.connect_/",
-                "order": 1,
-            },
-            {
-                "image_url": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=940&q=80",
-                "caption": "Buds3 Pro demo bar is now live at the SmartCafé.",
-                "post_url": "https://www.instagram.com/digi.connect_/",
-                "order": 2,
-            },
-            {
-                "image_url": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=940&q=80",
-                "caption": "Watch7 straps — pick your color, live at Grand Venice.",
-                "post_url": "https://www.instagram.com/digi.connect_/",
-                "order": 3,
-            },
-            {
-                "image_url": "https://images.unsplash.com/photo-1592286927505-1def25115558?auto=format&fit=crop&w=940&q=80",
-                "caption": "A-series deals of the week — trade-in bonus at Gaur City.",
-                "post_url": "https://www.instagram.com/digi.connect_/",
-                "order": 4,
-            },
-            {
-                "image_url": "https://images.unsplash.com/photo-1561154464-82e9adf32764?auto=format&fit=crop&w=940&q=80",
-                "caption": "Tab S10 x S Pen. Studio in your bag.",
-                "post_url": "https://www.instagram.com/digi.connect_/",
-                "order": 5,
-            },
-        ]
-        for item in ig_posts:
-            ip = InstagramPost(**item)
-            await db.instagram_posts.insert_one(ip.model_dump())
-
+    await _seed_announcements()
+    await _seed_products()
+    await _seed_offers()
+    await _seed_testimonials()
+    await _seed_instagram_posts()
 
 # ---------- Routes: Auth ----------
 @api_router.get("/")

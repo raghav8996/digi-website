@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { createContext, useContext, useEffect, useState, useCallback, useMemo } from "react";
 import api, { formatApiErrorDetail } from "@/lib/api";
 
 const AuthContext = createContext(null);
@@ -31,7 +31,7 @@ export function AuthProvider({ children }) {
     bootstrap();
   }, [bootstrap]);
 
-  const login = async (email, password) => {
+  const login = useCallback(async (email, password) => {
     try {
       const { data } = await api.post("/auth/login", { email, password });
       localStorage.setItem("dc_admin_token", data.access_token);
@@ -40,18 +40,19 @@ export function AuthProvider({ children }) {
     } catch (e) {
       return { ok: false, error: formatApiErrorDetail(e.response?.data?.detail) || e.message };
     }
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem("dc_admin_token");
     setAdmin(false);
-  };
+  }, []);
 
-  return (
-    <AuthContext.Provider value={{ admin, checked, login, logout }}>
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({ admin, checked, login, logout }),
+    [admin, checked, login, logout],
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

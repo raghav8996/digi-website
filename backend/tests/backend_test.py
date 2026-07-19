@@ -154,7 +154,7 @@ class TestProducts:
             ids_all = {p["id"] for p in all_items}
             assert pid in ids_all
             assert pid not in ids_active
-            assert all(p.get("is_active") is True for p in active)
+            assert all(p.get("is_active") == True for p in active)
         finally:
             api.delete(
                 f"{BASE_URL}/api/products/{pid}", headers=admin_headers, timeout=15
@@ -222,7 +222,7 @@ class TestProducts:
         # DELETE
         d = api.delete(f"{BASE_URL}/api/products/{pid}", headers=admin_headers, timeout=15)
         assert d.status_code == 200
-        assert d.json().get("success") is True
+        assert d.json().get("success") == True
 
         # Verify gone
         listed = api.get(f"{BASE_URL}/api/products", timeout=15).json()
@@ -272,7 +272,7 @@ class TestAnnouncements:
         )
         assert upd.status_code == 200
         assert upd.json()["message"].endswith("_upd")
-        assert upd.json()["is_active"] is False
+        assert upd.json()["is_active"] == False
 
         # active_only filter excludes it
         active_ids = {a["id"] for a in api.get(
@@ -317,7 +317,7 @@ class TestOffers:
             all_items = api.get(f"{BASE_URL}/api/offers", timeout=15).json()
             assert oid in {o["id"] for o in all_items}
             assert oid not in {o["id"] for o in active}
-            assert all(o.get("is_active") is True for o in active)
+            assert all(o.get("is_active") == True for o in active)
         finally:
             api.delete(f"{BASE_URL}/api/offers/{oid}", headers=admin_headers, timeout=15)
 
@@ -368,14 +368,14 @@ class TestOffers:
         body = upd.json()
         assert body["title"].endswith("_upd")
         assert body["store"] == "grand-venice"
-        assert body["is_active"] is False
+        assert body["is_active"] == False
 
         # Verify persisted via GET
         listed = api.get(f"{BASE_URL}/api/offers", timeout=15).json()
         got = next(o for o in listed if o["id"] == oid)
         assert got["title"].endswith("_upd")
         assert got["store"] == "grand-venice"
-        assert got["is_active"] is False
+        assert got["is_active"] == False
 
         # active_only excludes inactive
         active_ids = {o["id"] for o in api.get(f"{BASE_URL}/api/offers?active_only=true", timeout=15).json()}
@@ -384,7 +384,7 @@ class TestOffers:
         # DELETE
         d = api.delete(f"{BASE_URL}/api/offers/{oid}", headers=admin_headers, timeout=15)
         assert d.status_code == 200
-        assert d.json().get("success") is True
+        assert d.json().get("success") == True
 
         # Verify gone
         listed = api.get(f"{BASE_URL}/api/offers", timeout=15).json()
@@ -485,7 +485,7 @@ class TestTestimonials:
             all_items = api.get(f"{BASE_URL}/api/testimonials", timeout=15).json()
             assert tid in {t["id"] for t in all_items}
             assert tid not in {t["id"] for t in active}
-            assert all(t.get("is_active") is True for t in active)
+            assert all(t.get("is_active") == True for t in active)
         finally:
             api.delete(f"{BASE_URL}/api/testimonials/{tid}", headers=admin_headers, timeout=15)
 
@@ -575,13 +575,13 @@ class TestTestimonials:
             timeout=15,
         )
         assert upd2.status_code == 200
-        assert upd2.json()["is_active"] is False
+        assert upd2.json()["is_active"] == False
         assert upd2.json()["rating"] == 5
 
         # DELETE
         d = api.delete(f"{BASE_URL}/api/testimonials/{tid}", headers=admin_headers, timeout=15)
         assert d.status_code == 200
-        assert d.json().get("success") is True
+        assert d.json().get("success") == True
 
         # 404 on subsequent PATCH
         r404 = api.patch(
@@ -626,7 +626,7 @@ class TestInstagramPosts:
             all_items = api.get(f"{BASE_URL}/api/instagram-posts", timeout=15).json()
             assert pid in {p["id"] for p in all_items}
             assert pid not in {p["id"] for p in active}
-            assert all(p.get("is_active") is True for p in active)
+            assert all(p.get("is_active") == True for p in active)
         finally:
             api.delete(f"{BASE_URL}/api/instagram-posts/{pid}", headers=admin_headers, timeout=15)
 
@@ -662,7 +662,7 @@ class TestInstagramPosts:
         assert created["image_url"] == payload["image_url"]
         assert created["caption"] == ""  # default
         assert created["post_url"] == ""  # default
-        assert created["is_active"] is True  # default
+        assert created["is_active"] == True  # default
 
         # READ verify
         listed = api.get(f"{BASE_URL}/api/instagram-posts", timeout=15).json()
@@ -688,7 +688,7 @@ class TestInstagramPosts:
         # DELETE
         d = api.delete(f"{BASE_URL}/api/instagram-posts/{pid}", headers=admin_headers, timeout=15)
         assert d.status_code == 200
-        assert d.json().get("success") is True
+        assert d.json().get("success") == True
 
         # 404 on already-deleted PATCH
         r404 = api.patch(

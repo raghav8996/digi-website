@@ -223,7 +223,7 @@ export default function TestimonialsPanel({ items, reload, showToast }) {
             <div className="mt-2 flex gap-1">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star
-                  key={i}
+                  key={`${t.id}-star-${i}`}
                   size={11}
                   className={i < t.rating ? "fill-[#ff007f] text-[#ff007f]" : "text-white/20"}
                 />

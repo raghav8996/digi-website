@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
 import { STORE_LOCATIONS } from "@/lib/stores";
 
@@ -55,28 +55,31 @@ export default function Testimonials({ items = [], variant = "home", storeFilter
     el.scrollBy({ left: dir * step, behavior: "smooth" });
   };
 
-  if (!active.length) return null;
+  const reviewLdHtml = useMemo(() => {
+    const ld = {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      itemListElement: active.map((t, i) => ({
+        "@type": "Review",
+        position: i + 1,
+        author: { "@type": "Person", name: t.author },
+        reviewRating: { "@type": "Rating", ratingValue: t.rating, bestRating: 5 },
+        reviewBody: t.text,
+        itemReviewed: {
+          "@type": "ElectronicsStore",
+          name:
+            t.store === "gaur-city"
+              ? "DigiConnect — Gaur City Mall"
+              : t.store === "grand-venice"
+                ? "DigiConnect — Grand Venice Mall"
+                : "DigiConnect",
+        },
+      })),
+    };
+    return { __html: JSON.stringify(ld) };
+  }, [active]);
 
-  const reviewLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    itemListElement: active.map((t, i) => ({
-      "@type": "Review",
-      position: i + 1,
-      author: { "@type": "Person", name: t.author },
-      reviewRating: { "@type": "Rating", ratingValue: t.rating, bestRating: 5 },
-      reviewBody: t.text,
-      itemReviewed: {
-        "@type": "ElectronicsStore",
-        name:
-          t.store === "gaur-city"
-            ? "DigiConnect — Gaur City Mall"
-            : t.store === "grand-venice"
-              ? "DigiConnect — Grand Venice Mall"
-              : "DigiConnect",
-      },
-    })),
-  };
+  if (!active.length) return null;
 
   const label =
     storeFilter && STORE_LOCATIONS.find((s) => s.id === storeFilter)
@@ -90,7 +93,7 @@ export default function Testimonials({ items = [], variant = "home", storeFilter
     >
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(reviewLd) }}
+        dangerouslySetInnerHTML={reviewLdHtml}
       />
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
@@ -148,7 +151,7 @@ export default function Testimonials({ items = [], variant = "home", storeFilter
               <div className="mt-6 flex items-center gap-1">
                 {Array.from({ length: 5 }).map((_, j) => (
                   <Star
-                    key={j}
+                    key={`${t.id}-star-${j}`}
                     size={14}
                     className={j < t.rating ? "fill-[#ff007f] text-[#ff007f]" : "text-white/20"}
                   />

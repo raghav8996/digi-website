@@ -144,12 +144,13 @@ function buildJsonLd(testimonials) {
 export default async function RootLayout({ children }) {
   const testimonials = await fetchServer("/testimonials?active_only=true");
   const jsonLd = buildJsonLd(testimonials);
+  const jsonLdHtml = { __html: JSON.stringify(jsonLd) };
   return (
     <html lang="en" className={`${outfit.variable} ${manrope.variable}`}>
       <head>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={jsonLdHtml}
         />
       </head>
       <body>

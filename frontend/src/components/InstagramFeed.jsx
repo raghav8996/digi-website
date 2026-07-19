@@ -1,16 +1,21 @@
 import { Instagram, ExternalLink, ArrowUpRight } from "lucide-react";
+import Script from "next/script";
 import { INSTAGRAM_URL, INSTAGRAM_HANDLE } from "@/lib/stores";
 
 /**
- * InstagramFeed
- * If NEXT_PUBLIC_LIGHTWIDGET_ID is set → embed LightWidget iframe (real-time feed).
- * Otherwise → render admin-managed instagram_posts as a 6-tile grid.
+ * InstagramFeed — free-tier friendly IG embed with graceful fallback.
+ *
+ * Priority order (first non-empty wins):
+ *   1. NEXT_PUBLIC_BEHOLD_ID       — Behold.so (recommended: free tier supports HTTPS)
+ *   2. NEXT_PUBLIC_LIGHTWIDGET_ID  — LightWidget (paid plan required for HTTPS)
+ *   3. Admin-managed instagram_posts grid (default; always works)
  */
 export default function InstagramFeed({ posts = [] }) {
+  const beholdId = process.env.NEXT_PUBLIC_BEHOLD_ID;
   const widgetId = process.env.NEXT_PUBLIC_LIGHTWIDGET_ID;
   const active = posts.filter((p) => p.is_active).slice(0, 6);
-  const showEmbed = Boolean(widgetId);
-  if (!showEmbed && !active.length) return null;
+  const mode = beholdId ? "behold" : widgetId ? "lightwidget" : "grid";
+  if (mode === "grid" && !active.length) return null;
 
   return (
     <section
@@ -41,18 +46,36 @@ export default function InstagramFeed({ posts = [] }) {
           </a>
         </div>
 
-        {showEmbed ? (
+        {mode === "behold" ? (
+          <div
+            data-testid="instagram-widget-behold"
+            className="rounded-3xl overflow-hidden border border-white/10 bg-[#0a0a0a] p-2 md:p-4"
+          >
+            {/* Behold custom element */}
+            {/* eslint-disable-next-line react/no-unknown-property */}
+            <behold-widget feed-id={beholdId} style={{ display: "block", minHeight: 320 }} />
+            <Script
+              src="https://w.behold.so/widget.js"
+              type="module"
+              strategy="afterInteractive"
+            />
+          </div>
+        ) : mode === "lightwidget" ? (
           <div
             data-testid="instagram-widget"
             className="rounded-3xl overflow-hidden border border-white/10 bg-[#0a0a0a] p-4"
           >
             <iframe
-              src={`https://cdn.lightwidget.com/widgets/${widgetId}.html`}
+              src={`https://lightwidget.com/widgets/${widgetId}.html`}
               scrolling="no"
               allowtransparency="true"
               className="lightwidget-widget"
               style={{ width: "100%", border: 0, overflow: "hidden", minHeight: 320 }}
               title="DigiConnect Instagram feed"
+            />
+            <Script
+              src="https://cdn.lightwidget.com/widgets/lightwidget.js"
+              strategy="afterInteractive"
             />
           </div>
         ) : (

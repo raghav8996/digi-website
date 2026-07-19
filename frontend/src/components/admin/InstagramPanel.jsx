@@ -84,19 +84,36 @@ export default function InstagramPanel({ items, reload, showToast }) {
 
   return (
     <div>
-      <div className="mb-4 p-4 rounded-2xl border border-white/10 bg-white/[0.02] text-xs text-white/60">
-        Tip: to switch to a live auto-updating feed, create a LightWidget at{" "}
-        <a
-          href="https://lightwidget.com"
-          target="_blank"
-          rel="noreferrer"
-          className="text-[#ff007f] hover:underline"
-        >
-          lightwidget.com
-        </a>{" "}
-        and paste the widget ID into <code className="text-white/80">NEXT_PUBLIC_LIGHTWIDGET_ID</code>{" "}
-        in <code className="text-white/80">/app/frontend/.env</code>. When set, it overrides these
-        posts.
+      <div className="mb-4 p-4 rounded-2xl border border-white/10 bg-white/[0.02] text-xs text-white/60 leading-relaxed">
+        <p className="text-white/80 font-semibold mb-1">Want a live auto-updating feed?</p>
+        <p className="mt-1">
+          <span className="text-[#ff007f] font-bold">Recommended</span> — sign up at{" "}
+          <a
+            href="https://behold.so"
+            target="_blank"
+            rel="noreferrer"
+            className="text-[#ff007f] hover:underline"
+          >
+            behold.so
+          </a>{" "}
+          (free tier supports HTTPS), create a widget for{" "}
+          <span className="text-white/80">@digi.connect_</span>, then paste the feed ID into{" "}
+          <code className="text-white/80">NEXT_PUBLIC_BEHOLD_ID</code> in{" "}
+          <code className="text-white/80">/app/frontend/.env</code>.
+        </p>
+        <p className="mt-2 text-white/40">
+          Alternative:{" "}
+          <a
+            href="https://lightwidget.com"
+            target="_blank"
+            rel="noreferrer"
+            className="text-white/70 hover:underline"
+          >
+            LightWidget
+          </a>{" "}
+          via <code className="text-white/80">NEXT_PUBLIC_LIGHTWIDGET_ID</code> — note their free
+          tier disables HTTPS, so a paid plan is required for production.
+        </p>
       </div>
       <PanelHead
         label={`${items.length} post${items.length === 1 ? "" : "s"}`}

@@ -2,6 +2,7 @@ import { Manrope, Outfit } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import Analytics from "@/components/Analytics";
+import { fetchServer } from "@/lib/api";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -65,7 +66,7 @@ export const metadata = {
     : undefined,
 };
 
-const jsonLd = {
+const jsonLdBase = {
   "@context": "https://schema.org",
   "@graph": [
     {
@@ -109,7 +110,40 @@ const jsonLd = {
   ],
 };
 
-export default function RootLayout({ children }) {
+function aggregate(ratings) {
+  if (!ratings.length) return null;
+  const sum = ratings.reduce((a, b) => a + b, 0);
+  const avg = Math.round((sum / ratings.length) * 10) / 10; // 1 decimal
+  return {
+    "@type": "AggregateRating",
+    ratingValue: avg,
+    bestRating: 5,
+    worstRating: 1,
+    reviewCount: ratings.length,
+  };
+}
+
+function buildJsonLd(testimonials) {
+  const active = testimonials.filter((t) => t.is_active);
+  const gaur = active
+    .filter((t) => t.store === "gaur-city" || t.store === "both")
+    .map((t) => Number(t.rating) || 5);
+  const venice = active
+    .filter((t) => t.store === "grand-venice" || t.store === "both")
+    .map((t) => Number(t.rating) || 5);
+
+  const graph = jsonLdBase["@graph"].map((node) => {
+    const isGaur = node["@id"].endsWith("#gaur-city");
+    const rating = aggregate(isGaur ? gaur : venice);
+    return rating ? { ...node, aggregateRating: rating } : node;
+  });
+
+  return { ...jsonLdBase, "@graph": graph };
+}
+
+export default async function RootLayout({ children }) {
+  const testimonials = await fetchServer("/testimonials?active_only=true");
+  const jsonLd = buildJsonLd(testimonials);
   return (
     <html lang="en" className={`${outfit.variable} ${manrope.variable}`}>
       <head>

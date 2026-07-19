@@ -21,6 +21,8 @@ export default function AdminDashboardPage() {
   const [products, setProducts] = useState([]);
   const [anns, setAnns] = useState([]);
   const [offers, setOffers] = useState([]);
+  const [testimonials, setTestimonials] = useState([]);
+  const [igPosts, setIgPosts] = useState([]);
   const [toast, setToast] = useState(null);
 
   useEffect(() => {
@@ -46,6 +48,8 @@ export default function AdminDashboardPage() {
       load("/products", setProducts);
       load("/announcements", setAnns);
       load("/offers", setOffers);
+      load("/testimonials", setTestimonials);
+      load("/instagram-posts", setIgPosts);
     }
   }, [admin]);
 

@@ -7,6 +7,7 @@ load_dotenv(ROOT_DIR / ".env")
 import os
 import uuid
 import logging
+from contextlib import asynccontextmanager
 from datetime import datetime, timezone, timedelta
 from typing import List, Optional
 
@@ -27,12 +28,49 @@ mongo_url = os.environ["MONGO_URL"]
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ["DB_NAME"]]
 
-app = FastAPI(title="DigiConnect API", version="1.0.0")
-api_router = APIRouter(prefix="/api")
-security = HTTPBearer(auto_error=False)
-
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 logger = logging.getLogger("digiconnect")
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    # ---- Startup ----
+    await db.users.create_index("email", unique=True)
+    await db.products.create_index([("order", 1)])
+    await db.announcements.create_index([("order", 1)])
+    await db.offers.create_index([("order", 1)])
+
+    admin_email = os.environ["ADMIN_EMAIL"].lower().strip()
+    admin_password = os.environ["ADMIN_PASSWORD"]
+    existing = await db.users.find_one({"email": admin_email})
+    if existing is None:
+        await db.users.insert_one({
+            "id": str(uuid.uuid4()),
+            "email": admin_email,
+            "password_hash": hash_password(admin_password),
+            "name": "Admin",
+            "role": "admin",
+            "created_at": now_utc().isoformat(),
+        })
+        logger.info("Seeded admin user: %s", admin_email)
+    elif not verify_password(admin_password, existing["password_hash"]):
+        await db.users.update_one(
+            {"email": admin_email},
+            {"$set": {"password_hash": hash_password(admin_password)}},
+        )
+        logger.info("Updated admin password for: %s", admin_email)
+
+    await _seed_defaults()
+
+    yield
+
+    # ---- Shutdown ----
+    client.close()
+
+
+app = FastAPI(title="DigiConnect API", version="1.0.0", lifespan=lifespan)
+api_router = APIRouter(prefix="/api")
+security = HTTPBearer(auto_error=False)
 
 
 # ---------- Utils ----------
@@ -180,33 +218,7 @@ class OfferUpdate(BaseModel):
 
 
 # ---------- Startup ----------
-@app.on_event("startup")
-async def on_startup():
-    await db.users.create_index("email", unique=True)
-    await db.products.create_index([("order", 1)])
-    await db.announcements.create_index([("order", 1)])
-    await db.offers.create_index([("order", 1)])
-
-    admin_email = os.environ["ADMIN_EMAIL"].lower().strip()
-    admin_password = os.environ["ADMIN_PASSWORD"]
-    existing = await db.users.find_one({"email": admin_email})
-    if existing is None:
-        await db.users.insert_one({
-            "id": str(uuid.uuid4()),
-            "email": admin_email,
-            "password_hash": hash_password(admin_password),
-            "name": "Admin",
-            "role": "admin",
-            "created_at": now_utc().isoformat(),
-        })
-        logger.info("Seeded admin user: %s", admin_email)
-    elif not verify_password(admin_password, existing["password_hash"]):
-        await db.users.update_one(
-            {"email": admin_email},
-            {"$set": {"password_hash": hash_password(admin_password)}},
-        )
-        logger.info("Updated admin password for: %s", admin_email)
-
+async def _seed_defaults():
     # Seed initial announcements, products & offers if empty
     if await db.announcements.count_documents({}) == 0:
         defaults = [
@@ -307,11 +319,6 @@ async def on_startup():
         for item in offers:
             o = Offer(**item)
             await db.offers.insert_one(o.model_dump())
-
-
-@app.on_event("shutdown")
-async def on_shutdown():
-    client.close()
 
 
 # ---------- Routes: Auth ----------

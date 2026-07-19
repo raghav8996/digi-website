@@ -1,6 +1,7 @@
 import { Manrope, Outfit } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
+import Analytics from "@/components/Analytics";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -59,6 +60,9 @@ export const metadata = {
     images: [LOGO_URL],
   },
   icons: { icon: LOGO_URL },
+  verification: process.env.GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+    : undefined,
 };
 
 const jsonLd = {
@@ -116,6 +120,7 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <AuthProvider>{children}</AuthProvider>
+        <Analytics />
       </body>
     </html>
   );

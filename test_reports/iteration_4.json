@@ -1,0 +1,51 @@
+{
+  "summary": "Iteration 4 regression — new Testimonials + Instagram-posts backend & UI + Per-product Reserve popover. Backend pytest 38/39 pass (~4.3s) with 15 new tests for testimonials (list+filter+auth+CRUD+partial-patch+404-on-deleted) and instagram-posts (list+filter+auth+CRUD+404) plus a new indexes check. Fixed one minor lifespan gap: testimonials & instagram_posts collections were missing the `order asc` index that the spec required — added `db.testimonials.create_index([('order',1)])` and `db.instagram_posts.create_index([('order',1)])` in server.py lifespan. One remaining backend test failure is UNRELATED to iter 4: TestProductSeed.test_seeded_names carried over from iter 3 expects Galaxy S25/Fold6/A55/Buds3/Watch7/TabS10 but seeded products in DB are now S26/Fold7/A57/Buds4/Watch8/TabS11 (main agent updated seed content between iterations without updating the assertion). Frontend — home SSR: 5 testimonial cards, Review JSON-LD ItemList (5 items, all @type=Review) present; 6 instagram tiles, follow CTA → https://www.instagram.com/digi.connect_/, no lightwidget iframe (env var empty); 6 product cards, ReserveButton popover on product-card-0 works — opens with data-testid=reserve-product-0-popover, contains reserve-gaur-city + reserve-grand-venice anchors with hrefs starting https://wa.me/91… containing URL-encoded product name ('Galaxy%20S26%20Ultra' — the first product's actual name) and the word 'reserve'; ESC closes popover; outside-click closes popover. Testimonials carousel: prev disabled initially, next enabled, next-click scrolls track from scrollLeft=8 → 464 and prev becomes enabled. /stores page also renders testimonials-section with 5 cards. Admin dashboard: all 5 tabs (products/offers/testimonials/instagram/announcements) present; Products tab renders correctly on default. HOWEVER a HIGH-priority runtime bug in /app/frontend/src/app/admin/page.jsx: variables `testimonials`, `setTestimonials`, `igPosts`, `setIgPosts` are used at lines 120 & 123 but never declared with useState, and `/testimonials` + `/instagram-posts` are never loaded on mount. Clicking tab-testimonials throws `ReferenceError: testimonials is not defined at AdminDashboardPage (page.jsx:120)` — Next.js dev error overlay swallows the page. This entirely blocks the Reviews and Instagram admin CMS flows described in the review request. Could not proceed with add-testimonial-btn / testimonial-form-save / delete-testimonial-{id} / add-ig-post-btn / ig-form-image flows because the tabs crash on click.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "TestProductSeed.test_seeded_names", "issue": "Stale test — expects S25/Fold6/A55/Buds3/Watch7/TabS10 but current seed emits S26/Fold7/A57/Buds4/Watch8/TabS11. This is a pre-existing iter-3 test, not an iter-4 regression. Update either the seed list in server.py OR the assertion list in backend_test.py — pick one source of truth."},
+      {"endpoint": "server.py lifespan startup", "issue": "FIXED IN THIS RUN — testimonials & instagram_posts collections were missing the `order asc` index required by the review spec. Added the two create_index calls; TestNewCollectionIndexes now passes."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "AdminDashboardPage (/app/frontend/src/app/admin/page.jsx)", "issue": "ReferenceError: `testimonials is not defined` at line 120 when clicking tab-testimonials — state hooks `testimonials/setTestimonials` and `igPosts/setIgPosts` are used but never declared; also load('/testimonials',…) and load('/instagram-posts',…) are never called on mount. Same crash for tab-instagram at line 123. Reviews & Instagram admin CMS panels are fully broken.", "selector": "[data-testid=tab-testimonials], [data-testid=tab-instagram]", "priority": "HIGH"}
+    ],
+    "integration_issues": [
+      {"flow": "Admin CMS Reviews", "issue": "Cannot exercise add-testimonial-btn → testimonial-form-save → LIVE pill → delete-testimonial-{id} → AlertDialog confirm flow because the tab crashes on activation.", "affected_selectors": ["add-testimonial-btn", "testimonial-form-save", "delete-testimonial-{id}"]},
+      {"flow": "Admin CMS Instagram", "issue": "Cannot exercise add-ig-post-btn → ig-form-image → save → grid render → delete via AlertDialog because the tab crashes on activation.", "affected_selectors": ["add-ig-post-btn", "ig-form-image", "delete-ig-{id}"]}
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "HIGH: In /app/frontend/src/app/admin/page.jsx add `const [testimonials, setTestimonials] = useState([]); const [igPosts, setIgPosts] = useState([]);` and extend the mount `useEffect` to also call `load('/testimonials', setTestimonials); load('/instagram-posts', setIgPosts);`. This will unblock the Reviews + Instagram admin CMS flows.",
+    "LOW: Decide the seed source-of-truth for products (S25 vs S26 line, Fold6 vs Fold7, etc.) and align backend_test.py::TestProductSeed.test_seeded_names OR reset db.products & re-seed."
+  ],
+  "critical_code_review_comments": [
+    "HIGH — admin/page.jsx uses undeclared identifiers `testimonials/setTestimonials/igPosts/setIgPosts`. Fatal ReferenceError. Presumably a mid-refactor miss when the two new tabs were wired up.",
+    "MED — server.py lifespan was missing indexes for testimonials & instagram_posts (fixed inline in this run). Spec explicitly required them.",
+    "LOW — Testimonial seed content still references 'Galaxy A55 5G' and 'Tab S10' while products were rev'd to A57/TabS11. Content drift only, not a functional bug.",
+    "LOW — CORS middleware (server.py line 688) still registered after include_router and with allow_origins='*' + allow_credentials=True. Same iter-3 finding, still non-blocking because auth uses Bearer header.",
+    "OK — ReserveButton popover impl is solid: useEffect binds mousedown + keydown Escape, cleanup restores both; wa.me links encode product name + include 'reserve' verb. STORE_LOCATIONS-driven so both stores render.",
+    "OK — Testimonials carousel scrollLeft-based enable/disable logic and Review ItemList JSON-LD emission are correct; both verified live.",
+    "OK — InstagramFeed dual-mode gated on NEXT_PUBLIC_LIGHTWIDGET_ID — with empty env var, only the admin grid renders (no iframe). Confirmed in HTML."
+  ],
+  "updated_files": [
+    "/app/backend/server.py (added testimonials & instagram_posts order-asc indexes in lifespan)",
+    "/app/backend/tests/backend_test.py (added TestTestimonials, TestInstagramPosts, TestNewCollectionIndexes — 15 new tests)"
+  ],
+  "success_rate": {
+    "backend": "97% (38/39 pytest; the 1 failing test is a stale iter-3 product-name assertion, unrelated to iter-4 scope; all 15 new iter-4 tests pass)",
+    "frontend": "80% (all 6 home-page iter-4 checks pass: testimonials section, JSON-LD, IG feed, Reserve popover, carousel scroll, /stores testimonials. Admin CMS Reviews + Instagram tabs fail hard with ReferenceError — 2 of 5 tabs unusable.)"
+  },
+  "test_credentials": "admin@digiconnect.net.in / DigiConnect@2026 — verified.",
+  "seed_data_creation": "None persisted. TEST_tm_inactive_*, TEST_tm_*, TEST_ig_inactive_*, TEST_ig_updated_caption created + deleted in-run by pytest CRUD tests.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Regression: `pytest /app/backend/tests/backend_test.py -v --junitxml=/app/test_reports/pytest/pytest_results.xml` (39 tests, ~4-5s, parallel via pytest-xdist). Iter-4 new coverage lives in classes TestTestimonials, TestInstagramPosts, TestNewCollectionIndexes. Front-end critical selectors: [data-testid=testimonials-section] with 5 [data-testid^=testimonial-] cards + JSON-LD ItemList of 5 Review nodes; [data-testid=instagram-section] with 6 [data-testid^=ig-tile-]; [data-testid=instagram-follow-cta]; [data-testid=reserve-product-0] → [data-testid=reserve-product-0-popover] with [data-testid=reserve-gaur-city] + [data-testid=reserve-grand-venice] wa.me anchors; [data-testid=testimonials-prev/next] + [data-testid=testimonials-track] (scrollLeft check). If main agent fixes admin/page.jsx: run the add-testimonial-btn / testimonial-form-save / delete-testimonial-{id} / add-ig-post-btn / ig-form-image / delete-ig-{id} flows next.",
+  "rca of the issue": "The two new admin tabs (Reviews, Instagram) were wired into the JSX conditional render (lines 119-124) but the corresponding useState hooks (`const [testimonials, setTestimonials] = useState([])`, `const [igPosts, setIgPosts] = useState([])`) and the initial data-loading calls in the mount `useEffect` (`load('/testimonials', setTestimonials)`, `load('/instagram-posts', setIgPosts)`) were never added. As soon as the tab state flips to 'testimonials' or 'instagram', React re-renders the parent, hits the undeclared identifier in the JSX literal, and Next.js dev error boundary catches ReferenceError, showing the red-box overlay. Reproduction: login → click tab-testimonials → overlay 'testimonials is not defined @ page.jsx:120'. Mitigation: add the 2 useState declarations and the 2 load() calls (copy-paste from the products/offers/anns pattern already in the file). Total fix: ~4 lines. Not fixed here because it is functional/business logic, not a test-only change."
+}

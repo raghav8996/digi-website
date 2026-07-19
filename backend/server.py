@@ -39,6 +39,8 @@ async def lifespan(_: FastAPI):
     await db.products.create_index([("order", 1)])
     await db.announcements.create_index([("order", 1)])
     await db.offers.create_index([("order", 1)])
+    await db.testimonials.create_index([("order", 1)])
+    await db.instagram_posts.create_index([("order", 1)])
 
     admin_email = os.environ["ADMIN_EMAIL"].lower().strip()
     admin_password = os.environ["ADMIN_PASSWORD"]

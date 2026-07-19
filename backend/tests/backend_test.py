@@ -446,3 +446,281 @@ class TestMongoState:
         # unique index on email
         email_idx = [v for v in idx.values() if v.get("key") == [("email", 1)]]
         assert email_idx and email_idx[0].get("unique"), "users.email must have unique index"
+
+
+
+# ---------- testimonials (new in iter 4) ----------
+class TestTestimonials:
+    def test_list_seeded(self, api):
+        r = api.get(f"{BASE_URL}/api/testimonials", timeout=15)
+        assert r.status_code == 200
+        items = r.json()
+        assert isinstance(items, list)
+        assert len(items) >= 5, f"expected >=5 seeded testimonials, got {len(items)}"
+        authors = {t["author"] for t in items}
+        for expected in ["Rohan Sharma", "Priya Verma", "Aditya Kapoor", "Sneha Iyer", "Karan Mehta"]:
+            assert expected in authors, f"missing seeded author: {expected} — got {authors}"
+        for t in items:
+            assert "_id" not in t
+            for k in ("id", "author", "rating", "text", "store", "source", "is_active"):
+                assert k in t
+            assert isinstance(t["rating"], int) and 1 <= t["rating"] <= 5
+            assert t["text"], "text must be non-empty"
+            assert t["store"] in ("both", "gaur-city", "grand-venice")
+            assert t["source"] == "Google"
+
+    def test_active_only_filter(self, api, admin_headers):
+        payload = {
+            "author": f"TEST_tm_inactive_{uuid.uuid4().hex[:6]}",
+            "rating": 3,
+            "text": "hidden review",
+            "is_active": False,
+            "order": 999,
+        }
+        r = api.post(f"{BASE_URL}/api/testimonials", json=payload, headers=admin_headers, timeout=15)
+        assert r.status_code == 201, r.text
+        tid = r.json()["id"]
+        try:
+            active = api.get(f"{BASE_URL}/api/testimonials?active_only=true", timeout=15).json()
+            all_items = api.get(f"{BASE_URL}/api/testimonials", timeout=15).json()
+            assert tid in {t["id"] for t in all_items}
+            assert tid not in {t["id"] for t in active}
+            assert all(t.get("is_active") is True for t in active)
+        finally:
+            api.delete(f"{BASE_URL}/api/testimonials/{tid}", headers=admin_headers, timeout=15)
+
+    def test_store_filter_inclusive(self, api):
+        # store=gaur-city should return items with store in {gaur-city, both}
+        r = api.get(f"{BASE_URL}/api/testimonials?store=gaur-city", timeout=15)
+        assert r.status_code == 200
+        items = r.json()
+        assert len(items) >= 1
+        stores = {t["store"] for t in items}
+        assert stores.issubset({"gaur-city", "both"}), f"store filter must be inclusive of 'both', got {stores}"
+        # Karan Mehta is "both" — should be included in gaur-city filter
+        authors = {t["author"] for t in items}
+        assert "Karan Mehta" in authors, "'both' testimonials must appear when filtering by a specific store"
+
+        r2 = api.get(f"{BASE_URL}/api/testimonials?store=grand-venice", timeout=15)
+        stores2 = {t["store"] for t in r2.json()}
+        assert stores2.issubset({"grand-venice", "both"})
+
+    def test_create_requires_auth(self, api):
+        r = api.post(
+            f"{BASE_URL}/api/testimonials",
+            json={"author": "TEST_x", "text": "hi", "rating": 5},
+            timeout=15,
+        )
+        assert r.status_code == 401
+
+    def test_update_requires_auth(self, api):
+        r = api.patch(
+            f"{BASE_URL}/api/testimonials/does-not-exist",
+            json={"rating": 4},
+            timeout=15,
+        )
+        assert r.status_code == 401
+
+    def test_delete_requires_auth(self, api):
+        r = api.delete(f"{BASE_URL}/api/testimonials/does-not-exist", timeout=15)
+        assert r.status_code == 401
+
+    def test_testimonial_crud_flow(self, api, admin_headers):
+        # CREATE with rating=4
+        payload = {
+            "author": f"TEST_tm_{uuid.uuid4().hex[:6]}",
+            "rating": 4,
+            "text": "solid experience, walked out with the phone.",
+            "store": "gaur-city",
+            "source": "Google",
+            "date": "Jan 2026",
+            "is_active": True,
+            "order": 55,
+        }
+        r = api.post(f"{BASE_URL}/api/testimonials", json=payload, headers=admin_headers, timeout=15)
+        assert r.status_code == 201, r.text
+        created = r.json()
+        tid = created["id"]
+        assert created["author"] == payload["author"]
+        assert created["rating"] == 4
+        assert created["store"] == "gaur-city"
+
+        # READ verify persistence
+        listed = api.get(f"{BASE_URL}/api/testimonials", timeout=15).json()
+        assert any(t["id"] == tid and t["rating"] == 4 for t in listed)
+
+        # PATCH rating only (partial)
+        upd = api.patch(
+            f"{BASE_URL}/api/testimonials/{tid}",
+            json={"rating": 5},
+            headers=admin_headers,
+            timeout=15,
+        )
+        assert upd.status_code == 200
+        body = upd.json()
+        assert body["rating"] == 5
+        assert body["author"] == payload["author"]  # unchanged
+        assert body["text"] == payload["text"]  # unchanged
+
+        # Verify persisted
+        listed = api.get(f"{BASE_URL}/api/testimonials", timeout=15).json()
+        got = next(t for t in listed if t["id"] == tid)
+        assert got["rating"] == 5
+
+        # PATCH is_active only (partial)
+        upd2 = api.patch(
+            f"{BASE_URL}/api/testimonials/{tid}",
+            json={"is_active": False},
+            headers=admin_headers,
+            timeout=15,
+        )
+        assert upd2.status_code == 200
+        assert upd2.json()["is_active"] is False
+        assert upd2.json()["rating"] == 5
+
+        # DELETE
+        d = api.delete(f"{BASE_URL}/api/testimonials/{tid}", headers=admin_headers, timeout=15)
+        assert d.status_code == 200
+        assert d.json().get("success") is True
+
+        # 404 on subsequent PATCH
+        r404 = api.patch(
+            f"{BASE_URL}/api/testimonials/{tid}",
+            json={"rating": 1},
+            headers=admin_headers,
+            timeout=15,
+        )
+        assert r404.status_code == 404
+
+        # 404 on subsequent DELETE
+        d404 = api.delete(f"{BASE_URL}/api/testimonials/{tid}", headers=admin_headers, timeout=15)
+        assert d404.status_code == 404
+
+
+# ---------- instagram posts (new in iter 4) ----------
+class TestInstagramPosts:
+    def test_list_seeded(self, api):
+        r = api.get(f"{BASE_URL}/api/instagram-posts", timeout=15)
+        assert r.status_code == 200
+        items = r.json()
+        assert isinstance(items, list)
+        assert len(items) >= 6, f"expected >=6 seeded instagram posts, got {len(items)}"
+        for p in items:
+            assert "_id" not in p
+            for k in ("id", "image_url", "is_active"):
+                assert k in p
+            assert p["image_url"], "image_url must be non-empty"
+
+    def test_active_only_filter(self, api, admin_headers):
+        payload = {
+            "image_url": "https://example.com/hidden.jpg",
+            "caption": f"TEST_ig_inactive_{uuid.uuid4().hex[:6]}",
+            "is_active": False,
+            "order": 999,
+        }
+        r = api.post(f"{BASE_URL}/api/instagram-posts", json=payload, headers=admin_headers, timeout=15)
+        assert r.status_code == 201, r.text
+        pid = r.json()["id"]
+        try:
+            active = api.get(f"{BASE_URL}/api/instagram-posts?active_only=true", timeout=15).json()
+            all_items = api.get(f"{BASE_URL}/api/instagram-posts", timeout=15).json()
+            assert pid in {p["id"] for p in all_items}
+            assert pid not in {p["id"] for p in active}
+            assert all(p.get("is_active") is True for p in active)
+        finally:
+            api.delete(f"{BASE_URL}/api/instagram-posts/{pid}", headers=admin_headers, timeout=15)
+
+    def test_create_requires_auth(self, api):
+        r = api.post(
+            f"{BASE_URL}/api/instagram-posts",
+            json={"image_url": "https://example.com/x.jpg"},
+            timeout=15,
+        )
+        assert r.status_code == 401
+
+    def test_update_requires_auth(self, api):
+        r = api.patch(
+            f"{BASE_URL}/api/instagram-posts/does-not-exist",
+            json={"caption": "x"},
+            timeout=15,
+        )
+        assert r.status_code == 401
+
+    def test_delete_requires_auth(self, api):
+        r = api.delete(f"{BASE_URL}/api/instagram-posts/does-not-exist", timeout=15)
+        assert r.status_code == 401
+
+    def test_instagram_crud_flow(self, api, admin_headers):
+        # CREATE with only image_url (caption + post_url optional)
+        payload = {
+            "image_url": f"https://example.com/ig_{uuid.uuid4().hex[:6]}.jpg",
+        }
+        r = api.post(f"{BASE_URL}/api/instagram-posts", json=payload, headers=admin_headers, timeout=15)
+        assert r.status_code == 201, r.text
+        created = r.json()
+        pid = created["id"]
+        assert created["image_url"] == payload["image_url"]
+        assert created["caption"] == ""  # default
+        assert created["post_url"] == ""  # default
+        assert created["is_active"] is True  # default
+
+        # READ verify
+        listed = api.get(f"{BASE_URL}/api/instagram-posts", timeout=15).json()
+        assert any(p["id"] == pid for p in listed)
+
+        # PATCH caption only
+        new_caption = "TEST_ig_updated_caption"
+        upd = api.patch(
+            f"{BASE_URL}/api/instagram-posts/{pid}",
+            json={"caption": new_caption},
+            headers=admin_headers,
+            timeout=15,
+        )
+        assert upd.status_code == 200
+        assert upd.json()["caption"] == new_caption
+        assert upd.json()["image_url"] == payload["image_url"]  # unchanged
+
+        # Verify persisted
+        listed = api.get(f"{BASE_URL}/api/instagram-posts", timeout=15).json()
+        got = next(p for p in listed if p["id"] == pid)
+        assert got["caption"] == new_caption
+
+        # DELETE
+        d = api.delete(f"{BASE_URL}/api/instagram-posts/{pid}", headers=admin_headers, timeout=15)
+        assert d.status_code == 200
+        assert d.json().get("success") is True
+
+        # 404 on already-deleted PATCH
+        r404 = api.patch(
+            f"{BASE_URL}/api/instagram-posts/{pid}",
+            json={"caption": "x"},
+            headers=admin_headers,
+            timeout=15,
+        )
+        assert r404.status_code == 404
+
+        # 404 on already-deleted DELETE
+        d404 = api.delete(f"{BASE_URL}/api/instagram-posts/{pid}", headers=admin_headers, timeout=15)
+        assert d404.status_code == 404
+
+
+# ---------- index checks on testimonials + instagram_posts ----------
+class TestNewCollectionIndexes:
+    def test_order_indexes(self):
+        try:
+            from pymongo import MongoClient
+        except ImportError:
+            pytest.skip("pymongo not available")
+        mongo_url = os.environ.get("MONGO_URL", "mongodb://localhost:27017")
+        db_name = os.environ.get("DB_NAME", "digiconnect_db")
+        c = MongoClient(mongo_url, serverSelectionTimeoutMS=3000)
+        try:
+            c.admin.command("ping")
+        except Exception as e:
+            pytest.skip(f"cannot reach mongo locally: {e}")
+        db = c[db_name]
+
+        for coll_name in ("testimonials", "instagram_posts"):
+            idx = db[coll_name].index_information()
+            order_idx = [v for v in idx.values() if v.get("key") == [("order", 1)]]
+            assert order_idx, f"{coll_name}.order asc index missing (indexes: {list(idx.keys())})"

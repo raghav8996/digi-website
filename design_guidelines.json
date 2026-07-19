@@ -1,0 +1,189 @@
+{
+  "theme": "dark",
+  "archetype": "Electric & Neon / Luxury Hybrid",
+  "typography": {
+    "headings": {
+      "family": "'Outfit', sans-serif",
+      "fallback": "sans-serif",
+      "weights": ["400", "700", "900"],
+      "usage": "Bold, futuristic, tracking-tight, fluid sizing. Never use Inter/Roboto.",
+      "styles": {
+        "h1": "text-4xl sm:text-5xl lg:text-6xl font-black tracking-tighter leading-none",
+        "h2": "text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight",
+        "h3": "text-xl sm:text-2xl font-bold tracking-tight",
+        "h4": "text-lg sm:text-xl font-bold tracking-tight"
+      }
+    },
+    "body": {
+      "family": "'Manrope', sans-serif",
+      "fallback": "sans-serif",
+      "weights": ["400", "500", "600"],
+      "usage": "Clean, highly legible body text with generous line-height.",
+      "styles": {
+        "base": "text-base leading-relaxed font-normal",
+        "small": "text-sm leading-relaxed",
+        "overline": "text-xs font-bold uppercase tracking-[0.2em]"
+      }
+    },
+    "instructions_to_main_agent": "Import these fonts via Google Fonts: <link href=\"https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=Outfit:wght@400;700;900&display=swap\" rel=\"stylesheet\">"
+  },
+  "colors": {
+    "background": {
+      "primary": "#050505",
+      "secondary": "#0A0A0A",
+      "tertiary": "#121212"
+    },
+    "text": {
+      "primary": "#F8F9FA",
+      "secondary": "#A1A1AA",
+      "tertiary": "#71717A",
+      "on_accent": "#FFFFFF"
+    },
+    "accent": {
+      "primary": "#FF007F",
+      "primary_hover": "#E60073",
+      "secondary": "#D10068"
+    },
+    "borders": {
+      "subtle": "rgba(255, 255, 255, 0.08)",
+      "strong": "rgba(255, 255, 255, 0.15)"
+    },
+    "surfaces": {
+      "glass": "rgba(10, 10, 10, 0.6)",
+      "card": "#121212"
+    },
+    "forbidden_colors": ["blue", "amber", "gold"],
+    "usage": "Use true black (#050505) and deep obsidian (#0A0A0A) for backgrounds. Use Laser Magenta (#FF007F) as the sole vibrant accent for CTAs, highlights, and micro-interactions. Avoid AI slop gradients. Ensure high contrast (WCAG AA)."
+  },
+  "visual_enhancers": {
+    "shadows": {
+      "glow": "0 0 20px rgba(255, 0, 127, 0.4)",
+      "ambient": "0 8px 32px rgba(0, 0, 0, 0.5)"
+    },
+    "borders": "1px solid rgba(255, 255, 255, 0.08)",
+    "radii": {
+      "small": "4px",
+      "medium": "8px",
+      "large": "16px",
+      "pill": "9999px"
+    },
+    "glassmorphism": "backdrop-blur-xl bg-black/60 border border-white/10 saturate-150"
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-[#FF007F] text-white font-bold rounded-full px-8 py-4 hover:bg-[#E60073] transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,0,127,0.4)] hover:-translate-y-1",
+      "secondary": "bg-transparent text-white border border-white/20 rounded-full px-8 py-4 hover:bg-white/5 transition-all duration-300",
+      "floating_cta": "fixed bottom-8 right-8 z-50 rounded-full p-4 bg-[#FF007F] text-white shadow-[0_0_30px_rgba(255,0,127,0.5)] hover:scale-110 transition-transform duration-300 flex items-center justify-center cursor-pointer"
+    },
+    "cards": {
+      "base": "bg-[#121212] border border-white/5 rounded-2xl p-6 hover:border-white/20 transition-colors duration-300",
+      "glass": "backdrop-blur-xl bg-black/40 border border-white/10 rounded-2xl p-8"
+    },
+    "navigation": {
+      "header": "fixed top-0 w-full z-50 backdrop-blur-xl bg-black/60 border-b border-white/10 transition-all py-4",
+      "links": "text-sm font-medium text-white/70 hover:text-white transition-colors"
+    },
+    "marquee": {
+      "style": "bg-[#FF007F] text-white py-2 overflow-hidden flex whitespace-nowrap text-sm font-bold tracking-[0.1em] uppercase"
+    }
+  },
+  "grids": {
+    "bento": "grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-6 md:gap-8",
+    "features": "grid grid-cols-1 md:grid-cols-3 gap-8",
+    "locations": "grid grid-cols-1 md:grid-cols-2 gap-8"
+  },
+  "layouts": {
+    "hero": "min-h-[90vh] flex flex-col justify-center items-center relative overflow-hidden text-center px-4 md:px-8",
+    "section": "py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto",
+    "spacing": "Use generous spacing (gap-8, py-24). Avoid cramped designs. Elements should breathe."
+  },
+  "motion": {
+    "hover": "Subtle -translate-y-1, scale-105 for images, border color shifts.",
+    "entrance": "Fade up with framer-motion (y: 20, opacity: 0 -> y: 0, opacity: 1, duration: 0.5, stagger: 0.1).",
+    "marquee": "Use react-fast-marquee for smooth, continuous scrolling of announcements."
+  },
+  "accessibility": {
+    "contrast": "Ensure text contrast meets WCAG AA standards. Use #F8F9FA for primary text on dark backgrounds.",
+    "focus": "focus-visible:ring-2 focus-visible:ring-[#FF007F] focus-visible:ring-offset-2 focus-visible:ring-offset-black",
+    "aria": "Include aria-labels for all icon buttons, especially the floating WhatsApp CTA.",
+    "data_testid": "All interactive elements MUST include data-testid (e.g., data-testid='hero-whatsapp-btn')."
+  },
+  "media": {
+    "images": {
+      "logo": {
+        "url": "https://customer-assets-0z36b82j.emergentagent.net/job_modern-digiconnect/artifacts/5a35ubtx_Group27.png",
+        "category": "Brand Logo",
+        "description": "Monochrome white DC wordmark on transparent/dark background"
+      },
+      "hero_bg": {
+        "url": "https://images.pexels.com/photos/11297769/pexels-photo-11297769.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "category": "Background/Hero",
+        "description": "Sleek interior of a high-tech store (darken with bg-black/60 overlay)"
+      },
+      "product_tech": {
+        "url": "https://images.pexels.com/photos/36768424/pexels-photo-36768424.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "category": "Featured Products",
+        "description": "Futuristic transparent smartphone in hand"
+      },
+      "experience": {
+        "url": "https://images.unsplash.com/photo-1753161021236-76b0bdffb39f",
+        "category": "About/Experience",
+        "description": "People shopping, looking at a phone"
+      }
+    },
+    "icons_library": "lucide-react"
+  },
+  "3d_libraries": {
+    "recommendation": "Use framer-motion for micro-interactions and smooth reveals. 3D canvas (R3F) is not strictly required unless explicitly modeling a device. A 2.5D parallax effect via framer-motion is preferred for performance."
+  },
+  "seo": {
+    "meta_tags": "Include dynamic title, meta description, OpenGraph tags.",
+    "schema": "Implement LocalBusiness JSON-LD schema for both store locations (Gaur City & Grand Venice Mall).",
+    "semantic_html": "Use <header>, <main>, <section>, <article>, <footer>, <nav> appropriately."
+  },
+  "store_locations": {
+    "location_1": {
+      "name": "Gaur City Mall",
+      "address": "GF 29, Ground Floor, Samsung Store, Gaur City Mall, Greater Noida West",
+      "phone": "+91 7302441893",
+      "email": "digiconnect.gm@gmail.com",
+      "whatsapp": "https://wa.me/917302441893"
+    },
+    "location_2": {
+      "name": "Grand Venice Mall",
+      "address": "LGF 57, Lower Ground Floor, Samsung Store, Grand Venice Mall, Greater Noida",
+      "phone": "+91 9205497881",
+      "email": "digiconnect.gv@gmail.com",
+      "whatsapp": "https://wa.me/919205497881"
+    }
+  },
+  "instructions_for_main_agent": [
+    "Build a hybrid full-stack application (marketing + light dashboard) using React and Tailwind CSS.",
+    "Implement routing for: /, /stores, /about, /contact, and /admin.",
+    "Ensure contact is ONLY via Instagram (@digi.connect_) and WhatsApp. Do not build an email contact form.",
+    "Create an admin dashboard (login-protected mock is fine) to manage featured products, offers, and the rotating announcement marquee.",
+    "Design the Hero section with a heavy text focus (Outfit font), bold magenta accents, and a darkened background image.",
+    "Include a floating WhatsApp CTA that opens a popover to let users choose between 'Gaur City' and 'Grand Venice'.",
+    "Bento grid layout for 'Why Choose DigiConnect'.",
+    "Never center text globally. Left-align dense content.",
+    "No blue or amber/gold colors.",
+    "Use lucide-react for icons."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "You tend to converge toward generic, 'on distribution' outputs. In frontend design, this creates what users call the 'AI slop' aesthetic. Avoid this: make creative, distinctive frontends that surprise and delight.",
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients.",
+    "Don't make generic centered layouts, simplistic gradients, and uniform styling.",
+    "Create depth through layered design elements with z-index hierarchy.",
+    "Use glass-morphism effects with backdrop filters (12-24px blur).",
+    "You MUST NOT apply universal transition. Eg: transition: all. Always add transitions for specific interactive elements excluding transforms.",
+    "You MUST NOT center align the app container. Do not add .App { text-align: center; }.",
+    "Always use modern button styles like pill-shaped, or sharp button with interaction animations & color relevant to the app style.",
+    "NEVER use AI assistant Emoji characters like 🤖🧠💭💡🔮🎯 etc for icons.",
+    "Every interaction needs micro-animations - hover states, transitions, parallax effects, and entrance animations.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "Subtle grain textures, noise overlays, custom cursors, selection states, and loading animations: separates good from extraordinary.",
+    "Missing categories (especially sponsor logos) = main agent will use placeholder text which is FORBIDDEN.",
+    "Prioritize using pre-existing components from src/components/ui when applicable.",
+    "Use sonner for toasts. Sonner component are located in /app/src/components/ui/sonner.tsx"
+  ]
+}

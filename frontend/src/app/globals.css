@@ -1,0 +1,177 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --dc-bg-0: #050505;
+  --dc-bg-1: #0a0a0a;
+  --dc-bg-2: #121212;
+  --dc-text: #f8f9fa;
+  --dc-text-2: #a1a1aa;
+  --dc-accent: #ff007f;
+  --dc-accent-hover: #e60073;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--dc-bg-0);
+  color: var(--dc-text);
+  font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--dc-accent);
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--dc-bg-0);
+}
+::-webkit-scrollbar-thumb {
+  background: #262626;
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--dc-accent);
+}
+
+.font-display {
+  font-family: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.overline {
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--dc-text-2);
+}
+
+.dc-tile {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0))
+    var(--dc-bg-2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  transition:
+    border-color 0.3s ease,
+    transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.dc-tile:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(-4px);
+}
+
+.dc-gradient-text {
+  background: linear-gradient(90deg, #ffffff 0%, #ffffff 55%, #ff007f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.dc-glow-soft {
+  box-shadow: 0 0 60px rgba(255, 0, 127, 0.18);
+}
+
+/* Grain overlay */
+.dc-grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.7'/></svg>");
+}
+
+/* Reveal animation */
+@keyframes dc-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.dc-reveal {
+  animation: dc-reveal 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* Slow pulse for pre-reserve badge */
+@keyframes dc-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 0, 127, 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(255, 0, 127, 0);
+  }
+}
+.dc-pulse {
+  animation: dc-pulse 2.4s ease-out infinite;
+}
+
+/* Aurora backdrop for hero */
+.dc-aurora {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.dc-aurora::before,
+.dc-aurora::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+}
+.dc-aurora::before {
+  width: 520px;
+  height: 520px;
+  background: #ff007f;
+  top: -140px;
+  right: -120px;
+}
+.dc-aurora::after {
+  width: 480px;
+  height: 480px;
+  background: #6a00ff;
+  bottom: -160px;
+  left: -140px;
+  opacity: 0.22;
+}
+
+.dc-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 10px 14px;
+  color: #fff;
+  outline: none;
+  font-size: 14px;
+}
+.dc-input:focus {
+  border-color: #ff007f;
+}
+
+button,
+a {
+  cursor: pointer;
+}

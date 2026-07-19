@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { MessageCircle, MapPin, X } from "lucide-react";
 import { STORE_LOCATIONS } from "@/lib/stores";
@@ -50,7 +52,7 @@ export default function FloatingWhatsApp() {
         data-testid="whatsapp-fab"
         onClick={() => setOpen((v) => !v)}
         aria-label="Chat on WhatsApp"
-        className="h-14 w-14 rounded-full bg-[#ff007f] text-white shadow-[0_10px_40px_rgba(255,0,127,0.45)] hover:scale-110 transition-transform flex items-center justify-center dc-focus"
+        className="h-14 w-14 rounded-full bg-[#ff007f] text-white shadow-[0_10px_40px_rgba(255,0,127,0.45)] hover:scale-110 transition-transform flex items-center justify-center dc-pulse"
       >
         <MessageCircle size={22} />
       </button>

@@ -144,12 +144,48 @@ class AnnouncementUpdate(BaseModel):
     order: Optional[int] = None
 
 
+class Offer(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    description: str = ""
+    valid_until: str = ""  # ISO date string, optional display
+    image_url: str = ""
+    store: str = "both"  # both | gaur-city | grand-venice
+    tag: str = ""  # e.g., "Limited time", "In-store only"
+    is_active: bool = True
+    order: int = 0
+    created_at: str = Field(default_factory=lambda: now_utc().isoformat())
+
+
+class OfferCreate(BaseModel):
+    title: str
+    description: str = ""
+    valid_until: str = ""
+    image_url: str = ""
+    store: str = "both"
+    tag: str = ""
+    is_active: bool = True
+    order: int = 0
+
+
+class OfferUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    valid_until: Optional[str] = None
+    image_url: Optional[str] = None
+    store: Optional[str] = None
+    tag: Optional[str] = None
+    is_active: Optional[bool] = None
+    order: Optional[int] = None
+
+
 # ---------- Startup ----------
 @app.on_event("startup")
 async def on_startup():
     await db.users.create_index("email", unique=True)
     await db.products.create_index([("order", 1)])
     await db.announcements.create_index([("order", 1)])
+    await db.offers.create_index([("order", 1)])
 
     admin_email = os.environ["ADMIN_EMAIL"].lower().strip()
     admin_password = os.environ["ADMIN_PASSWORD"]
@@ -171,13 +207,13 @@ async def on_startup():
         )
         logger.info("Updated admin password for: %s", admin_email)
 
-    # Seed initial announcements & products if empty
+    # Seed initial announcements, products & offers if empty
     if await db.announcements.count_documents({}) == 0:
         defaults = [
+            "Galaxy Z Fold8 — Pre-reserve now at DigiConnect",
+            "Live demos daily: Galaxy S, Z & A series",
             "Now open at Gaur City Mall & Grand Venice Mall — Greater Noida",
-            "Live Samsung Galaxy S & Z-series demos every day",
-            "Exclusive SmartCafé experience — try before you buy",
-            "Authorized Samsung Experience Store & Service Partner",
+            "Authorized Samsung Experience Store & SmartCafé partner",
         ]
         for i, msg in enumerate(defaults):
             ann = Announcement(message=msg, order=i)
@@ -186,11 +222,11 @@ async def on_startup():
     if await db.products.count_documents({}) == 0:
         sample = [
             {
-                "name": "Galaxy S24 Ultra",
+                "name": "Galaxy S25 Ultra",
                 "category": "Smartphone",
                 "price": "From ₹1,29,999",
-                "image_url": "https://images.pexels.com/photos/36768424/pexels-photo-36768424.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-                "highlight": "AI-powered flagship. See it live in store.",
+                "image_url": "https://images.unsplash.com/photo-1610792516307-ea5acd9c3b00?auto=format&fit=crop&w=940&q=80",
+                "highlight": "The new AI flagship. Experience it live in store.",
                 "order": 0,
             },
             {
@@ -202,12 +238,20 @@ async def on_startup():
                 "order": 1,
             },
             {
+                "name": "Galaxy A55 5G",
+                "category": "Smartphone",
+                "price": "From ₹39,999",
+                "image_url": "https://images.unsplash.com/photo-1592286927505-1def25115558?auto=format&fit=crop&w=940&q=80",
+                "highlight": "Flagship-grade design, everyday value. A-series demo in store.",
+                "order": 2,
+            },
+            {
                 "name": "Galaxy Buds3 Pro",
                 "category": "Audio",
                 "price": "From ₹24,999",
                 "image_url": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=940&q=80",
                 "highlight": "Studio-grade sound. Try them at the SmartCafé.",
-                "order": 2,
+                "order": 3,
             },
             {
                 "name": "Galaxy Watch7",
@@ -215,12 +259,54 @@ async def on_startup():
                 "price": "From ₹32,999",
                 "image_url": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=940&q=80",
                 "highlight": "Your health, elevated. Fit it live in store.",
-                "order": 3,
+                "order": 4,
+            },
+            {
+                "name": "Galaxy Tab S10",
+                "category": "Tablet",
+                "price": "From ₹1,04,999",
+                "image_url": "https://images.unsplash.com/photo-1561154464-82e9adf32764?auto=format&fit=crop&w=940&q=80",
+                "highlight": "Studio meets pocket. Demo the Tab S10 today.",
+                "order": 5,
             },
         ]
         for item in sample:
             p = Product(**item)
             await db.products.insert_one(p.model_dump())
+
+    if await db.offers.count_documents({}) == 0:
+        offers = [
+            {
+                "title": "Pre-reserve Galaxy Z Fold8",
+                "description": "Be first in line for India’s most anticipated foldable. Reserve at DigiConnect and unlock exclusive launch-day pickup + a Galaxy gift bundle in store.",
+                "tag": "Coming soon · Pre-reserve",
+                "valid_until": "",
+                "image_url": "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=940&q=80",
+                "store": "both",
+                "order": 0,
+            },
+            {
+                "title": "Galaxy S25 Ultra — In-store bundle",
+                "description": "Walk in to demo the S25 Ultra and unlock a bundled Galaxy Buds3 offer, exclusive to DigiConnect Greater Noida stores.",
+                "tag": "Limited time · In-store only",
+                "valid_until": "",
+                "image_url": "https://images.unsplash.com/photo-1610792516307-ea5acd9c3b00?auto=format&fit=crop&w=940&q=80",
+                "store": "both",
+                "order": 1,
+            },
+            {
+                "title": "A-series trade-in bonus",
+                "description": "Trade in your old phone at Grand Venice Mall and get an extra bonus on the Galaxy A55 & A35 series. Available only in store.",
+                "tag": "In-store only",
+                "valid_until": "",
+                "image_url": "https://images.unsplash.com/photo-1592286927505-1def25115558?auto=format&fit=crop&w=940&q=80",
+                "store": "grand-venice",
+                "order": 2,
+            },
+        ]
+        for item in offers:
+            o = Offer(**item)
+            await db.offers.insert_one(o.model_dump())
 
 
 @app.on_event("shutdown")
@@ -319,6 +405,41 @@ async def delete_announcement(announcement_id: str, _: dict = Depends(get_curren
     result = await db.announcements.delete_one({"id": announcement_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Announcement not found")
+    return {"success": True}
+
+
+# ---------- Routes: Offers ----------
+@api_router.get("/offers")
+async def list_offers(active_only: bool = False):
+    query = {"is_active": True} if active_only else {}
+    cursor = db.offers.find(query, {"_id": 0}).sort("order", 1)
+    return await cursor.to_list(500)
+
+
+@api_router.post("/offers", status_code=201)
+async def create_offer(data: OfferCreate, _: dict = Depends(get_current_admin)):
+    o = Offer(**data.model_dump())
+    await db.offers.insert_one(o.model_dump())
+    return o.model_dump()
+
+
+@api_router.patch("/offers/{offer_id}")
+async def update_offer(offer_id: str, data: OfferUpdate, _: dict = Depends(get_current_admin)):
+    updates = {k: v for k, v in data.model_dump(exclude_unset=True).items()}
+    if not updates:
+        raise HTTPException(status_code=400, detail="No fields to update")
+    result = await db.offers.update_one({"id": offer_id}, {"$set": updates})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Offer not found")
+    updated = await db.offers.find_one({"id": offer_id}, {"_id": 0})
+    return updated
+
+
+@api_router.delete("/offers/{offer_id}")
+async def delete_offer(offer_id: str, _: dict = Depends(get_current_admin)):
+    result = await db.offers.delete_one({"id": offer_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Offer not found")
     return {"success": True}
 
 

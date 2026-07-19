@@ -1,11 +1,16 @@
+"use client";
+
 import { useEffect, useState } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { LOGO_URL } from "@/lib/stores";
 
 const NAV = [
   { to: "/", label: "Home" },
   { to: "/stores", label: "Stores" },
+  { to: "/offers", label: "Offers" },
   { to: "/about", label: "About" },
   { to: "/contact", label: "Contact" },
 ];
@@ -13,7 +18,7 @@ const NAV = [
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const location = useLocation();
+  const pathname = usePathname();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -23,24 +28,22 @@ export default function Header() {
 
   useEffect(() => {
     setOpen(false);
-  }, [location.pathname]);
+  }, [pathname]);
+
+  const isActive = (to) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
 
   return (
     <header
       data-testid="site-header"
       className={`sticky top-0 z-40 transition-colors duration-300 ${
         scrolled
-          ? "backdrop-blur-xl bg-black/80 border-b border-white/10"
-          : "backdrop-blur bg-black/40 border-b border-white/5"
+          ? "backdrop-blur-xl bg-black/85 border-b border-white/10"
+          : "backdrop-blur bg-black/50 border-b border-white/5"
       }`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-5 md:px-10 py-4">
-        <Link to="/" data-testid="header-logo-link" className="flex items-center gap-3">
-          <img
-            src={LOGO_URL}
-            alt="DigiConnect logo"
-            className="h-10 w-10 rounded-xl object-cover"
-          />
+        <Link href="/" data-testid="header-logo-link" className="flex items-center gap-3">
+          <Image src={LOGO_URL} alt="DigiConnect logo" width={40} height={40} className="rounded-xl" />
           <span className="font-display font-black text-lg tracking-tight text-white hidden sm:block">
             DigiConnect
           </span>
@@ -48,32 +51,29 @@ export default function Header() {
 
         <nav className="hidden md:flex items-center gap-1">
           {NAV.map((item) => (
-            <NavLink
+            <Link
               key={item.to}
-              to={item.to}
+              href={item.to}
               data-testid={`nav-link-${item.label.toLowerCase()}`}
-              className={({ isActive }) =>
-                `px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  isActive
-                    ? "text-white bg-white/5 border border-white/10"
-                    : "text-white/60 hover:text-white"
-                }`
-              }
-              end={item.to === "/"}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                isActive(item.to)
+                  ? "text-white bg-white/5 border border-white/10"
+                  : "text-white/60 hover:text-white"
+              }`}
             >
               {item.label}
-            </NavLink>
+            </Link>
           ))}
         </nav>
 
         <div className="hidden md:block">
-          <a
+          <Link
             data-testid="header-visit-cta"
             href="/stores"
             className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold bg-[#ff007f] text-white hover:bg-[#e60073] transition-colors"
           >
             Visit a Store
-          </a>
+          </Link>
         </div>
 
         <button
@@ -92,27 +92,24 @@ export default function Header() {
           className="md:hidden border-t border-white/10 bg-black/95 backdrop-blur-xl px-5 py-4 space-y-2"
         >
           {NAV.map((item) => (
-            <NavLink
+            <Link
               key={item.to}
-              to={item.to}
+              href={item.to}
               data-testid={`mobile-nav-${item.label.toLowerCase()}`}
-              className={({ isActive }) =>
-                `block px-4 py-3 rounded-xl text-base font-medium ${
-                  isActive ? "bg-white/10 text-white" : "text-white/70"
-                }`
-              }
-              end={item.to === "/"}
+              className={`block px-4 py-3 rounded-xl text-base font-medium ${
+                isActive(item.to) ? "bg-white/10 text-white" : "text-white/70"
+              }`}
             >
               {item.label}
-            </NavLink>
+            </Link>
           ))}
-          <a
+          <Link
             data-testid="mobile-visit-cta"
             href="/stores"
             className="block text-center rounded-full px-5 py-3 text-sm font-bold bg-[#ff007f] text-white"
           >
             Visit a Store
-          </a>
+          </Link>
         </div>
       )}
     </header>

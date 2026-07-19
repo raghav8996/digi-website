@@ -1,0 +1,42 @@
+{
+  "summary": "Iteration 2 — post-migration verification (Next.js 15 App Router + new /api/offers). Backend pytest: 25/25 passing (added TestOffers CRUD, active_only filter, auth guards; TestProductSeed verifies all 6 seeded names incl. A55 5G; TestAnnouncementSeed verifies Fold8 pre-reserve). Frontend Playwright: home hero + AnnouncementStrip (4 chips) + Fold8 banner (two wa.me CTAs with Fold8 pre-fill) + OffersSection (3 cards with Claim WhatsApp) + 6 product cards + visit/cta/footer/FAB all render. SSR HTML contains all product names, all 3 offer titles, Fold8 references, title/meta description, JSON-LD ElectronicsStore (2 stores). /robots.txt returns 200 with 'Disallow: /admin'. /sitemap.xml returns 200 including /offers /stores /about /contact. /about is clean of 'multi-brand' and 'after sales'. /contact has Instagram @digi.connect_. WhatsApp FAB popover opens with 2 store choices — both wa.me links correct. Protected /admin redirects to /admin/login (after AuthContext hydrates ~1s). Admin login valid=200 redirects, invalid shows error. Offers admin tab loads 3 seeded offers; full create+edit+toggle+delete UI flow verified end-to-end (POST 201, PATCH 200, DELETE 200). Mobile hamburger works below md breakpoint.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "server.py still uses deprecated @app.on_event('startup'/'shutdown') — migrate to FastAPI lifespan context manager (carried over from iteration 1).",
+    "CORS middleware still added AFTER app.include_router(router). Works but conventional order is middleware first (carried over).",
+    "CORS_ORIGINS='*' + allow_credentials=True remains non-compliant per CORS spec — harmless today (Bearer in Authorization header, no cookies) but must be tightened before switching to cookie auth (carried over).",
+    "/app/frontend/src/app/admin/page.jsx is 595 lines — three panels + shared form primitives in one file. Would benefit from splitting into ProductsPanel/OffersPanel/AnnouncementsPanel modules (>700 threshold not hit but close).",
+    "Admin panels use window.confirm for destructive actions (Products/Offers/Announcements delete) — a11y/design consistency: consider shadcn AlertDialog.",
+    "AnnouncementStrip / FloatingWhatsApp / OffersSection all correctly filter is_active client-side even though the server route also filters via active_only=true — small redundancy but safe/defensive.",
+    "Fold8 Banner uses -mt-8/-md:-mt-16 to visually overlap the hero. Verified renders correctly at 1920 and 390 widths.",
+    "Public robots.txt returned by ingress has Cloudflare-managed content preamble prepended before the Next.js robots output — final body still contains 'Disallow: /admin' + 'Sitemap:' so SEO requirement is satisfied (informational).",
+    "Offer 'valid_until' is a free-text string (not ISO date). Admin form placeholder shows 'e.g., 31 Mar 2026' — that's intentional per model, just note it's not date-validated.",
+    "Offer image on cards falls back gracefully when image_url is empty (renders tag as inline badge) — verified visually via home + /offers."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py (added TestOffers, TestProductSeed, TestAnnouncementSeed — 8 new tests)"
+  ],
+  "success_rate": {
+    "backend": "100% (25/25 pytest)",
+    "frontend": "100% (all UI + SEO checks passed)"
+  },
+  "test_credentials": "admin@digiconnect.net.in / DigiConnect@2026 (verified). JWT stored in localStorage key dc_admin_token.",
+  "seed_data_creation": "None persisted. TEST_ prefixed offers/products created during runs were deleted in same run. Backend still seeds 6 products, 4 announcements, 3 offers on empty collections at startup.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Regression: `pytest /app/backend/tests/backend_test.py -v --junitxml=/app/test_reports/pytest/pytest_results.xml` (25 tests, ~3s, parallel via pytest-xdist). Frontend testids exercised in iteration 2: hero-section, announcement-strip, announcement-chip-{id}, fold8-banner, fold8-reserve-{gaur-city,grand-venice}, features-section, feature-tile-{0..3}, offers-section, offer-card-{0..N}, offer-cta-{0..N}, offers-all-link, products-section, product-card-{0..5}, products-visit-link, visit-section, home-location-{...}, cta-section, cta-whatsapp-{gaur-city,grand-venice}, cta-instagram, hero-cta-{stores,offers,instagram}, whatsapp-fab, whatsapp-popover, whatsapp-choose-{gaur-city,grand-venice}, whatsapp-close, site-header, site-footer, mobile-menu-toggle, mobile-menu, admin-login-{form,email,password,submit,error}, admin-view-site, admin-logout, tab-{products,offers,announcements}, add-{product,offer,announcement}-btn, product-form-* / offer-form-* / ann-form-* (+ -save / -cancel), admin-{product,offer,ann}-{id}, edit/toggle/delete-{product,offer,ann}-{id}, admin-toast. Notes: (1) /admin redirect happens client-side after AuthContext hydration (~1-2s) — wait_for_timeout(2500) before asserting URL. (2) Login submit goes through form.onSubmit; using page.expect_response('/api/auth/login') is the reliable way to sync before URL assertions. (3) window.confirm is used for delete on Products/Offers/Announcements — attach page.on('dialog', lambda d: d.accept()) before delete clicks.",
+  "rca of the issue": "N/A — no bugs found. Only a minor test-authoring gotcha: the initial /admin protected-route check needed a longer client hydration wait (2.5s) because the redirect is fired inside a useEffect after AuthContext reads localStorage; test was updated accordingly and passed."
+}

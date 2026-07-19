@@ -27,6 +27,9 @@ export const STORE_LOCATIONS = [
   },
 ];
 
+export const FOLD8_WHATSAPP_MSG =
+  "Hi%20DigiConnect%2C%20I%27d%20like%20to%20pre-reserve%20the%20Galaxy%20Z%20Fold8.";
+
 export const INSTAGRAM_URL = "https://www.instagram.com/digi.connect_/";
 export const INSTAGRAM_HANDLE = "@digi.connect_";
 export const LOGO_URL =

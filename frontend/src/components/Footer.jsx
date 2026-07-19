@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import Link from "next/link";
+import Image from "next/image";
 import { Instagram, MapPin, Mail, Phone } from "lucide-react";
 import { INSTAGRAM_URL, INSTAGRAM_HANDLE, LOGO_URL, STORE_LOCATIONS } from "@/lib/stores";
 
@@ -8,12 +9,12 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-5 md:px-10 py-16 grid grid-cols-1 md:grid-cols-4 gap-10">
         <div className="md:col-span-2">
           <div className="flex items-center gap-3 mb-4">
-            <img src={LOGO_URL} alt="DigiConnect" className="h-11 w-11 rounded-xl" />
+            <Image src={LOGO_URL} alt="DigiConnect" width={44} height={44} className="rounded-xl" />
             <span className="font-display text-2xl font-black text-white">DigiConnect</span>
           </div>
           <p className="text-white/60 max-w-md text-sm leading-relaxed">
-            Authorized Samsung Experience Store & SmartCafé partner in Greater Noida. Two locations,
-            one obsession — helping you experience Samsung the way it&apos;s meant to be discovered.
+            Samsung-exclusive Experience Stores in Greater Noida. Two flagship locations built to help
+            you discover the entire Galaxy ecosystem — hands-on, unhurried, in a SmartCafé setting.
           </p>
           <a
             data-testid="footer-instagram"
@@ -32,13 +33,14 @@ export default function Footer() {
             {[
               ["/", "Home"],
               ["/stores", "Stores"],
-              ["/about", "About & Vision"],
+              ["/offers", "In-Store Offers"],
+              ["/about", "About"],
               ["/contact", "Contact"],
             ].map(([to, label]) => (
               <li key={to}>
                 <Link
-                  to={to}
-                  data-testid={`footer-link-${label.toLowerCase().replace(/\s|&/g, "")}`}
+                  href={to}
+                  data-testid={`footer-link-${label.toLowerCase().replace(/\s|-/g, "")}`}
                   className="text-white/70 hover:text-white transition-colors"
                 >
                   {label}
@@ -78,8 +80,8 @@ export default function Footer() {
 
       <div className="border-t border-white/5">
         <div className="max-w-7xl mx-auto px-5 md:px-10 py-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs text-white/40">
-          <span>© {new Date().getFullYear()} DigiConnect. Samsung Experience Store & SmartCafé partner.</span>
-          <span>Designed for Greater Noida. Made with care.</span>
+          <span>© {new Date().getFullYear()} DigiConnect · Samsung Experience Store & SmartCafé partner</span>
+          <span>Designed for Greater Noida.</span>
         </div>
       </div>
     </footer>

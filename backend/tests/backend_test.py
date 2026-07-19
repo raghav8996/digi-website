@@ -284,6 +284,144 @@ class TestAnnouncements:
         assert d.status_code == 200
 
 
+# ---------- offers (new) ----------
+class TestOffers:
+    def test_list_seeded(self, api):
+        r = api.get(f"{BASE_URL}/api/offers", timeout=15)
+        assert r.status_code == 200
+        items = r.json()
+        assert isinstance(items, list)
+        assert len(items) >= 3, f"expected >=3 seeded offers, got {len(items)}"
+        titles = [o["title"] for o in items]
+        # Verify key seeded offers
+        assert any("Z Fold8" in t for t in titles), f"Fold8 pre-reserve missing: {titles}"
+        assert any("S25 Ultra" in t for t in titles), f"S25 Ultra bundle missing: {titles}"
+        assert any("A-series" in t or "A55" in t for t in titles), f"A-series trade-in missing: {titles}"
+        for o in items:
+            assert "_id" not in o
+            for k in ("id", "title", "is_active", "store"):
+                assert k in o
+
+    def test_active_only_filter(self, api, admin_headers):
+        payload = {
+            "title": f"TEST_offer_inactive_{uuid.uuid4().hex[:6]}",
+            "description": "hidden",
+            "is_active": False,
+            "order": 999,
+        }
+        created = api.post(f"{BASE_URL}/api/offers", json=payload, headers=admin_headers, timeout=15)
+        assert created.status_code == 201, created.text
+        oid = created.json()["id"]
+        try:
+            active = api.get(f"{BASE_URL}/api/offers?active_only=true", timeout=15).json()
+            all_items = api.get(f"{BASE_URL}/api/offers", timeout=15).json()
+            assert oid in {o["id"] for o in all_items}
+            assert oid not in {o["id"] for o in active}
+            assert all(o.get("is_active") is True for o in active)
+        finally:
+            api.delete(f"{BASE_URL}/api/offers/{oid}", headers=admin_headers, timeout=15)
+
+    def test_create_requires_auth(self, api):
+        r = api.post(f"{BASE_URL}/api/offers", json={"title": "TEST_x"}, timeout=15)
+        assert r.status_code == 401
+
+    def test_update_requires_auth(self, api):
+        r = api.patch(f"{BASE_URL}/api/offers/does-not-exist", json={"title": "x"}, timeout=15)
+        assert r.status_code == 401
+
+    def test_delete_requires_auth(self, api):
+        r = api.delete(f"{BASE_URL}/api/offers/does-not-exist", timeout=15)
+        assert r.status_code == 401
+
+    def test_offer_crud_flow(self, api, admin_headers):
+        # CREATE
+        payload = {
+            "title": f"TEST_offer_{uuid.uuid4().hex[:6]}",
+            "description": "an in-store offer",
+            "tag": "TEST",
+            "valid_until": "2026-12-31",
+            "image_url": "https://example.com/o.jpg",
+            "store": "gaur-city",
+            "is_active": True,
+            "order": 55,
+        }
+        r = api.post(f"{BASE_URL}/api/offers", json=payload, headers=admin_headers, timeout=15)
+        assert r.status_code == 201, r.text
+        created = r.json()
+        oid = created["id"]
+        assert created["title"] == payload["title"]
+        assert created["store"] == "gaur-city"
+        assert created["tag"] == "TEST"
+
+        # READ (verify persistence)
+        listed = api.get(f"{BASE_URL}/api/offers", timeout=15).json()
+        assert any(o["id"] == oid and o["title"] == payload["title"] for o in listed)
+
+        # UPDATE
+        upd = api.patch(
+            f"{BASE_URL}/api/offers/{oid}",
+            json={"title": payload["title"] + "_upd", "store": "grand-venice", "is_active": False},
+            headers=admin_headers,
+            timeout=15,
+        )
+        assert upd.status_code == 200
+        body = upd.json()
+        assert body["title"].endswith("_upd")
+        assert body["store"] == "grand-venice"
+        assert body["is_active"] is False
+
+        # Verify persisted via GET
+        listed = api.get(f"{BASE_URL}/api/offers", timeout=15).json()
+        got = next(o for o in listed if o["id"] == oid)
+        assert got["title"].endswith("_upd")
+        assert got["store"] == "grand-venice"
+        assert got["is_active"] is False
+
+        # active_only excludes inactive
+        active_ids = {o["id"] for o in api.get(f"{BASE_URL}/api/offers?active_only=true", timeout=15).json()}
+        assert oid not in active_ids
+
+        # DELETE
+        d = api.delete(f"{BASE_URL}/api/offers/{oid}", headers=admin_headers, timeout=15)
+        assert d.status_code == 200
+        assert d.json().get("success") is True
+
+        # Verify gone
+        listed = api.get(f"{BASE_URL}/api/offers", timeout=15).json()
+        assert not any(o["id"] == oid for o in listed)
+
+        # 404 on update non-existent
+        r404 = api.patch(
+            f"{BASE_URL}/api/offers/{oid}", json={"title": "x"}, headers=admin_headers, timeout=15
+        )
+        assert r404.status_code == 404
+
+
+# ---------- product seed verification (post-migration) ----------
+class TestProductSeed:
+    def test_seeded_names(self, api):
+        r = api.get(f"{BASE_URL}/api/products", timeout=15)
+        assert r.status_code == 200
+        names = [p["name"] for p in r.json()]
+        for expected in [
+            "Galaxy S25 Ultra",
+            "Galaxy Z Fold6",
+            "Galaxy A55 5G",
+            "Galaxy Buds3 Pro",
+            "Galaxy Watch7",
+            "Galaxy Tab S10",
+        ]:
+            assert expected in names, f"missing seeded product: {expected} — got {names}"
+
+
+class TestAnnouncementSeed:
+    def test_fold8_present(self, api):
+        r = api.get(f"{BASE_URL}/api/announcements", timeout=15)
+        assert r.status_code == 200
+        msgs = [a["message"] for a in r.json()]
+        assert any("Fold8" in m and "Pre-reserve" in m for m in msgs), f"Fold8 announcement missing: {msgs}"
+
+
 # ---------- DB checks (direct) ----------
 class TestMongoState:
     def test_admin_seeded_and_indexes(self):

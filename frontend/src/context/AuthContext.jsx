@@ -1,14 +1,16 @@
+"use client";
+
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import api, { formatApiErrorDetail } from "@/lib/api";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [admin, setAdmin] = useState(null); // null=checking, false=unauth, obj=auth
+  const [admin, setAdmin] = useState(null);
   const [checked, setChecked] = useState(false);
 
   const bootstrap = useCallback(async () => {
-    const token = localStorage.getItem("dc_admin_token");
+    const token = typeof window !== "undefined" ? localStorage.getItem("dc_admin_token") : null;
     if (!token) {
       setAdmin(false);
       setChecked(true);

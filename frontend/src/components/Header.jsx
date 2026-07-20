@@ -35,10 +35,8 @@ export default function Header() {
   return (
     <header
       data-testid="site-header"
-      className={`sticky top-0 z-40 transition-colors duration-300 ${
-        scrolled
-          ? "backdrop-blur-xl bg-black/85 border-b border-black/8"
-          : "backdrop-blur bg-black/50 border-b border-black/5"
+      className={`sticky top-0 z-40 transition-shadow duration-200 bg-[#faf7f2] ${
+        scrolled ? "shadow-[0_1px_0_rgba(15,15,17,0.08)]" : ""
       }`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-5 md:px-10 py-4">

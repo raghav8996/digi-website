@@ -12,20 +12,20 @@ export default function FloatingWhatsApp() {
       {open && (
         <div
           data-testid="whatsapp-popover"
-          className="w-[300px] bg-white border border-black/8 rounded-2xl p-4 backdrop-blur-xl dc-glow-soft dc-reveal"
+          className="w-[300px] bg-[#0a0a0b] border border-white/10 rounded-2xl p-4 backdrop-blur-xl dc-glow-soft dc-reveal"
         >
           <div className="flex items-center justify-between mb-3">
-            <p className="font-display font-bold text-[#0f0f11] text-sm">Chat with a store</p>
+            <p className="font-display font-bold text-[#f5f5f7] text-sm">Chat with a store</p>
             <button
               data-testid="whatsapp-close"
               onClick={() => setOpen(false)}
-              className="text-[#83838f] hover:text-[#0f0f11]"
+              className="text-[#6e6e73] hover:text-[#f5f5f7]"
               aria-label="Close"
             >
               <X size={16} />
             </button>
           </div>
-          <p className="text-xs text-[#4a4a55] mb-4 leading-relaxed">
+          <p className="text-xs text-[#a1a1a6] mb-4 leading-relaxed">
             Pick your nearest DigiConnect location. We&apos;ll open WhatsApp with your store.
           </p>
           <div className="space-y-2">
@@ -36,13 +36,13 @@ export default function FloatingWhatsApp() {
                 href={s.whatsappUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center justify-between gap-2 rounded-xl px-3 py-3 bg-black/[0.03] border border-black/8 hover:border-[#7a1b2e] hover:bg-black/[0.05] transition-colors"
+                className="flex items-center justify-between gap-2 rounded-xl px-3 py-3 bg-white/[0.04] border border-white/10 hover:border-[#d4405e] hover:bg-white/[0.06] transition-colors"
               >
                 <span className="flex items-center gap-2">
-                  <MapPin size={14} className="text-[#7a1b2e]" />
-                  <span className="text-sm font-semibold text-[#0f0f11]">{s.name}</span>
+                  <MapPin size={14} className="text-[#d4405e]" />
+                  <span className="text-sm font-semibold text-[#f5f5f7]">{s.name}</span>
                 </span>
-                <span className="text-[10px] text-[#83838f]">{s.phone}</span>
+                <span className="text-[10px] text-[#6e6e73]">{s.phone}</span>
               </a>
             ))}
           </div>
@@ -52,7 +52,7 @@ export default function FloatingWhatsApp() {
         data-testid="whatsapp-fab"
         onClick={() => setOpen((v) => !v)}
         aria-label="Chat on WhatsApp"
-        className="h-14 w-14 rounded-full bg-[#7a1b2e] text-white shadow-[0_10px_40px_rgba(122,27,46,0.45)] hover:scale-110 transition-transform flex items-center justify-center dc-pulse"
+        className="h-14 w-14 rounded-full bg-[#d4405e] text-white shadow-[0_10px_40px_rgba(122,27,46,0.45)] hover:scale-110 transition-transform flex items-center justify-center dc-pulse"
       >
         <MessageCircle size={22} />
       </button>

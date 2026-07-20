@@ -19,14 +19,14 @@ const VALUES = [
 export default function AboutPage() {
   return (
     <>
-      <section data-testid="about-hero" className="pt-20 md:pt-28 pb-16 px-5 md:px-10 border-b border-black/5 relative overflow-hidden">
+      <section data-testid="about-hero" className="pt-20 md:pt-28 pb-16 px-5 md:px-10 border-b border-white/5 relative overflow-hidden">
         <div className="dc-aurora" />
         <div className="relative max-w-6xl mx-auto">
           <p className="overline">About DigiConnect</p>
-          <h1 className="font-display font-black text-[#0f0f11] tracking-tight leading-none text-5xl md:text-7xl mt-3">
+          <h1 className="font-display font-black text-[#f5f5f7] tracking-tight leading-none text-5xl md:text-7xl mt-3">
             Samsung, <span className="dc-gradient-text italic">unhurried.</span>
           </h1>
-          <p className="mt-8 max-w-3xl text-[#0f0f11]/70 text-lg leading-relaxed">
+          <p className="mt-8 max-w-3xl text-[#a1a1a6] text-lg leading-relaxed">
             Founded in 2021 in Greater Noida, DigiConnect is a Samsung-designated Experience Store
             and SmartCafé partner. What started as a single store has grown into two flagship
             locations — dedicated entirely to the Galaxy ecosystem.
@@ -34,18 +34,18 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section data-testid="about-story" className="px-5 md:px-10 py-20 md:py-28 border-b border-black/5">
+      <section data-testid="about-story" className="px-5 md:px-10 py-20 md:py-28 border-b border-white/5">
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-start">
           <div>
             <p className="overline">The story</p>
-            <h2 className="font-display text-3xl md:text-4xl font-black text-[#0f0f11] mt-3 tracking-tight">
+            <h2 className="font-display text-3xl md:text-4xl font-black text-[#f5f5f7] mt-3 tracking-tight">
               Two flagship stores. One obsession.
             </h2>
           </div>
-          <div className="space-y-5 text-[#0f0f11]/70 leading-relaxed">
+          <div className="space-y-5 text-[#a1a1a6] leading-relaxed">
             <p>
               DigiConnect is a Samsung-exclusive retail experience. Established in{" "}
-              <span className="text-[#0f0f11] font-semibold">2021</span> as a sole proprietorship, we&apos;ve
+              <span className="text-[#f5f5f7] font-semibold">2021</span> as a sole proprietorship, we&apos;ve
               built a reputation for high-quality Galaxy products and a genuinely helpful in-store
               experience.
             </p>
@@ -62,22 +62,22 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section data-testid="about-values" className="px-5 md:px-10 py-20 md:py-28 border-b border-black/5">
+      <section data-testid="about-values" className="px-5 md:px-10 py-20 md:py-28 border-b border-white/5">
         <div className="max-w-7xl mx-auto">
           <div className="max-w-2xl mb-14">
             <p className="overline">Core values</p>
-            <h2 className="font-display text-3xl md:text-5xl font-black text-[#0f0f11] mt-3 tracking-tight">
+            <h2 className="font-display text-3xl md:text-5xl font-black text-[#f5f5f7] mt-3 tracking-tight">
               What we care about.
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {VALUES.map((v, i) => (
               <div key={v.title} data-testid={`value-card-${i}`} className="dc-tile p-7">
-                <div className="h-11 w-11 rounded-xl bg-[#7a1b2e]/15 border border-[#7a1b2e]/30 flex items-center justify-center text-[#7a1b2e]">
+                <div className="h-11 w-11 rounded-xl bg-[#d4405e]/15 border border-[#d4405e]/30 flex items-center justify-center text-[#d4405e]">
                   <v.icon size={20} />
                 </div>
-                <h3 className="font-display text-xl font-bold text-[#0f0f11] mt-5">{v.title}</h3>
-                <p className="text-[#4a4a55] mt-2 text-sm leading-relaxed">{v.body}</p>
+                <h3 className="font-display text-xl font-bold text-[#f5f5f7] mt-5">{v.title}</h3>
+                <p className="text-[#a1a1a6] mt-2 text-sm leading-relaxed">{v.body}</p>
               </div>
             ))}
           </div>
@@ -85,11 +85,11 @@ export default function AboutPage() {
       </section>
 
       <section data-testid="about-mission" className="px-5 md:px-10 py-20 md:py-28">
-        <div className="max-w-5xl mx-auto rounded-3xl border border-black/8 bg-white p-10 md:p-16 relative overflow-hidden">
-          <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-[#7a1b2e]/20 blur-3xl" />
+        <div className="max-w-5xl mx-auto rounded-3xl border border-white/10 bg-[#0a0a0b] p-10 md:p-16 relative overflow-hidden">
+          <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-[#d4405e]/20 blur-3xl" />
           <div className="relative">
             <p className="overline">Our mission</p>
-            <p className="font-display text-2xl md:text-4xl font-black text-[#0f0f11] mt-4 leading-tight tracking-tight">
+            <p className="font-display text-2xl md:text-4xl font-black text-[#f5f5f7] mt-4 leading-tight tracking-tight">
               To build India&apos;s most-loved network of Samsung-exclusive Experience Stores — where
               customers discover the Galaxy ecosystem the way it&apos;s meant to be experienced.
             </p>

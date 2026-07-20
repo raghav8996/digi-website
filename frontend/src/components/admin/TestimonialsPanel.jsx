@@ -208,7 +208,7 @@ export default function TestimonialsPanel({ items, reload, showToast }) {
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
                 <p className="font-display font-bold truncate">{t.author}</p>
-                <p className="text-xs text-[#83838f]">
+                <p className="text-xs text-[#6e6e73]">
                   {t.store === "both"
                     ? "Both stores"
                     : t.store === "gaur-city"
@@ -225,11 +225,11 @@ export default function TestimonialsPanel({ items, reload, showToast }) {
                 <Star
                   key={`${t.id}-star-${i}`}
                   size={11}
-                  className={i < t.rating ? "fill-[#7a1b2e] text-[#7a1b2e]" : "text-[#0f0f11]/15"}
+                  className={i < t.rating ? "fill-[#d4405e] text-[#d4405e]" : "text-[#f5f5f7]/15"}
                 />
               ))}
             </div>
-            <p className="text-xs text-[#0f0f11]/70 mt-3 leading-relaxed line-clamp-3">
+            <p className="text-xs text-[#a1a1a6] mt-3 leading-relaxed line-clamp-3">
               &ldquo;{t.text}&rdquo;
             </p>
             <div className="mt-4 flex gap-2 flex-wrap">

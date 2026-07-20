@@ -5,11 +5,11 @@ import { Plus, Save, X, Trash2, Edit3, Eye, EyeOff } from "lucide-react";
 export function PanelHead({ label, onAdd, addTestId, addLabel }) {
   return (
     <div className="flex items-center justify-between mb-5">
-      <p className="text-sm text-[#4a4a55]">{label}</p>
+      <p className="text-sm text-[#a1a1a6]">{label}</p>
       <button
         data-testid={addTestId}
         onClick={onAdd}
-        className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold bg-[#7a1b2e] text-white hover:bg-[#5f1524]"
+        className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold bg-[#d4405e] text-white hover:bg-[#b8324e]"
       >
         <Plus size={14} /> {addLabel}
       </button>
@@ -25,14 +25,14 @@ export function FormPanel({ children, onCancel, onSave, testIdPrefix }) {
         <button
           data-testid={`${testIdPrefix}-save`}
           onClick={onSave}
-          className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold bg-[#7a1b2e] text-white hover:bg-[#5f1524]"
+          className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold bg-[#d4405e] text-white hover:bg-[#b8324e]"
         >
           <Save size={14} /> Save
         </button>
         <button
           data-testid={`${testIdPrefix}-cancel`}
           onClick={onCancel}
-          className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold bg-black/[0.05] border border-black/8 text-[#0f0f11] hover:bg-black/[0.08]"
+          className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold bg-white/[0.06] border border-white/10 text-[#f5f5f7] hover:bg-white/[0.08]"
         >
           <X size={14} /> Cancel
         </button>
@@ -44,7 +44,7 @@ export function FormPanel({ children, onCancel, onSave, testIdPrefix }) {
 export function FormRow({ label, children }) {
   return (
     <div>
-      <label className="block text-[10px] uppercase tracking-[0.22em] text-[#83838f] font-bold mb-1.5">
+      <label className="block text-[10px] uppercase tracking-[0.22em] text-[#6e6e73] font-bold mb-1.5">
         {label}
       </label>
       {children}
@@ -60,7 +60,7 @@ export function IconBtn({ children, onClick, danger, testId }) {
       className={`inline-flex items-center gap-1 text-[11px] font-bold px-3 py-1.5 rounded-full border transition-colors ${
         danger
           ? "border-red-500/30 text-red-400 hover:bg-red-500/10"
-          : "border-black/8 text-[#0f0f11]/70 hover:text-[#0f0f11] hover:bg-black/[0.05]"
+          : "border-white/10 text-[#a1a1a6] hover:text-[#f5f5f7] hover:bg-white/[0.06]"
       }`}
     >
       {children}
@@ -72,7 +72,7 @@ export function StatusPill({ active }) {
   return (
     <span
       className={`text-[10px] font-bold px-2 py-1 rounded-full ${
-        active ? "bg-[#7a1b2e]/20 text-[#7a1b2e]" : "bg-black/10 text-[#4a4a55]"
+        active ? "bg-[#d4405e]/20 text-[#d4405e]" : "bg-white/10 text-[#a1a1a6]"
       }`}
     >
       {active ? "LIVE" : "HIDDEN"}
@@ -81,7 +81,7 @@ export function StatusPill({ active }) {
 }
 
 export function EmptyState({ label }) {
-  return <div className="col-span-full text-center text-[#83838f]/80 py-14 text-sm">{label}</div>;
+  return <div className="col-span-full text-center text-[#6e6e73] py-14 text-sm">{label}</div>;
 }
 
 export const ActiveToggle = ({ value, onChange, testId }) => (
@@ -90,7 +90,7 @@ export const ActiveToggle = ({ value, onChange, testId }) => (
     type="button"
     onClick={() => onChange(!value)}
     className={`px-4 py-2 rounded-full text-sm font-bold ${
-      value ? "bg-[#7a1b2e] text-white" : "bg-black/[0.05] text-[#0f0f11]/70"
+      value ? "bg-[#d4405e] text-white" : "bg-white/[0.06] text-[#a1a1a6]"
     }`}
   >
     {value ? "Active" : "Hidden"}

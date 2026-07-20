@@ -19,15 +19,15 @@ export default async function StoresPage() {
     <>
       <section
         data-testid="stores-hero"
-        className="pt-20 md:pt-28 pb-16 px-5 md:px-10 border-b border-black/5 relative overflow-hidden"
+        className="pt-20 md:pt-28 pb-16 px-5 md:px-10 border-b border-white/5 relative overflow-hidden"
       >
         <div className="dc-aurora" />
         <div className="relative max-w-7xl mx-auto">
           <p className="overline">Visit Us</p>
-          <h1 className="font-display font-black text-[#0f0f11] tracking-tight leading-none text-5xl md:text-7xl mt-3 max-w-4xl">
+          <h1 className="font-display font-black text-[#f5f5f7] tracking-tight leading-none text-5xl md:text-7xl mt-3 max-w-4xl">
             Two flagships. <span className="dc-gradient-text italic">One city.</span>
           </h1>
-          <p className="mt-6 text-[#4a4a55] max-w-2xl text-lg">
+          <p className="mt-6 text-[#a1a1a6] max-w-2xl text-lg">
             Both stores are Samsung-designated Experience Stores & SmartCafé partners. Walk in for a
             demo or a device upgrade — expert staff on hand every day.
           </p>

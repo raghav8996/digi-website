@@ -176,11 +176,11 @@ export default function ProductsPanel({ items, reload, showToast }) {
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-[#7a1b2e] font-bold">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-[#d4405e] font-bold">
                     {p.category}
                   </p>
                   <p className="font-display font-bold truncate">{p.name}</p>
-                  <p className="text-xs text-[#83838f] truncate">{p.highlight}</p>
+                  <p className="text-xs text-[#6e6e73] truncate">{p.highlight}</p>
                 </div>
                 <StatusPill active={p.is_active} />
               </div>

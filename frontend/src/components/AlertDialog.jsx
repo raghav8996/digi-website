@@ -45,12 +45,12 @@ export default function AlertDialog({
         onClick={onCancel}
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
       />
-      <div className="relative w-full max-w-md rounded-2xl border border-black/8 bg-white p-6 md:p-7 dc-reveal">
+      <div className="relative w-full max-w-md rounded-2xl border border-white/10 bg-[#0a0a0b] p-6 md:p-7 dc-reveal">
         <button
           data-testid={`${testId}-close`}
           onClick={onCancel}
           aria-label="Close"
-          className="absolute top-4 right-4 text-[#83838f]/80 hover:text-[#0f0f11]"
+          className="absolute top-4 right-4 text-[#6e6e73] hover:text-[#f5f5f7]"
         >
           <X size={16} />
         </button>
@@ -60,7 +60,7 @@ export default function AlertDialog({
             className={`h-11 w-11 rounded-xl flex items-center justify-center shrink-0 ${
               danger
                 ? "bg-red-500/12 border border-red-500/30 text-red-400"
-                : "bg-[#7a1b2e]/15 border border-[#7a1b2e]/30 text-[#7a1b2e]"
+                : "bg-[#d4405e]/15 border border-[#d4405e]/30 text-[#d4405e]"
             }`}
           >
             <AlertTriangle size={20} />
@@ -68,12 +68,12 @@ export default function AlertDialog({
           <div className="min-w-0">
             <h3
               id={`${testId}-title`}
-              className="font-display text-xl font-black text-[#0f0f11] leading-tight"
+              className="font-display text-xl font-black text-[#f5f5f7] leading-tight"
             >
               {title}
             </h3>
             {description && (
-              <p className="text-sm text-[#4a4a55] mt-2 leading-relaxed">{description}</p>
+              <p className="text-sm text-[#a1a1a6] mt-2 leading-relaxed">{description}</p>
             )}
           </div>
         </div>
@@ -82,7 +82,7 @@ export default function AlertDialog({
           <button
             data-testid={`${testId}-cancel`}
             onClick={onCancel}
-            className="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-bold bg-black/[0.05] border border-black/8 text-[#0f0f11] hover:bg-black/[0.08] transition-colors"
+            className="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-bold bg-white/[0.06] border border-white/10 text-[#f5f5f7] hover:bg-white/[0.08] transition-colors"
           >
             {cancelLabel}
           </button>
@@ -90,8 +90,8 @@ export default function AlertDialog({
             data-testid={`${testId}-confirm`}
             onClick={onConfirm}
             autoFocus
-            className={`inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-bold text-[#0f0f11] transition-colors ${
-              danger ? "bg-red-500 hover:bg-red-600" : "bg-[#7a1b2e] hover:bg-[#5f1524]"
+            className={`inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-bold text-[#f5f5f7] transition-colors ${
+              danger ? "bg-red-500 hover:bg-red-600" : "bg-[#d4405e] hover:bg-[#b8324e]"
             }`}
           >
             {confirmLabel}

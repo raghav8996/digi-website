@@ -8,11 +8,11 @@ export default function NotFound() {
       <Header />
       <main className="min-h-[70vh] flex flex-col items-center justify-center px-5 text-center">
         <p className="overline">404</p>
-        <h1 className="font-display text-5xl font-black text-[#0f0f11] mt-3">Page not found</h1>
-        <p className="text-[#4a4a55] mt-3">The page you&apos;re looking for isn&apos;t here.</p>
+        <h1 className="font-display text-5xl font-black text-[#f5f5f7] mt-3">Page not found</h1>
+        <p className="text-[#a1a1a6] mt-3">The page you&apos;re looking for isn&apos;t here.</p>
         <Link
           href="/"
-          className="mt-8 inline-flex rounded-full px-6 py-3 bg-[#7a1b2e] text-white font-bold text-sm hover:bg-[#5f1524] transition-colors"
+          className="mt-8 inline-flex rounded-full px-6 py-3 bg-[#d4405e] text-white font-bold text-sm hover:bg-[#b8324e] transition-colors"
         >
           Back to home
         </Link>

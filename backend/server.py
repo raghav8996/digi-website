@@ -286,6 +286,8 @@ class InstagramPostUpdate(BaseModel):
 
 class SiteContent(BaseModel):
     # Singleton document — hero chip on the home page product tile
+    hero_image_url: str = "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=1200&q=80"
+    hero_image_alt: str = "Galaxy device on display"
     hero_live_demo_label: str = "Live demo"
     hero_live_demo_title: str = "Galaxy Z Fold — feel the fold in person."
     hero_live_demo_cta: str = "Visit"
@@ -293,6 +295,8 @@ class SiteContent(BaseModel):
 
 
 class SiteContentUpdate(BaseModel):
+    hero_image_url: Optional[str] = None
+    hero_image_alt: Optional[str] = None
     hero_live_demo_label: Optional[str] = None
     hero_live_demo_title: Optional[str] = None
     hero_live_demo_cta: Optional[str] = None
@@ -405,12 +409,16 @@ async def _seed_instagram_posts():
 
 
 async def _seed_site_content():
-    existing = await db.site_content.find_one({"_id": "singleton"})
-    if existing is not None:
-        return
     defaults = SiteContent().model_dump()
-    defaults["_id"] = "singleton"
-    await db.site_content.insert_one(defaults)
+    existing = await db.site_content.find_one({"_id": "singleton"})
+    if existing is None:
+        doc = {**defaults, "_id": "singleton"}
+        await db.site_content.insert_one(doc)
+        return
+    # Backfill any newly-added fields on existing singleton without overwriting user edits
+    missing = {k: v for k, v in defaults.items() if k not in existing}
+    if missing:
+        await db.site_content.update_one({"_id": "singleton"}, {"$set": missing})
 
 
 async def _seed_defaults():

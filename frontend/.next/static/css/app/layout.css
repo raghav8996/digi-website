@@ -1292,6 +1292,9 @@ video {
 .h-full {
   height: 100%;
 }
+.h-px {
+  height: 1px;
+}
 .min-h-\[110px\] {
   min-height: 110px;
 }
@@ -1390,6 +1393,9 @@ video {
 }
 .max-w-sm {
   max-width: 24rem;
+}
+.max-w-\[240px\] {
+  max-width: 240px;
 }
 .flex-1 {
   flex: 1 1 0%;
@@ -1858,6 +1864,9 @@ video {
 .pt-3 {
   padding-top: 0.75rem;
 }
+.pr-2 {
+  padding-right: 0.5rem;
+}
 .text-center {
   text-align: center;
 }
@@ -1908,6 +1917,9 @@ video {
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
+}
+.text-\[9px\] {
+  font-size: 9px;
 }
 .font-black {
   font-weight: 900;

@@ -6,6 +6,8 @@ import api, { formatApiErrorDetail } from "@/lib/api";
 import { FormRow } from "@/components/admin/shared";
 
 const empty = {
+  hero_image_url: "",
+  hero_image_alt: "",
   hero_live_demo_label: "",
   hero_live_demo_title: "",
   hero_live_demo_cta: "",
@@ -22,6 +24,8 @@ export default function SiteContentPanel({ showToast }) {
     try {
       const { data } = await api.get("/site-content");
       setForm({
+        hero_image_url: data?.hero_image_url || "",
+        hero_image_alt: data?.hero_image_alt || "",
         hero_live_demo_label: data?.hero_live_demo_label || "",
         hero_live_demo_title: data?.hero_live_demo_title || "",
         hero_live_demo_cta: data?.hero_live_demo_cta || "",
@@ -64,6 +68,29 @@ export default function SiteContentPanel({ showToast }) {
       </div>
 
       <div className="dc-tile p-6 md:p-8 space-y-5">
+        <FormRow label="Hero image URL">
+          <input
+            data-testid="site-hero-image-url"
+            value={form.hero_image_url}
+            onChange={(e) => setForm({ ...form, hero_image_url: e.target.value })}
+            placeholder="https://…/hero.jpg"
+            className="dc-input"
+          />
+          <p className="text-[11px] text-[#6e6e73] mt-1.5">Paste any hosted image URL (Unsplash, CDN, S3, etc.). Rendered at 4:5 aspect on the home hero.</p>
+        </FormRow>
+
+        <FormRow label="Hero image alt text (SEO / accessibility)">
+          <input
+            data-testid="site-hero-image-alt"
+            value={form.hero_image_alt}
+            onChange={(e) => setForm({ ...form, hero_image_alt: e.target.value })}
+            placeholder="e.g., Galaxy S25 Ultra on display at DigiConnect"
+            className="dc-input"
+          />
+        </FormRow>
+
+        <div className="h-px bg-white/10" />
+
         <FormRow label="Overline (small caps text)">
           <input
             data-testid="site-hero-label"
@@ -119,14 +146,26 @@ export default function SiteContentPanel({ showToast }) {
 
       <div className="mt-8">
         <p className="text-[10px] uppercase tracking-[0.22em] text-[#6e6e73] font-bold mb-3">Preview</p>
-        <div className="max-w-sm rounded-2xl border border-white/10 bg-[#050505]/95 backdrop-blur px-4 py-3 flex items-center justify-between">
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.2em] text-[#6e6e73] font-semibold">{form.hero_live_demo_label || "Live demo"}</p>
-            <p className="text-sm font-semibold text-white">{form.hero_live_demo_title || "Galaxy Z Fold — feel the fold in person."}</p>
+        <div className="relative aspect-[4/5] w-full max-w-[240px] rounded-2xl overflow-hidden bg-[#0d0d0f] border border-white/10">
+          {form.hero_image_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={form.hero_image_url}
+              alt={form.hero_image_alt || "Hero preview"}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-[11px] text-[#6e6e73]">No image URL yet</div>
+          )}
+          <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between bg-[#050505]/95 backdrop-blur rounded-xl px-3 py-2">
+            <div className="min-w-0 pr-2">
+              <p className="text-[9px] uppercase tracking-[0.2em] text-[#6e6e73] font-semibold truncate">{form.hero_live_demo_label || "Live demo"}</p>
+              <p className="text-[11px] font-semibold text-white truncate">{form.hero_live_demo_title || "Galaxy Z Fold — feel the fold in person."}</p>
+            </div>
+            <span className="text-[10px] font-semibold text-white whitespace-nowrap">
+              {form.hero_live_demo_cta || "Visit"} →
+            </span>
           </div>
-          <span className="text-xs font-semibold text-white ml-3 whitespace-nowrap">
-            {form.hero_live_demo_cta || "Visit"} →
-          </span>
         </div>
       </div>
     </div>

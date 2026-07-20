@@ -111,8 +111,9 @@ export default async function HomePage() {
             <div className="relative aspect-[4/5] w-full max-w-md mx-auto rounded-3xl overflow-hidden bg-[#0d0d0f]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=1200&q=80"
-                alt="Galaxy device on display"
+                data-testid="hero-image"
+                src={hero.hero_image_url || "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=1200&q=80"}
+                alt={hero.hero_image_alt || "Galaxy device on display"}
                 className="w-full h-full object-cover"
               />
               <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between bg-[#050505]/95 backdrop-blur rounded-2xl px-4 py-3 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.15)]">

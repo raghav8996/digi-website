@@ -162,8 +162,9 @@ export default async function HomePage() {
           <div className="relative aspect-[4/5] rounded-3xl overflow-hidden border border-white/10 order-2 lg:order-1">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="https://images.pexels.com/photos/11297769/pexels-photo-11297769.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1200&w=940"
-              alt="DigiConnect Samsung Experience Store interior"
+              data-testid="story-image"
+              src={hero.story_image_url || "https://images.pexels.com/photos/11297769/pexels-photo-11297769.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1200&w=940"}
+              alt={hero.story_image_alt || "DigiConnect Samsung Experience Store interior"}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/20 to-transparent" />

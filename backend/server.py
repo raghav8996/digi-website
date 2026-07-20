@@ -285,13 +285,15 @@ class InstagramPostUpdate(BaseModel):
 
 
 class SiteContent(BaseModel):
-    # Singleton document — hero chip on the home page product tile
+    # Singleton document — home page editable content
     hero_image_url: str = "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=1200&q=80"
     hero_image_alt: str = "Galaxy device on display"
     hero_live_demo_label: str = "Live demo"
     hero_live_demo_title: str = "Galaxy Z Fold — feel the fold in person."
     hero_live_demo_cta: str = "Visit"
     hero_live_demo_href: str = "/stores"
+    story_image_url: str = "https://images.pexels.com/photos/11297769/pexels-photo-11297769.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1200&w=940"
+    story_image_alt: str = "DigiConnect Samsung Experience Store interior"
 
 
 class SiteContentUpdate(BaseModel):
@@ -301,6 +303,8 @@ class SiteContentUpdate(BaseModel):
     hero_live_demo_title: Optional[str] = None
     hero_live_demo_cta: Optional[str] = None
     hero_live_demo_href: Optional[str] = None
+    story_image_url: Optional[str] = None
+    story_image_alt: Optional[str] = None
 
 
 # ---------- Startup ----------

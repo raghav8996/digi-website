@@ -5,7 +5,7 @@ import { INSTAGRAM_URL, INSTAGRAM_HANDLE, LOGO_URL, STORE_LOCATIONS } from "@/li
 
 export default function Footer() {
   return (
-    <footer data-testid="site-footer" className="relative border-t border-white/10 bg-[#050505]">
+    <footer data-testid="site-footer" className="relative border-t border-white/10 bg-[#101014] text-[#f5f0e6]">
       <div className="max-w-7xl mx-auto px-5 md:px-10 py-16 grid grid-cols-1 md:grid-cols-4 gap-10">
         <div className="md:col-span-2">
           <div className="flex items-center gap-3 mb-4">
@@ -21,7 +21,7 @@ export default function Footer() {
             href={INSTAGRAM_URL}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 mt-6 text-sm font-semibold text-white/80 hover:text-[#ff007f] transition-colors"
+            className="inline-flex items-center gap-2 mt-6 text-sm font-semibold text-white/80 hover:text-[#7a1b2e] transition-colors"
           >
             <Instagram size={18} /> {INSTAGRAM_HANDLE}
           </a>
@@ -79,7 +79,7 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-5 md:px-10 py-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs text-white/40">
+        <div className="max-w-7xl mx-auto px-5 md:px-10 py-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs text-white/45">
           <span>© {new Date().getFullYear()} DigiConnect · Samsung Experience Store & SmartCafé partner</span>
           <span>Designed for Greater Noida.</span>
         </div>

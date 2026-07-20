@@ -68,20 +68,20 @@ export default async function HomePage() {
         <div className="dc-aurora" />
 
         <div className="relative max-w-7xl mx-auto">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.22em] text-white/60 mb-8 dc-reveal">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#ff007f]" />
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.22em] text-[#4a4a55] mb-8 dc-reveal">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#7a1b2e]" />
             Samsung Experience Store · Greater Noida
           </div>
 
-          <h1 className="dc-reveal font-display font-black text-white tracking-tighter leading-[0.9] text-5xl sm:text-6xl md:text-7xl lg:text-[104px] max-w-5xl">
+          <h1 className="dc-reveal font-display font-black text-[#0f0f11] tracking-tighter leading-[0.9] text-5xl sm:text-6xl md:text-7xl lg:text-[104px] max-w-5xl">
             The Samsung
             <br />
-            <span className="dc-gradient-text">ecosystem</span>,
+            <span className="dc-gradient-text italic">ecosystem</span>,
             <br />
             unboxed in person.
           </h1>
 
-          <p className="dc-reveal mt-8 max-w-2xl text-lg md:text-xl text-white/70 leading-relaxed">
+          <p className="dc-reveal mt-8 max-w-2xl text-lg md:text-xl text-[#0f0f11]/70 leading-relaxed">
             Two Samsung-exclusive flagship stores in Greater Noida. Every Galaxy device — S, Z, A,
             tablets, wearables and audio — live, hands-on, guided by people who actually use them.
           </p>
@@ -90,14 +90,14 @@ export default async function HomePage() {
             <Link
               data-testid="hero-cta-stores"
               href="/stores"
-              className="inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-bold bg-[#ff007f] text-white hover:bg-[#e60073] hover:-translate-y-0.5 transition-all"
+              className="inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-bold bg-[#7a1b2e] text-white hover:bg-[#5f1524] hover:-translate-y-0.5 transition-all"
             >
               Find a Store <ArrowUpRight size={16} />
             </Link>
             <Link
               data-testid="hero-cta-offers"
               href="/offers"
-              className="inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-bold bg-white/[0.04] border border-white/15 text-white hover:bg-white/[0.08] transition-colors"
+              className="inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-bold bg-black/[0.04] border border-black/12 text-[#0f0f11] hover:bg-black/[0.06] transition-colors"
             >
               <Sparkles size={16} /> In-Store Offers
             </Link>
@@ -106,7 +106,7 @@ export default async function HomePage() {
               href={INSTAGRAM_URL}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-bold text-white/70 hover:text-white transition-colors"
+              className="inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-bold text-[#0f0f11]/70 hover:text-[#0f0f11] transition-colors"
             >
               <Instagram size={16} /> {INSTAGRAM_HANDLE}
             </a>
@@ -114,7 +114,7 @@ export default async function HomePage() {
 
           <AnnouncementStrip announcements={announcements} />
 
-          <div className="dc-reveal mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 border-t border-white/10 pt-8">
+          <div className="dc-reveal mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 border-t border-black/8 pt-8">
             {[
               ["2", "Retail locations"],
               ["100%", "Genuine Samsung"],
@@ -122,8 +122,8 @@ export default async function HomePage() {
               ["Daily", "Live demos"],
             ].map(([v, l]) => (
               <div key={l}>
-                <div className="font-display text-3xl md:text-4xl font-black text-white">{v}</div>
-                <div className="text-xs uppercase tracking-[0.18em] text-white/50 mt-1">{l}</div>
+                <div className="font-display text-3xl md:text-4xl font-black text-[#0f0f11]">{v}</div>
+                <div className="text-xs uppercase tracking-[0.18em] text-[#83838f] mt-1">{l}</div>
               </div>
             ))}
           </div>
@@ -136,17 +136,17 @@ export default async function HomePage() {
       {/* WHY US - BENTO */}
       <section
         data-testid="features-section"
-        className="px-5 md:px-10 py-24 md:py-32 mt-8 border-t border-white/5"
+        className="px-5 md:px-10 py-24 md:py-32 mt-8 border-t border-black/5"
       >
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
             <div className="max-w-2xl">
               <p className="overline">Why DigiConnect</p>
-              <h2 className="font-display text-4xl md:text-5xl font-black text-white mt-3 tracking-tighter">
+              <h2 className="font-display text-4xl md:text-5xl font-black text-[#0f0f11] mt-3 tracking-tighter">
                 A Samsung-exclusive store, done right.
               </h2>
             </div>
-            <p className="text-white/60 max-w-md">
+            <p className="text-[#4a4a55] max-w-md">
               We&apos;re not a general electronics shop. Every square foot is dedicated to the Galaxy
               ecosystem — with people who genuinely know it.
             </p>
@@ -155,11 +155,11 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {FEATURES.map((f, i) => (
               <div key={f.title} data-testid={`feature-tile-${i}`} className={`dc-tile p-8 ${f.span}`}>
-                <div className="h-11 w-11 rounded-xl bg-[#ff007f]/15 border border-[#ff007f]/30 flex items-center justify-center text-[#ff007f]">
+                <div className="h-11 w-11 rounded-xl bg-[#7a1b2e]/15 border border-[#7a1b2e]/30 flex items-center justify-center text-[#7a1b2e]">
                   <f.icon size={20} />
                 </div>
-                <h3 className="font-display text-xl md:text-2xl font-bold text-white mt-6">{f.title}</h3>
-                <p className="text-white/60 mt-3 leading-relaxed text-sm">{f.body}</p>
+                <h3 className="font-display text-xl md:text-2xl font-bold text-[#0f0f11] mt-6">{f.title}</h3>
+                <p className="text-[#4a4a55] mt-3 leading-relaxed text-sm">{f.body}</p>
               </div>
             ))}
           </div>
@@ -172,20 +172,20 @@ export default async function HomePage() {
       {/* PRODUCTS */}
       <section
         data-testid="products-section"
-        className="px-5 md:px-10 py-24 md:py-32 border-t border-white/5"
+        className="px-5 md:px-10 py-24 md:py-32 border-t border-black/5"
       >
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
             <div className="max-w-2xl">
               <p className="overline">Featured in store</p>
-              <h2 className="font-display text-4xl md:text-5xl font-black text-white mt-3 tracking-tighter">
+              <h2 className="font-display text-4xl md:text-5xl font-black text-[#0f0f11] mt-3 tracking-tighter">
                 What&apos;s live at the SmartCafé.
               </h2>
             </div>
             <Link
               href="/stores"
               data-testid="products-visit-link"
-              className="inline-flex items-center gap-2 text-sm font-bold text-[#ff007f] hover:text-white transition-colors"
+              className="inline-flex items-center gap-2 text-sm font-bold text-[#7a1b2e] hover:text-[#0f0f11] transition-colors"
             >
               Come see them <ArrowUpRight size={14} />
             </Link>
@@ -208,15 +208,15 @@ export default async function HomePage() {
       {/* VISIT US */}
       <section
         data-testid="visit-section"
-        className="px-5 md:px-10 py-24 md:py-32 border-t border-white/5"
+        className="px-5 md:px-10 py-24 md:py-32 border-t border-black/5"
       >
         <div className="max-w-7xl mx-auto">
           <div className="mb-14 max-w-2xl">
             <p className="overline">Visit us</p>
-            <h2 className="font-display text-4xl md:text-5xl font-black text-white mt-3 tracking-tighter">
-              Two flagship stores. <span className="dc-gradient-text">Greater Noida.</span>
+            <h2 className="font-display text-4xl md:text-5xl font-black text-[#0f0f11] mt-3 tracking-tighter">
+              Two flagship stores. <span className="dc-gradient-text italic">Greater Noida.</span>
             </h2>
-            <p className="text-white/60 mt-4">
+            <p className="text-[#4a4a55] mt-4">
               Drop by for a demo, an upgrade, or just to see the Galaxy Z Fold in person. No
               appointments needed.
             </p>
@@ -232,16 +232,16 @@ export default async function HomePage() {
       {/* CTA */}
       <section
         data-testid="cta-section"
-        className="px-5 md:px-10 py-24 md:py-32 border-t border-white/5"
+        className="dc-section-dark px-5 md:px-10 py-24 md:py-32"
       >
-        <div className="max-w-6xl mx-auto rounded-3xl border border-white/10 bg-[#0a0a0a] p-10 md:p-16 relative overflow-hidden">
-          <div className="absolute -top-32 -right-32 h-80 w-80 rounded-full bg-[#ff007f]/20 blur-3xl" />
+        <div className="max-w-6xl mx-auto rounded-3xl border border-white/10 bg-black/30 p-10 md:p-16 relative overflow-hidden">
+          <div className="absolute -top-32 -right-32 h-80 w-80 rounded-full bg-[#7a1b2e]/40 blur-3xl" />
           <div className="relative">
             <p className="overline">Say hi</p>
-            <h3 className="font-display text-3xl md:text-5xl font-black text-white mt-3 tracking-tighter max-w-3xl">
+            <h3 className="font-display italic text-3xl md:text-5xl font-black text-white mt-3 tracking-tight max-w-3xl leading-[1.05]">
               Ping us on WhatsApp — we&apos;ll answer during store hours.
             </h3>
-            <p className="text-white/60 mt-4 max-w-xl">
+            <p className="text-white/70 mt-4 max-w-xl">
               Pick your nearest store. We can help you compare devices, check stock, or reserve one
               before you walk in.
             </p>
@@ -253,7 +253,7 @@ export default async function HomePage() {
                   href={s.whatsappUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold bg-[#ff007f] text-white hover:bg-[#e60073] transition-colors"
+                  className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold bg-[#7a1b2e] text-white hover:bg-[#5f1524] transition-colors"
                 >
                   <MessageCircle size={16} /> {s.name}
                 </a>

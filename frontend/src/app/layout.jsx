@@ -1,13 +1,14 @@
-import { Manrope, Outfit } from "next/font/google";
+import { Manrope, Fraunces } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import Analytics from "@/components/Analytics";
 import { fetchServer } from "@/lib/api";
 
-const outfit = Outfit({
+const fraunces = Fraunces({
   subsets: ["latin"],
-  weight: ["400", "700", "800", "900"],
-  variable: "--font-outfit",
+  weight: ["400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"],
+  variable: "--font-fraunces",
   display: "swap",
 });
 
@@ -146,7 +147,7 @@ export default async function RootLayout({ children }) {
   const jsonLd = buildJsonLd(testimonials);
   const jsonLdHtml = { __html: JSON.stringify(jsonLd) };
   return (
-    <html lang="en" className={`${outfit.variable} ${manrope.variable}`}>
+    <html lang="en" className={`${fraunces.variable} ${manrope.variable}`}>
       <head>
         <script
           type="application/ld+json"

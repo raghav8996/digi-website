@@ -37,14 +37,14 @@ export default function Header() {
       data-testid="site-header"
       className={`sticky top-0 z-40 transition-colors duration-300 ${
         scrolled
-          ? "backdrop-blur-xl bg-black/85 border-b border-white/10"
-          : "backdrop-blur bg-black/50 border-b border-white/5"
+          ? "backdrop-blur-xl bg-black/85 border-b border-black/8"
+          : "backdrop-blur bg-black/50 border-b border-black/5"
       }`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-5 md:px-10 py-4">
         <Link href="/" data-testid="header-logo-link" className="flex items-center gap-3">
           <Image src={LOGO_URL} alt="DigiConnect logo" width={40} height={40} className="rounded-xl" />
-          <span className="font-display font-black text-lg tracking-tight text-white hidden sm:block">
+          <span className="font-display font-black text-lg tracking-tight text-[#0f0f11] hidden sm:block">
             DigiConnect
           </span>
         </Link>
@@ -57,8 +57,8 @@ export default function Header() {
               data-testid={`nav-link-${item.label.toLowerCase()}`}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 isActive(item.to)
-                  ? "text-white bg-white/5 border border-white/10"
-                  : "text-white/60 hover:text-white"
+                  ? "text-[#0f0f11] bg-black/[0.06] border border-black/10"
+                  : "text-[#4a4a55] hover:text-[#0f0f11]"
               }`}
             >
               {item.label}
@@ -70,7 +70,7 @@ export default function Header() {
           <Link
             data-testid="header-visit-cta"
             href="/stores"
-            className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold bg-[#ff007f] text-white hover:bg-[#e60073] transition-colors"
+            className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold bg-[#7a1b2e] text-white hover:bg-[#5f1524] transition-colors"
           >
             Visit a Store
           </Link>
@@ -79,7 +79,7 @@ export default function Header() {
         <button
           data-testid="mobile-menu-toggle"
           onClick={() => setOpen((v) => !v)}
-          className="md:hidden text-white p-2 rounded-lg border border-white/10"
+          className="md:hidden text-[#0f0f11] p-2 rounded-lg border border-black/10"
           aria-label="Open menu"
         >
           {open ? <X size={20} /> : <Menu size={20} />}
@@ -89,7 +89,7 @@ export default function Header() {
       {open && (
         <div
           data-testid="mobile-menu"
-          className="md:hidden border-t border-white/10 bg-black/95 backdrop-blur-xl px-5 py-4 space-y-2"
+          className="md:hidden border-t border-black/8 bg-[#faf7f2] px-5 py-4 space-y-2"
         >
           {NAV.map((item) => (
             <Link
@@ -97,7 +97,7 @@ export default function Header() {
               href={item.to}
               data-testid={`mobile-nav-${item.label.toLowerCase()}`}
               className={`block px-4 py-3 rounded-xl text-base font-medium ${
-                isActive(item.to) ? "bg-white/10 text-white" : "text-white/70"
+                isActive(item.to) ? "bg-black/10 text-[#0f0f11]" : "text-[#0f0f11]/70"
               }`}
             >
               {item.label}
@@ -106,7 +106,7 @@ export default function Header() {
           <Link
             data-testid="mobile-visit-cta"
             href="/stores"
-            className="block text-center rounded-full px-5 py-3 text-sm font-bold bg-[#ff007f] text-white"
+            className="block text-center rounded-full px-5 py-3 text-sm font-bold bg-[#7a1b2e] text-white"
           >
             Visit a Store
           </Link>

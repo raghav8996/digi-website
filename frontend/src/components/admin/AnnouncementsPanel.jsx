@@ -127,7 +127,7 @@ export default function AnnouncementsPanel({ items, reload, showToast }) {
           >
             <div className="flex-1 min-w-0">
               <p className="font-semibold truncate">{a.message}</p>
-              <p className="text-xs text-white/40 mt-1">Order: {a.order}</p>
+              <p className="text-xs text-[#83838f]/80 mt-1">Order: {a.order}</p>
             </div>
             <StatusPill active={a.is_active} />
             <div className="flex gap-2">

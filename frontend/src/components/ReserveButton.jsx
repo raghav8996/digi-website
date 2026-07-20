@@ -41,7 +41,7 @@ export default function ReserveButton({ productName, size = "sm", testId }) {
       <button
         data-testid={testId || "reserve-button"}
         onClick={() => setOpen((v) => !v)}
-        className={`inline-flex items-center gap-1.5 rounded-full font-bold bg-[#ff007f] text-white hover:bg-[#e60073] transition-colors ${
+        className={`inline-flex items-center gap-1.5 rounded-full font-bold bg-[#7a1b2e] text-white hover:bg-[#5f1524] transition-colors ${
           isSmall ? "px-4 py-2 text-xs" : "px-5 py-2.5 text-sm"
         }`}
       >
@@ -51,19 +51,19 @@ export default function ReserveButton({ productName, size = "sm", testId }) {
       {open && (
         <div
           data-testid={`${testId || "reserve"}-popover`}
-          className="absolute right-0 bottom-full mb-2 w-[260px] bg-[#0a0a0a] border border-white/10 rounded-2xl p-3 shadow-[0_20px_60px_rgba(0,0,0,0.6)] dc-glow-soft z-30 dc-reveal"
+          className="absolute right-0 bottom-full mb-2 w-[260px] bg-white border border-black/8 rounded-2xl p-3 shadow-[0_20px_60px_rgba(0,0,0,0.6)] dc-glow-soft z-30 dc-reveal"
         >
           <div className="flex items-center justify-between mb-2 px-1">
-            <p className="font-display font-bold text-white text-xs">Pick a store</p>
+            <p className="font-display font-bold text-[#0f0f11] text-xs">Pick a store</p>
             <button
               onClick={() => setOpen(false)}
-              className="text-white/50 hover:text-white"
+              className="text-[#83838f] hover:text-[#0f0f11]"
               aria-label="Close"
             >
               <X size={14} />
             </button>
           </div>
-          <p className="text-[11px] text-white/50 leading-snug px-1 mb-2">
+          <p className="text-[11px] text-[#83838f] leading-snug px-1 mb-2">
             We&apos;ll open WhatsApp with your reservation pre-filled.
           </p>
           <div className="space-y-1.5">
@@ -75,13 +75,13 @@ export default function ReserveButton({ productName, size = "sm", testId }) {
                 target="_blank"
                 rel="noreferrer"
                 onClick={() => setOpen(false)}
-                className="flex items-center justify-between gap-2 rounded-xl px-3 py-2.5 bg-white/[0.03] border border-white/10 hover:border-[#ff007f] hover:bg-white/[0.06] transition-colors"
+                className="flex items-center justify-between gap-2 rounded-xl px-3 py-2.5 bg-black/[0.03] border border-black/8 hover:border-[#7a1b2e] hover:bg-black/[0.05] transition-colors"
               >
                 <span className="flex items-center gap-2 min-w-0">
-                  <MapPin size={12} className="text-[#ff007f] shrink-0" />
-                  <span className="text-xs font-semibold text-white truncate">{s.name}</span>
+                  <MapPin size={12} className="text-[#7a1b2e] shrink-0" />
+                  <span className="text-xs font-semibold text-[#0f0f11] truncate">{s.name}</span>
                 </span>
-                <ArrowUpRight size={12} className="text-white/40" />
+                <ArrowUpRight size={12} className="text-[#83838f]/80" />
               </a>
             ))}
           </div>

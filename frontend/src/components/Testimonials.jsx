@@ -89,7 +89,7 @@ export default function Testimonials({ items = [], variant = "home", storeFilter
   return (
     <section
       data-testid="testimonials-section"
-      className="px-5 md:px-10 py-24 md:py-32 border-t border-white/5"
+      className="px-5 md:px-10 py-24 md:py-32 border-t border-black/5"
     >
       <script
         type="application/ld+json"
@@ -99,10 +99,10 @@ export default function Testimonials({ items = [], variant = "home", storeFilter
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
           <div className="max-w-2xl">
             <p className="overline">Reviews</p>
-            <h2 className="font-display text-4xl md:text-5xl font-black text-white mt-3 tracking-tighter">
+            <h2 className="font-display text-4xl md:text-5xl font-black text-[#0f0f11] mt-3 tracking-tighter">
               {label}.
             </h2>
-            <p className="text-white/60 mt-3">
+            <p className="text-[#4a4a55] mt-3">
               Real feedback from customers who walked in, tried the Galaxy, walked out happy.
             </p>
           </div>
@@ -111,7 +111,7 @@ export default function Testimonials({ items = [], variant = "home", storeFilter
               data-testid="testimonials-prev"
               onClick={() => scrollBy(-1)}
               disabled={!canPrev}
-              className="h-11 w-11 rounded-full border border-white/10 bg-white/[0.03] text-white/80 hover:text-white hover:bg-white/[0.06] disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
+              className="h-11 w-11 rounded-full border border-black/8 bg-black/[0.03] text-[#0f0f11]/80 hover:text-[#0f0f11] hover:bg-black/[0.05] disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
               aria-label="Previous testimonial"
             >
               <ChevronLeft size={18} />
@@ -120,7 +120,7 @@ export default function Testimonials({ items = [], variant = "home", storeFilter
               data-testid="testimonials-next"
               onClick={() => scrollBy(1)}
               disabled={!canNext}
-              className="h-11 w-11 rounded-full border border-white/10 bg-white/[0.03] text-white/80 hover:text-white hover:bg-white/[0.06] disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
+              className="h-11 w-11 rounded-full border border-black/8 bg-black/[0.03] text-[#0f0f11]/80 hover:text-[#0f0f11] hover:bg-black/[0.05] disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
               aria-label="Next testimonial"
             >
               <ChevronRight size={18} />
@@ -144,8 +144,8 @@ export default function Testimonials({ items = [], variant = "home", storeFilter
               data-testid={`testimonial-${i}`}
               className="dc-tile p-6 md:p-8 min-w-[85%] sm:min-w-[420px] md:min-w-[440px] snap-start flex flex-col"
             >
-              <Quote size={22} className="text-[#ff007f]" />
-              <p className="text-white/85 mt-4 leading-relaxed text-[15px] grow">
+              <Quote size={22} className="text-[#7a1b2e]" />
+              <p className="text-[#0f0f11]/85 mt-4 leading-relaxed text-[15px] grow">
                 &ldquo;{t.text}&rdquo;
               </p>
               <div className="mt-6 flex items-center gap-1">
@@ -153,26 +153,26 @@ export default function Testimonials({ items = [], variant = "home", storeFilter
                   <Star
                     key={`${t.id}-star-${j}`}
                     size={14}
-                    className={j < t.rating ? "fill-[#ff007f] text-[#ff007f]" : "text-white/20"}
+                    className={j < t.rating ? "fill-[#7a1b2e] text-[#7a1b2e]" : "text-[#0f0f11]/15"}
                   />
                 ))}
               </div>
-              <div className="mt-4 pt-4 border-t border-white/5 flex items-center gap-3">
+              <div className="mt-4 pt-4 border-t border-black/5 flex items-center gap-3">
                 {t.avatar_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={t.avatar_url}
                     alt={t.author}
-                    className="h-10 w-10 rounded-full object-cover border border-white/10"
+                    className="h-10 w-10 rounded-full object-cover border border-black/8"
                   />
                 ) : (
-                  <div className="h-10 w-10 rounded-full bg-[#ff007f]/20 border border-[#ff007f]/40 flex items-center justify-center text-[#ff007f] text-xs font-bold">
+                  <div className="h-10 w-10 rounded-full bg-[#7a1b2e]/20 border border-[#7a1b2e]/40 flex items-center justify-center text-[#7a1b2e] text-xs font-bold">
                     {initials(t.author)}
                   </div>
                 )}
                 <div className="min-w-0 flex-1">
-                  <p className="font-display font-bold text-white text-sm truncate">{t.author}</p>
-                  <p className="text-[11px] text-white/50 truncate">
+                  <p className="font-display font-bold text-[#0f0f11] text-sm truncate">{t.author}</p>
+                  <p className="text-[11px] text-[#83838f] truncate">
                     {findStoreName(t.store)}
                     {t.date ? ` · ${t.date}` : ""}
                     {t.source ? ` · via ${t.source}` : ""}

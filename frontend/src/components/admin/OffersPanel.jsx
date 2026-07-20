@@ -192,12 +192,12 @@ export default function OffersPanel({ items, reload, showToast }) {
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   {o.tag && (
-                    <p className="text-[10px] uppercase tracking-[0.22em] text-[#ff007f] font-bold">
+                    <p className="text-[10px] uppercase tracking-[0.22em] text-[#7a1b2e] font-bold">
                       {o.tag}
                     </p>
                   )}
                   <p className="font-display font-bold truncate">{o.title}</p>
-                  <p className="text-xs text-white/50 truncate">{o.description}</p>
+                  <p className="text-xs text-[#83838f] truncate">{o.description}</p>
                 </div>
                 <StatusPill active={o.is_active} />
               </div>

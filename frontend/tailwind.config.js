@@ -15,8 +15,8 @@ module.exports = {
         },
       },
       fontFamily: {
-        display: ["var(--font-outfit)", "sans-serif"],
-        body: ["var(--font-manrope)", "sans-serif"],
+        display: ["var(--font-fraunces)", "ui-serif", "Georgia", "serif"],
+        body: ["var(--font-manrope)", "ui-sans-serif", "system-ui", "sans-serif"],
       },
     },
   },

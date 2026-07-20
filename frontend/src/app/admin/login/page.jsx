@@ -27,7 +27,7 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-5 py-16 bg-[#050505] dc-grain relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center px-5 py-16 bg-[#0a0a0a] dc-grain relative overflow-hidden">
       <div className="dc-aurora" />
       <form
         data-testid="admin-login-form"
@@ -38,11 +38,11 @@ export default function AdminLoginPage() {
           <Image src={LOGO_URL} alt="DigiConnect" width={44} height={44} className="rounded-xl" />
           <div>
             <p className="overline">Admin</p>
-            <p className="font-display text-xl font-black text-white">DigiConnect CMS</p>
+            <p className="font-display text-xl font-black text-[#0f0f11]">DigiConnect CMS</p>
           </div>
         </div>
 
-        <label className="block text-xs uppercase tracking-[0.22em] text-white/60 mb-2">Email</label>
+        <label className="block text-xs uppercase tracking-[0.22em] text-white/70 mb-2">Email</label>
         <input
           data-testid="admin-login-email"
           type="email"
@@ -54,7 +54,7 @@ export default function AdminLoginPage() {
           placeholder="admin@digiconnect.net.in"
         />
 
-        <label className="block text-xs uppercase tracking-[0.22em] text-white/60 mb-2 mt-5">
+        <label className="block text-xs uppercase tracking-[0.22em] text-white/70 mb-2 mt-5">
           Password
         </label>
         <input
@@ -71,7 +71,7 @@ export default function AdminLoginPage() {
         {error && (
           <div
             data-testid="admin-login-error"
-            className="mt-4 text-sm text-[#ff007f] bg-[#ff007f]/10 border border-[#ff007f]/30 rounded-lg px-3 py-2"
+            className="mt-4 text-sm text-[#7a1b2e] bg-[#7a1b2e]/10 border border-[#7a1b2e]/30 rounded-lg px-3 py-2"
           >
             {error}
           </div>
@@ -81,15 +81,15 @@ export default function AdminLoginPage() {
           data-testid="admin-login-submit"
           type="submit"
           disabled={busy}
-          className="mt-8 w-full inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-bold bg-[#ff007f] text-white hover:bg-[#e60073] transition-colors disabled:opacity-60"
+          className="mt-8 w-full inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-bold bg-[#7a1b2e] text-white hover:bg-[#5f1524] transition-colors disabled:opacity-60"
         >
           {busy ? "Signing in…" : (<> <LogIn size={16} /> Sign in </>)}
         </button>
 
-        <p className="mt-6 text-xs text-white/40 flex items-center gap-1.5">
+        <p className="mt-6 text-xs text-white/50 flex items-center gap-1.5">
           <Lock size={12} /> Restricted area. Admins only.
         </p>
-        <Link href="/" className="mt-4 block text-center text-xs text-white/40 hover:text-white transition-colors">
+        <Link href="/" className="mt-4 block text-center text-xs text-white/50 hover:text-[#0f0f11] transition-colors">
           ← Back to site
         </Link>
       </form>

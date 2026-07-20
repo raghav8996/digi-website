@@ -62,6 +62,17 @@ DigiConnect is an authorized **Samsung-EXCLUSIVE Experience Store & SmartCafé p
 - **FastAPI startup/shutdown → lifespan API**: `@asynccontextmanager lifespan(app: FastAPI)` replaces `@app.on_event(...)`. Zero deprecation warnings in logs.
 - Regression: 25/25 backend + full frontend Playwright — passing. No functional changes.
 
+### Iteration 4 (Jan 2026) — Deployment fixes + brand lock-in
+- Resolved `.gitignore` deployment blockers, mapped `NEXT_PUBLIC_SITE_URL`, added AggregateRating + LocalBusiness JSON-LD schema.
+- Locked in deep black `#050505` + laser magenta `#ff2d7a` premium theme after multiple design iterations.
+
+### Iteration 5 (Feb 2026) — Vision content + editable Hero chip
+- **About page rewritten** to mirror digiconnect.net.in/vision. New sections: `about-hero` (H1 "Where technology, meets people."), `about-story`, **`about-values`** (5 core values: Customer Satisfaction, Integrity, Innovation, Growth, Reliability), **`about-forward`** ("Going forward" long-form + 3 pillars: Multi-city footprint, Multi-brand portfolio, Retail expertise), **`about-mission`** (new mission line about becoming a "multi-brand, multi-location offline retail powerhouse"). Per user, kept multi-brand/multi-location language as their future portfolio-diversification goal; dropped after-sales mention.
+- **Editable Hero chip via Admin**: new singleton `site_content` collection with fields `hero_live_demo_label / hero_live_demo_title / hero_live_demo_cta / hero_live_demo_href`. Endpoints: `GET /api/site-content` (public), `PATCH /api/site-content` (admin, upserts). Seed-on-startup path in `_seed_site_content`.
+- **New Admin tab "Hero"** (`SiteContentPanel.jsx`) with inputs + Save + live preview card. Home page (`page.jsx`) fetches `/site-content` server-side (ISR 60s) and renders `data-testid=hero-live-demo-{label,title,cta}` dynamically.
+- Backend: 44/44 pytest passing (5 new `TestSiteContent` tests). Fixed a MongoDB `$set`/`$setOnInsert` path-conflict bug uncovered during testing (server.py:update_site_content now filters setOnInsert to keys not already in $set).
+
+
 ## Testing Status
 - Backend: `pytest /app/backend/tests/backend_test.py -v` → 25/25 passing (auth, CRUD for products/announcements/offers, seeding, indexes, guards)
 - Frontend: full Playwright suite — all pages, admin flows, protected routes, SEO (JSON-LD, sitemap, robots), Fold8 CTAs, mobile menu — passing

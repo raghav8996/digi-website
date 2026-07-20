@@ -1202,6 +1202,12 @@ video {
 .mt-8 {
   margin-top: 2rem;
 }
+.mb-16 {
+  margin-bottom: 4rem;
+}
+.ml-3 {
+  margin-left: 0.75rem;
+}
 .line-clamp-2 {
   overflow: hidden;
   display: -webkit-box;
@@ -1346,6 +1352,9 @@ video {
 .w-full {
   width: 100%;
 }
+.w-\[700px\] {
+  width: 700px;
+}
 .min-w-0 {
   min-width: 0px;
 }
@@ -1378,6 +1387,9 @@ video {
 }
 .max-w-xl {
   max-width: 36rem;
+}
+.max-w-sm {
+  max-width: 24rem;
 }
 .flex-1 {
   flex: 1 1 0%;
@@ -1842,6 +1854,9 @@ video {
 }
 .pt-8 {
   padding-top: 2rem;
+}
+.pt-3 {
+  padding-top: 0.75rem;
 }
 .text-center {
   text-align: center;

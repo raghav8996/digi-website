@@ -1,67 +1,109 @@
-import { Heart, Zap, TrendingUp, Shield, Compass, Target } from "lucide-react";
+import { Heart, ShieldCheck, Zap, TrendingUp, BadgeCheck, Compass, Handshake, Building2 } from "lucide-react";
 
 export const metadata = {
   title: "About DigiConnect",
   description:
-    "DigiConnect is a Samsung-exclusive Experience Store established in 2021 in Greater Noida. Learn about our story, values and vision.",
+    "DigiConnect is a Samsung-Experience Store established in 2021 in Greater Noida. Since inception we've grown into two flagship locations and are building a multi-brand offline retail portfolio across India.",
   alternates: { canonical: "https://digiconnect.net.in/about" },
 };
 
-const VALUES = [
-  { icon: Heart, title: "Customer-first", body: "Personalised, unhurried service — the way premium retail should feel." },
-  { icon: Shield, title: "Integrity", body: "Genuine Samsung products, transparent pricing, no upsell games." },
-  { icon: Zap, title: "Innovation", body: "The latest Galaxy launches, live in store the moment they land." },
-  { icon: TrendingUp, title: "Growth", body: "Expanding thoughtfully — every new store is a proper experience space." },
-  { icon: Compass, title: "Expertise", body: "Staff who actually use these devices — ask us anything." },
-  { icon: Target, title: "Focus", body: "Samsung-exclusive. That’s all we do, and we do it well." },
+const CORE_VALUES = [
+  {
+    icon: Heart,
+    title: "Customer Satisfaction",
+    body: "Prioritising the needs of every customer with personalised, unhurried service — the way premium retail should feel.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Integrity",
+    body: "Conducting business in an honest and transparent manner. Genuine stock, transparent pricing, no upsell games.",
+  },
+  {
+    icon: Zap,
+    title: "Innovation",
+    body: "Staying ahead of market trends and offering the latest Samsung products the moment they land.",
+  },
+  {
+    icon: TrendingUp,
+    title: "Growth",
+    body: "Focused on continuous expansion and enhancing the customer experience at every touchpoint.",
+  },
+  {
+    icon: BadgeCheck,
+    title: "Reliability",
+    body: "Providing dependable products and a store experience customers can trust — every visit.",
+  },
+];
+
+const FORWARD_PILLARS = [
+  {
+    icon: Building2,
+    title: "Multi-city footprint",
+    body: "Expanding across high-potential markets in India with modern, customer-centric retail spaces that deliver hands-on brand experiences.",
+  },
+  {
+    icon: Handshake,
+    title: "Multi-brand portfolio",
+    body: "Actively onboarding new, high-value brands — across categories — seeking stronger offline visibility and deeper market penetration.",
+  },
+  {
+    icon: Compass,
+    title: "Retail expertise",
+    body: "Years of experience in consumer behaviour, store experience design and last-mile retail operations — helping brands convert interest into loyalty.",
+  },
 ];
 
 export default function AboutPage() {
   return (
     <>
+      {/* HERO */}
       <section data-testid="about-hero" className="pt-20 md:pt-28 pb-16 px-5 md:px-10 border-b border-white/5 relative overflow-hidden">
         <div className="dc-aurora" />
         <div className="relative max-w-6xl mx-auto">
           <p className="overline">About DigiConnect</p>
           <h1 className="font-display font-black text-white tracking-tight leading-none text-5xl md:text-7xl mt-3">
-            Samsung, <span className="dc-gradient-text italic">unhurried.</span>
+            Where technology, <span className="dc-gradient-text italic">meets people.</span>
           </h1>
           <p className="mt-8 max-w-3xl text-[#a1a1a6] text-lg leading-relaxed">
-            Founded in 2021 in Greater Noida, DigiConnect is a Samsung-designated Experience Store
-            and SmartCafé partner. What started as a single store has grown into two flagship
-            locations — dedicated entirely to the Galaxy ecosystem.
+            Since its inception, DigiConnect has expanded from a single store to two successful
+            locations, both in prime retail areas — a reflection of the demand for quality Samsung
+            products and genuine customer satisfaction. Our growth strategy focuses on expanding our
+            physical presence with plans to open more stores in key locations in the years ahead.
           </p>
         </div>
       </section>
 
+      {/* STORY */}
       <section data-testid="about-story" className="px-5 md:px-10 py-20 md:py-28 border-b border-white/5">
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-start">
           <div>
             <p className="overline">The story</p>
             <h2 className="font-display text-3xl md:text-4xl font-black text-white mt-3 tracking-tight">
-              Two flagship stores. One obsession.
+              From a single store to a retail vision.
             </h2>
           </div>
           <div className="space-y-5 text-[#a1a1a6] leading-relaxed">
             <p>
-              DigiConnect is a Samsung-exclusive retail experience. Established in{" "}
-              <span className="text-white font-semibold">2021</span> as a sole proprietorship, we&apos;ve
-              built a reputation for high-quality Galaxy products and a genuinely helpful in-store
-              experience.
+              DigiConnect started in{" "}
+              <span className="text-white font-semibold">2021</span> as a sole proprietorship with a
+              single Samsung-Experience Store. Today, both our locations at Gaur City Mall and Grand
+              Venice Mall stand as flagship SmartCafé destinations for the Galaxy ecosystem.
             </p>
             <p>
-              Both stores are Samsung Experience Stores and SmartCafé partners — spaces designed for
-              hands-on discovery. Knowledgeable staff, live demos across the S, Z and A series, plus
-              tablets, wearables and audio, all in a relaxed lounge-style environment.
+              Every square foot of our stores is designed for hands-on discovery — live demos across
+              the S, Z and A series, plus tablets, wearables and audio, in a relaxed lounge-style
+              setting with staff who genuinely use these devices.
             </p>
             <p>
-              Our vision is to keep growing our Samsung retail footprint across India — building
-              modern, customer-centric flagship stores that make the Galaxy ecosystem tangible.
+              What began as a Samsung-exclusive retail experience is evolving into something bigger
+              — a modern offline retail platform built to host multiple premium brands across
+              categories.
             </p>
           </div>
         </div>
       </section>
 
+      {/* CORE VALUES */}
       <section data-testid="about-values" className="px-5 md:px-10 py-20 md:py-28 border-b border-white/5">
         <div className="max-w-7xl mx-auto">
           <div className="max-w-2xl mb-14">
@@ -71,7 +113,7 @@ export default function AboutPage() {
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {VALUES.map((v, i) => (
+            {CORE_VALUES.map((v, i) => (
               <div key={v.title} data-testid={`value-card-${i}`} className="dc-tile p-7">
                 <div className="h-11 w-11 rounded-xl bg-[#ff2d7a]/15 border border-[#ff2d7a]/30 flex items-center justify-center text-[#ff2d7a]">
                   <v.icon size={20} />
@@ -84,14 +126,64 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* GOING FORWARD */}
+      <section data-testid="about-forward" className="px-5 md:px-10 py-20 md:py-28 border-b border-white/5 relative overflow-hidden">
+        <div className="absolute -top-40 right-0 h-[500px] w-[700px] rounded-full bg-[#ff2d7a]/8 blur-[120px] pointer-events-none" />
+        <div className="relative max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-12 items-start mb-16">
+            <div>
+              <p className="overline">Going forward</p>
+              <h2 className="font-display text-3xl md:text-5xl font-black text-white mt-3 tracking-tight leading-[1.05]">
+                Building India&apos;s next offline <span className="dc-gradient-text italic">retail powerhouse.</span>
+              </h2>
+            </div>
+            <div className="space-y-5 text-[#a1a1a6] leading-relaxed">
+              <p>
+                As DigiConnect continues to grow, our long-term vision is to expand our footprint
+                across multiple cities — strengthening our presence in high-potential markets
+                throughout India. With each new location, we aim to build modern, customer-centric
+                retail spaces that deliver memorable, hands-on brand experiences.
+              </p>
+              <p>
+                Our strategy goes beyond expansion. We are actively onboarding new, high-value
+                brands to our portfolio — companies seeking stronger offline visibility, deeper
+                market penetration and a trusted partner that understands how customers interact
+                with products in the real world.
+              </p>
+              <p>
+                Offline engagement remains one of the most powerful ways to build brand credibility
+                in India, and our retail ecosystem is built to maximise that impact through
+                personalised interactions, guided product exploration and authentic customer
+                relationships.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {FORWARD_PILLARS.map((p, i) => (
+              <div key={p.title} data-testid={`forward-pillar-${i}`} className="dc-tile p-7">
+                <div className="h-11 w-11 rounded-xl bg-white/[0.06] border border-white/10 flex items-center justify-center text-white">
+                  <p.icon size={20} />
+                </div>
+                <h3 className="font-display text-xl font-bold text-white mt-5">{p.title}</h3>
+                <p className="text-[#a1a1a6] mt-2 text-sm leading-relaxed">{p.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* MISSION */}
       <section data-testid="about-mission" className="px-5 md:px-10 py-20 md:py-28">
         <div className="max-w-5xl mx-auto rounded-3xl border border-white/10 bg-[#050505] p-10 md:p-16 relative overflow-hidden">
           <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-[#ff2d7a]/20 blur-3xl" />
           <div className="relative">
             <p className="overline">Our mission</p>
             <p className="font-display text-2xl md:text-4xl font-black text-white mt-4 leading-tight tracking-tight">
-              To build India&apos;s most-loved network of Samsung-exclusive Experience Stores — where
-              customers discover the Galaxy ecosystem the way it&apos;s meant to be experienced.
+              To become a{" "}
+              <span className="dc-gradient-text italic">multi-brand, multi-location</span> offline
+              retail powerhouse — empowering brands to reach customers more effectively, and
+              enabling customers to experience technology the way it&apos;s meant to be discovered.
             </p>
           </div>
         </div>

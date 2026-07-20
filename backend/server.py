@@ -284,6 +284,21 @@ class InstagramPostUpdate(BaseModel):
     order: Optional[int] = None
 
 
+class SiteContent(BaseModel):
+    # Singleton document — hero chip on the home page product tile
+    hero_live_demo_label: str = "Live demo"
+    hero_live_demo_title: str = "Galaxy Z Fold — feel the fold in person."
+    hero_live_demo_cta: str = "Visit"
+    hero_live_demo_href: str = "/stores"
+
+
+class SiteContentUpdate(BaseModel):
+    hero_live_demo_label: Optional[str] = None
+    hero_live_demo_title: Optional[str] = None
+    hero_live_demo_cta: Optional[str] = None
+    hero_live_demo_href: Optional[str] = None
+
+
 # ---------- Startup ----------
 async def _seed_announcements():
     if await db.announcements.count_documents({}) != 0:
@@ -389,12 +404,22 @@ async def _seed_instagram_posts():
         await db.instagram_posts.insert_one(InstagramPost(**item).model_dump())
 
 
+async def _seed_site_content():
+    existing = await db.site_content.find_one({"_id": "singleton"})
+    if existing is not None:
+        return
+    defaults = SiteContent().model_dump()
+    defaults["_id"] = "singleton"
+    await db.site_content.insert_one(defaults)
+
+
 async def _seed_defaults():
     await _seed_announcements()
     await _seed_products()
     await _seed_offers()
     await _seed_testimonials()
     await _seed_instagram_posts()
+    await _seed_site_content()
 
 # ---------- Routes: Auth ----------
 @api_router.get("/")
@@ -597,6 +622,36 @@ async def delete_instagram_post(post_id: str, _: dict = Depends(get_current_admi
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Instagram post not found")
     return {"success": True}
+
+
+# ---------- Routes: Site Content (singleton) ----------
+@api_router.get("/site-content")
+async def get_site_content():
+    doc = await db.site_content.find_one({"_id": "singleton"}, {"_id": 0})
+    if not doc:
+        # Return defaults if somehow missing
+        return SiteContent().model_dump()
+    return doc
+
+
+@api_router.patch("/site-content")
+async def update_site_content(data: SiteContentUpdate, _: dict = Depends(get_current_admin)):
+    updates = {k: v for k, v in data.model_dump(exclude_unset=True).items()}
+    if not updates:
+        raise HTTPException(status_code=400, detail="No fields to update")
+    defaults = SiteContent().model_dump()
+    # Only insert defaults for fields NOT being $set (MongoDB rejects overlapping paths)
+    set_on_insert = {k: v for k, v in defaults.items() if k not in updates}
+    update_doc = {"$set": updates}
+    if set_on_insert:
+        update_doc["$setOnInsert"] = set_on_insert
+    await db.site_content.update_one(
+        {"_id": "singleton"},
+        update_doc,
+        upsert=True,
+    )
+    updated = await db.site_content.find_one({"_id": "singleton"}, {"_id": 0})
+    return updated
 
 
 app.include_router(api_router)

@@ -724,3 +724,109 @@ class TestNewCollectionIndexes:
             idx = db[coll_name].index_information()
             order_idx = [v for v in idx.values() if v.get("key") == [("order", 1)]]
             assert order_idx, f"{coll_name}.order asc index missing (indexes: {list(idx.keys())})"
+
+
+
+# ---------- Site Content (singleton) ----------
+class TestSiteContent:
+    """Iteration 5 — Public GET + admin PATCH for /api/site-content singleton."""
+
+    REQUIRED_FIELDS = (
+        "hero_live_demo_label",
+        "hero_live_demo_title",
+        "hero_live_demo_cta",
+        "hero_live_demo_href",
+    )
+
+    def test_get_public_no_auth(self, api):
+        r = api.get(f"{BASE_URL}/api/site-content", timeout=15)
+        assert r.status_code == 200, r.text
+        data = r.json()
+        assert isinstance(data, dict)
+        for f in self.REQUIRED_FIELDS:
+            assert f in data, f"missing field {f} in site-content: {data}"
+            assert isinstance(data[f], str)
+
+    def test_patch_requires_auth(self, api):
+        r = api.patch(
+            f"{BASE_URL}/api/site-content",
+            json={"hero_live_demo_label": "should not persist"},
+            timeout=15,
+        )
+        assert r.status_code == 401, r.text
+
+    def test_patch_updates_and_persists(self, api, admin_headers):
+        # Snapshot current state so we can restore it after the test
+        original = api.get(f"{BASE_URL}/api/site-content", timeout=15).json()
+
+        unique = uuid.uuid4().hex[:8]
+        payload = {
+            "hero_live_demo_label": f"TEST_label_{unique}",
+            "hero_live_demo_title": f"TEST_title_{unique}",
+            "hero_live_demo_cta": f"TEST_cta_{unique}",
+            "hero_live_demo_href": f"/test-{unique}",
+        }
+        try:
+            patch_r = api.patch(
+                f"{BASE_URL}/api/site-content",
+                json=payload,
+                headers=admin_headers,
+                timeout=15,
+            )
+            assert patch_r.status_code == 200, patch_r.text
+            updated = patch_r.json()
+            for k, v in payload.items():
+                assert updated[k] == v, f"{k} mismatch: got {updated[k]}, expected {v}"
+
+            # GET reflects the change (persistence)
+            get_r = api.get(f"{BASE_URL}/api/site-content", timeout=15)
+            assert get_r.status_code == 200
+            got = get_r.json()
+            for k, v in payload.items():
+                assert got[k] == v, f"persistence mismatch {k}: got {got[k]}"
+        finally:
+            # Restore original values so we don't pollute production content
+            restore = {
+                k: original.get(k, "")
+                for k in self.REQUIRED_FIELDS
+            }
+            api.patch(
+                f"{BASE_URL}/api/site-content",
+                json=restore,
+                headers=admin_headers,
+                timeout=15,
+            )
+
+    def test_patch_partial_update(self, api, admin_headers):
+        original = api.get(f"{BASE_URL}/api/site-content", timeout=15).json()
+        unique = uuid.uuid4().hex[:6]
+        new_label = f"TEST_partial_{unique}"
+        try:
+            r = api.patch(
+                f"{BASE_URL}/api/site-content",
+                json={"hero_live_demo_label": new_label},
+                headers=admin_headers,
+                timeout=15,
+            )
+            assert r.status_code == 200
+            data = r.json()
+            assert data["hero_live_demo_label"] == new_label
+            # Other fields untouched
+            for f in ("hero_live_demo_title", "hero_live_demo_cta", "hero_live_demo_href"):
+                assert data[f] == original.get(f, data[f]), f"{f} changed unexpectedly"
+        finally:
+            api.patch(
+                f"{BASE_URL}/api/site-content",
+                json={"hero_live_demo_label": original.get("hero_live_demo_label", "Live demo")},
+                headers=admin_headers,
+                timeout=15,
+            )
+
+    def test_patch_empty_body_rejected(self, api, admin_headers):
+        r = api.patch(
+            f"{BASE_URL}/api/site-content",
+            json={},
+            headers=admin_headers,
+            timeout=15,
+        )
+        assert r.status_code == 400, r.text

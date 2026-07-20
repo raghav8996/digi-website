@@ -50,13 +50,16 @@ const FEATURES = [
 ];
 
 export default async function HomePage() {
-  const [products, announcements, offers, testimonials, igPosts] = await Promise.all([
+  const [products, announcements, offers, testimonials, igPosts, siteContent] = await Promise.all([
     fetchServer("/products?active_only=true"),
     fetchServer("/announcements?active_only=true"),
     fetchServer("/offers?active_only=true"),
     fetchServer("/testimonials?active_only=true"),
     fetchServer("/instagram-posts?active_only=true"),
+    fetchServer("/site-content"),
   ]);
+
+  const hero = siteContent || {};
 
   return (
     <>
@@ -114,14 +117,15 @@ export default async function HomePage() {
               />
               <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between bg-[#050505]/95 backdrop-blur rounded-2xl px-4 py-3 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.15)]">
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-[#6e6e73] font-semibold">Live demo</p>
-                  <p className="text-sm font-semibold text-white">Galaxy Z Fold — feel the fold in person.</p>
+                  <p data-testid="hero-live-demo-label" className="text-[10px] uppercase tracking-[0.2em] text-[#6e6e73] font-semibold">{hero.hero_live_demo_label || "Live demo"}</p>
+                  <p data-testid="hero-live-demo-title" className="text-sm font-semibold text-white">{hero.hero_live_demo_title || "Galaxy Z Fold — feel the fold in person."}</p>
                 </div>
                 <Link
-                  href="/stores"
+                  href={hero.hero_live_demo_href || "/stores"}
+                  data-testid="hero-live-demo-cta"
                   className="text-xs font-semibold text-white hover:text-black inline-flex items-center gap-1 whitespace-nowrap"
                 >
-                  Visit <ArrowUpRight size={12} />
+                  {hero.hero_live_demo_cta || "Visit"} <ArrowUpRight size={12} />
                 </Link>
               </div>
             </div>

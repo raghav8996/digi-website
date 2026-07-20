@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { LogOut, Megaphone, ShoppingBag, Tag, Star, Instagram } from "lucide-react";
+import { LogOut, Megaphone, ShoppingBag, Tag, Star, Instagram, Sparkles } from "lucide-react";
 import api, { formatApiErrorDetail } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { LOGO_URL } from "@/lib/stores";
@@ -13,6 +13,7 @@ import OffersPanel from "@/components/admin/OffersPanel";
 import AnnouncementsPanel from "@/components/admin/AnnouncementsPanel";
 import TestimonialsPanel from "@/components/admin/TestimonialsPanel";
 import InstagramPanel from "@/components/admin/InstagramPanel";
+import SiteContentPanel from "@/components/admin/SiteContentPanel";
 
 export default function AdminDashboardPage() {
   const { admin, checked, logout } = useAuth();
@@ -111,6 +112,7 @@ export default function AdminDashboardPage() {
           <TabBtn active={tab === "testimonials"} onClick={() => setTab("testimonials")} icon={Star} label="Reviews" testId="tab-testimonials" />
           <TabBtn active={tab === "instagram"} onClick={() => setTab("instagram")} icon={Instagram} label="Instagram" testId="tab-instagram" />
           <TabBtn active={tab === "announcements"} onClick={() => setTab("announcements")} icon={Megaphone} label="Announcements" testId="tab-announcements" />
+          <TabBtn active={tab === "hero"} onClick={() => setTab("hero")} icon={Sparkles} label="Hero" testId="tab-hero" />
         </div>
 
         <div className="mt-8">
@@ -128,6 +130,9 @@ export default function AdminDashboardPage() {
           )}
           {tab === "announcements" && (
             <AnnouncementsPanel items={anns} reload={() => load("/announcements", setAnns)} showToast={showToast} />
+          )}
+          {tab === "hero" && (
+            <SiteContentPanel showToast={showToast} />
           )}
         </div>
       </div>

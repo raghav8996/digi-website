@@ -1,0 +1,40 @@
+{
+  "summary": "Iteration 5 — DigiConnect vision content + editable Hero chip. Backend pytest 44/44 pass (~4.6s) including 5 new TestSiteContent tests (public GET, PATCH auth-guard, admin PATCH persistence, partial update, empty-body 400). Fixed 1 CRITICAL backend bug uncovered by the new tests: PATCH /api/site-content returned 500 due to a MongoDB WriteError — the update op passed both `$set` and `$setOnInsert` containing the SAME field paths (Mongo code 40: 'Updating the path X would create a conflict at X'). Fix applied in server.py:update_site_content: build $setOnInsert only for fields NOT already in $set. Full E2E now green — admin Hero tab Save shows 'Hero content updated' toast, values persist across tab switches, and the home hero chip (SSR revalidate=60) reflects the new label/title/CTA/href. About page renders all 5 required sections with correct testids and content (5 core value cards: Customer Satisfaction, Integrity, Innovation, Growth, Reliability; 3 forward pillars: Multi-city footprint, Multi-brand portfolio, Retail expertise; H1 'Where technology, meets people.'; Going forward H2 'Building India's next offline retail powerhouse.'; mission text contains both 'multi-brand' and 'multi-location'). Admin auth guard at /admin correctly 302→/admin/login when unauthenticated. All 6 admin tabs (products, offers, testimonials, instagram, announcements, hero) visible and functional. Public list endpoints /api/products, /api/announcements, /api/offers, /api/testimonials, /api/instagram-posts still return arrays (regression clean).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "PATCH /api/site-content", "issue": "FIXED IN THIS RUN — was returning 500 (MongoDB $set/$setOnInsert path conflict, code 40). Root cause: server.py line 642 passed `{'$set': updates, '$setOnInsert': {**SiteContent().model_dump()}}` — the defaults dict included the same keys being $set, so overlapping paths made Mongo reject the write. Fix: filter setOnInsert to exclude keys already in updates. Verified via TestSiteContent (5 tests) and end-to-end UI save flow."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "None blocking. Main agent may want to review the small SiteContent PATCH fix in server.py (lines 638-654) — it's minimal and preserves the upsert semantics, but confirm the singleton-doc lifecycle is intact (seed on startup + upsert path both still work)."
+  ],
+  "critical_code_review_comments": [
+    "MED (FIXED) — server.py update_site_content passed overlapping paths in $set and $setOnInsert. Fixed to compute setOnInsert as SiteContent defaults minus keys already in $set. Note: since _seed_site_content() runs on startup and inserts the singleton, $setOnInsert is effectively unreachable in normal operation — but keeping it as a safety net is fine now that the conflict is resolved.",
+    "LOW — server.py:SiteContent model has no `id` field but the singleton is stored with _id='singleton'. Consistent with the current design (singleton lookup only), but PATCH response omits _id via projection which is correct.",
+    "LOW — SiteContentPanel.jsx handles error path via formatApiErrorDetail(e.response?.data?.detail); on generic 500s the detail may be falsy which shows an empty toast bubble. Non-blocking (only surfaces if server crashes).",
+    "OK — About page uses lucide icons, 5 CORE_VALUES + 3 FORWARD_PILLARS in module-scoped arrays with keyed data-testids (value-card-0..4, forward-pillar-0..2). Content matches digiconnect.net.in/vision spec.",
+    "OK — Home page fetches /site-content server-side via fetchServer with 60s revalidation; hero chip has data-testid=hero-live-demo-{label,title,cta} and Link href derived from hero_live_demo_href.",
+    "OK — Admin dashboard added Sparkles icon + SiteContentPanel + tab-hero; conditional render keyed on tab==='hero'."
+  ],
+  "updated_files": [
+    "/app/backend/server.py (PATCH /site-content: avoid $set/$setOnInsert path conflict; ~7 lines)",
+    "/app/backend/tests/backend_test.py (added TestSiteContent class with 5 tests covering GET public, PATCH auth-guard, PATCH persistence, PATCH partial update, PATCH empty-body 400)"
+  ],
+  "success_rate": {"backend": "100% (44/44 pytest, incl. 5 new site-content tests)", "frontend": "100% (all iter-5 selectors present, save flow round-trips through DB and reflects on home)"},
+  "test_credentials": "admin@digiconnect.net.in / DigiConnect@2026 — verified.",
+  "seed_data_creation": "None persisted. Test values 'TEST_label_*/TEST_title_*/TEST_partial_*' and UI test values 'UI test label/UI test — hero title updated/Explore' were written then restored to defaults ('Live demo' / 'Galaxy Z Fold — feel the fold in person.' / 'Visit' / '/stores') at end of run.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Regression command: `pytest /app/backend/tests/backend_test.py -v --junitxml=/app/test_reports/pytest/pytest_results.xml` (44 tests, ~5s, parallel via pytest-xdist). Iter-5 new coverage lives in TestSiteContent (5 tests, cleanup-safe — always restores original singleton values). Key selectors: home [data-testid=hero-live-demo-{label,title,cta}]; about [data-testid=about-{hero,story,values,forward,mission}] + value-card-0..4 + forward-pillar-0..2; admin [data-testid=tab-hero] + site-hero-{label,title,cta,href,save} + admin-toast. Home page uses Next.js SSR with `export const revalidate = 60` — after admin save, home may take up to 60s (or a bust query param) to reflect changes in production; in tests we bypass with a query bust.",
+  "rca of the issue": "MongoDB rejects any update document that touches the same field path via both $set and $setOnInsert operators (code 40, 'ConflictingUpdateOperators'). server.py did exactly that: `{'$set': {...user-supplied updates}, '$setOnInsert': {**SiteContent().model_dump()}}`. Since SiteContent().model_dump() includes ALL four hero_live_demo_* fields as defaults, ANY PATCH to those fields collided with the setOnInsert defaults for the same keys. Fix: build set_on_insert = {k: v for k, v in defaults.items() if k not in updates}. Only fold $setOnInsert into the update doc when it's non-empty. Reproduction: `curl -X PATCH .../api/site-content -H 'Authorization: Bearer <token>' -d '{\"hero_live_demo_label\":\"x\"}'` → 500 before fix, 200 after fix. Mitigation applied and validated by 5 pytest cases + full UI round-trip."
+}

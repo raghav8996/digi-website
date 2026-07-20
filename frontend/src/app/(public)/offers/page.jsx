@@ -23,7 +23,7 @@ export default async function OffersPage() {
         <div className="dc-aurora" />
         <div className="relative max-w-6xl mx-auto">
           <p className="overline">Limited time · In-store</p>
-          <h1 className="font-display font-black text-[#f5f5f7] tracking-tight leading-none text-5xl md:text-7xl mt-3 max-w-4xl">
+          <h1 className="font-display font-black text-white tracking-tight leading-none text-5xl md:text-7xl mt-3 max-w-4xl">
             Offers you can only <span className="dc-gradient-text italic">walk into.</span>
           </h1>
           <p className="mt-6 max-w-2xl text-[#a1a1a6] text-lg">

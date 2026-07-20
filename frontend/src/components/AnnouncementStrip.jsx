@@ -10,9 +10,9 @@ export default function AnnouncementStrip({ announcements = [] }) {
           <span
             key={a.id}
             data-testid={`announcement-chip-${a.id}`}
-            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs md:text-sm font-medium text-[#f5f5f7]/85"
+            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs md:text-sm font-medium text-white/85"
           >
-            <CheckCircle2 size={13} className="text-[#d4405e]" />
+            <CheckCircle2 size={13} className="text-[#ff2d7a]" />
             {a.message}
           </span>
         ))}

@@ -24,7 +24,7 @@ export default async function StoresPage() {
         <div className="dc-aurora" />
         <div className="relative max-w-7xl mx-auto">
           <p className="overline">Visit Us</p>
-          <h1 className="font-display font-black text-[#f5f5f7] tracking-tight leading-none text-5xl md:text-7xl mt-3 max-w-4xl">
+          <h1 className="font-display font-black text-white tracking-tight leading-none text-5xl md:text-7xl mt-3 max-w-4xl">
             Two flagships. <span className="dc-gradient-text italic">One city.</span>
           </h1>
           <p className="mt-6 text-[#a1a1a6] max-w-2xl text-lg">

@@ -225,7 +225,7 @@ export default function TestimonialsPanel({ items, reload, showToast }) {
                 <Star
                   key={`${t.id}-star-${i}`}
                   size={11}
-                  className={i < t.rating ? "fill-[#d4405e] text-[#d4405e]" : "text-[#f5f5f7]/15"}
+                  className={i < t.rating ? "fill-[#ff2d7a] text-[#ff2d7a]" : "text-white/15"}
                 />
               ))}
             </div>

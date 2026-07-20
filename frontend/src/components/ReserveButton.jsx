@@ -41,7 +41,7 @@ export default function ReserveButton({ productName, size = "sm", testId }) {
       <button
         data-testid={testId || "reserve-button"}
         onClick={() => setOpen((v) => !v)}
-        className={`inline-flex items-center gap-1.5 rounded-full font-bold bg-[#d4405e] text-white hover:bg-[#b8324e] transition-colors ${
+        className={`inline-flex items-center gap-1.5 rounded-full font-bold bg-[#ff2d7a] text-white hover:bg-[#e91764] transition-colors ${
           isSmall ? "px-4 py-2 text-xs" : "px-5 py-2.5 text-sm"
         }`}
       >
@@ -51,13 +51,13 @@ export default function ReserveButton({ productName, size = "sm", testId }) {
       {open && (
         <div
           data-testid={`${testId || "reserve"}-popover`}
-          className="absolute right-0 bottom-full mb-2 w-[260px] bg-[#0a0a0b] border border-white/10 rounded-2xl p-3 shadow-[0_20px_60px_rgba(0,0,0,0.6)] dc-glow-soft z-30 dc-reveal"
+          className="absolute right-0 bottom-full mb-2 w-[260px] bg-[#050505] border border-white/10 rounded-2xl p-3 shadow-[0_20px_60px_rgba(0,0,0,0.6)] dc-glow-soft z-30 dc-reveal"
         >
           <div className="flex items-center justify-between mb-2 px-1">
-            <p className="font-display font-bold text-[#f5f5f7] text-xs">Pick a store</p>
+            <p className="font-display font-bold text-white text-xs">Pick a store</p>
             <button
               onClick={() => setOpen(false)}
-              className="text-[#6e6e73] hover:text-[#f5f5f7]"
+              className="text-[#6e6e73] hover:text-white"
               aria-label="Close"
             >
               <X size={14} />
@@ -75,11 +75,11 @@ export default function ReserveButton({ productName, size = "sm", testId }) {
                 target="_blank"
                 rel="noreferrer"
                 onClick={() => setOpen(false)}
-                className="flex items-center justify-between gap-2 rounded-xl px-3 py-2.5 bg-white/[0.04] border border-white/10 hover:border-[#d4405e] hover:bg-white/[0.06] transition-colors"
+                className="flex items-center justify-between gap-2 rounded-xl px-3 py-2.5 bg-white/[0.04] border border-white/10 hover:border-[#ff2d7a] hover:bg-white/[0.06] transition-colors"
               >
                 <span className="flex items-center gap-2 min-w-0">
-                  <MapPin size={12} className="text-[#d4405e] shrink-0" />
-                  <span className="text-xs font-semibold text-[#f5f5f7] truncate">{s.name}</span>
+                  <MapPin size={12} className="text-[#ff2d7a] shrink-0" />
+                  <span className="text-xs font-semibold text-white truncate">{s.name}</span>
                 </span>
                 <ArrowUpRight size={12} className="text-[#6e6e73]" />
               </a>

@@ -21,7 +21,7 @@ export default function Footer() {
             href={INSTAGRAM_URL}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 mt-6 text-sm font-semibold text-white/80 hover:text-[#d4405e] transition-colors"
+            className="inline-flex items-center gap-2 mt-6 text-sm font-semibold text-white/80 hover:text-[#ff2d7a] transition-colors"
           >
             <Instagram size={18} /> {INSTAGRAM_HANDLE}
           </a>

@@ -176,7 +176,7 @@ export default function ProductsPanel({ items, reload, showToast }) {
             <div className="flex-1 min-w-0">
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
-                  <p className="text-[10px] uppercase tracking-[0.22em] text-[#d4405e] font-bold">
+                  <p className="text-[10px] uppercase tracking-[0.22em] text-[#ff2d7a] font-bold">
                     {p.category}
                   </p>
                   <p className="font-display font-bold truncate">{p.name}</p>

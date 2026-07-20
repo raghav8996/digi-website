@@ -99,7 +99,7 @@ export default function Testimonials({ items = [], variant = "home", storeFilter
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
           <div className="max-w-2xl">
             <p className="overline">Reviews</p>
-            <h2 className="font-display text-4xl md:text-5xl font-black text-[#f5f5f7] mt-3 tracking-tight">
+            <h2 className="font-display text-4xl md:text-5xl font-black text-white mt-3 tracking-tight">
               {label}.
             </h2>
             <p className="text-[#a1a1a6] mt-3">
@@ -111,7 +111,7 @@ export default function Testimonials({ items = [], variant = "home", storeFilter
               data-testid="testimonials-prev"
               onClick={() => scrollBy(-1)}
               disabled={!canPrev}
-              className="h-11 w-11 rounded-full border border-white/10 bg-white/[0.04] text-[#f5f5f7]/85 hover:text-[#f5f5f7] hover:bg-white/[0.06] disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
+              className="h-11 w-11 rounded-full border border-white/10 bg-white/[0.04] text-white/85 hover:text-white hover:bg-white/[0.06] disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
               aria-label="Previous testimonial"
             >
               <ChevronLeft size={18} />
@@ -120,7 +120,7 @@ export default function Testimonials({ items = [], variant = "home", storeFilter
               data-testid="testimonials-next"
               onClick={() => scrollBy(1)}
               disabled={!canNext}
-              className="h-11 w-11 rounded-full border border-white/10 bg-white/[0.04] text-[#f5f5f7]/85 hover:text-[#f5f5f7] hover:bg-white/[0.06] disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
+              className="h-11 w-11 rounded-full border border-white/10 bg-white/[0.04] text-white/85 hover:text-white hover:bg-white/[0.06] disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
               aria-label="Next testimonial"
             >
               <ChevronRight size={18} />
@@ -144,8 +144,8 @@ export default function Testimonials({ items = [], variant = "home", storeFilter
               data-testid={`testimonial-${i}`}
               className="dc-tile p-6 md:p-8 min-w-[85%] sm:min-w-[420px] md:min-w-[440px] snap-start flex flex-col"
             >
-              <Quote size={22} className="text-[#d4405e]" />
-              <p className="text-[#f5f5f7]/90 mt-4 leading-relaxed text-[15px] grow">
+              <Quote size={22} className="text-[#ff2d7a]" />
+              <p className="text-white/90 mt-4 leading-relaxed text-[15px] grow">
                 &ldquo;{t.text}&rdquo;
               </p>
               <div className="mt-6 flex items-center gap-1">
@@ -153,7 +153,7 @@ export default function Testimonials({ items = [], variant = "home", storeFilter
                   <Star
                     key={`${t.id}-star-${j}`}
                     size={14}
-                    className={j < t.rating ? "fill-[#d4405e] text-[#d4405e]" : "text-[#f5f5f7]/15"}
+                    className={j < t.rating ? "fill-[#ff2d7a] text-[#ff2d7a]" : "text-white/15"}
                   />
                 ))}
               </div>
@@ -166,12 +166,12 @@ export default function Testimonials({ items = [], variant = "home", storeFilter
                     className="h-10 w-10 rounded-full object-cover border border-white/10"
                   />
                 ) : (
-                  <div className="h-10 w-10 rounded-full bg-[#d4405e]/20 border border-[#d4405e]/40 flex items-center justify-center text-[#d4405e] text-xs font-bold">
+                  <div className="h-10 w-10 rounded-full bg-[#ff2d7a]/20 border border-[#ff2d7a]/40 flex items-center justify-center text-[#ff2d7a] text-xs font-bold">
                     {initials(t.author)}
                   </div>
                 )}
                 <div className="min-w-0 flex-1">
-                  <p className="font-display font-bold text-[#f5f5f7] text-sm truncate">{t.author}</p>
+                  <p className="font-display font-bold text-white text-sm truncate">{t.author}</p>
                   <p className="text-[11px] text-[#6e6e73] truncate">
                     {findStoreName(t.store)}
                     {t.date ? ` · ${t.date}` : ""}

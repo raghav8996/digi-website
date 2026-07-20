@@ -84,22 +84,22 @@ export default function InstagramPanel({ items, reload, showToast }) {
 
   return (
     <div>
-      <div className="mb-4 p-4 rounded-2xl border border-white/10 bg-[#0a0a0b]/[0.02] text-xs text-[#a1a1a6] leading-relaxed">
-        <p className="text-[#f5f5f7]/85 font-semibold mb-1">Want a live auto-updating feed?</p>
+      <div className="mb-4 p-4 rounded-2xl border border-white/10 bg-[#050505]/[0.02] text-xs text-[#a1a1a6] leading-relaxed">
+        <p className="text-white/85 font-semibold mb-1">Want a live auto-updating feed?</p>
         <p className="mt-1">
-          <span className="text-[#d4405e] font-bold">Recommended</span> — sign up at{" "}
+          <span className="text-[#ff2d7a] font-bold">Recommended</span> — sign up at{" "}
           <a
             href="https://behold.so"
             target="_blank"
             rel="noreferrer"
-            className="text-[#d4405e] hover:underline"
+            className="text-[#ff2d7a] hover:underline"
           >
             behold.so
           </a>{" "}
           (free tier supports HTTPS), create a widget for{" "}
-          <span className="text-[#f5f5f7]/85">@digi.connect_</span>, then paste the feed ID into{" "}
-          <code className="text-[#f5f5f7]/85">NEXT_PUBLIC_BEHOLD_ID</code> in{" "}
-          <code className="text-[#f5f5f7]/85">/app/frontend/.env</code>.
+          <span className="text-white/85">@digi.connect_</span>, then paste the feed ID into{" "}
+          <code className="text-white/85">NEXT_PUBLIC_BEHOLD_ID</code> in{" "}
+          <code className="text-white/85">/app/frontend/.env</code>.
         </p>
         <p className="mt-2 text-[#6e6e73]">
           Alternative:{" "}
@@ -111,7 +111,7 @@ export default function InstagramPanel({ items, reload, showToast }) {
           >
             LightWidget
           </a>{" "}
-          via <code className="text-[#f5f5f7]/85">NEXT_PUBLIC_LIGHTWIDGET_ID</code> — note their free
+          via <code className="text-white/85">NEXT_PUBLIC_LIGHTWIDGET_ID</code> — note their free
           tier disables HTTPS, so a paid plan is required for production.
         </p>
       </div>
@@ -181,7 +181,7 @@ export default function InstagramPanel({ items, reload, showToast }) {
             </div>
             <div className="p-4">
               <div className="flex items-start justify-between gap-2">
-                <p className="text-xs text-[#f5f5f7]/85 line-clamp-2 leading-snug">
+                <p className="text-xs text-white/85 line-clamp-2 leading-snug">
                   {p.caption || <span className="text-[#6e6e73]">No caption</span>}
                 </p>
                 <StatusPill active={p.is_active} />

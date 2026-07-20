@@ -18,10 +18,10 @@ export default function OffersSection({ offers = [], variant = "home" }) {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
           <div className="max-w-2xl">
-            <span className="inline-flex items-center gap-2 rounded-full bg-[#d4405e]/12 border border-[#d4405e]/30 px-3 py-1 text-[10px] uppercase tracking-[0.22em] font-bold text-[#d4405e]">
+            <span className="inline-flex items-center gap-2 rounded-full bg-[#ff2d7a]/12 border border-[#ff2d7a]/30 px-3 py-1 text-[10px] uppercase tracking-[0.22em] font-bold text-[#ff2d7a]">
               <Tag size={12} /> Limited time · In-store
             </span>
-            <h2 className="font-display text-4xl md:text-5xl font-black text-[#f5f5f7] mt-4 tracking-tight">
+            <h2 className="font-display text-4xl md:text-5xl font-black text-white mt-4 tracking-tight">
               In-Store Offers.
             </h2>
             <p className="text-[#a1a1a6] mt-3">
@@ -32,7 +32,7 @@ export default function OffersSection({ offers = [], variant = "home" }) {
             <Link
               href="/offers"
               data-testid="offers-all-link"
-              className="inline-flex items-center gap-2 text-sm font-bold text-[#d4405e] hover:text-[#f5f5f7] transition-colors"
+              className="inline-flex items-center gap-2 text-sm font-bold text-[#ff2d7a] hover:text-white transition-colors"
             >
               All offers →
             </Link>
@@ -60,7 +60,7 @@ export default function OffersSection({ offers = [], variant = "home" }) {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f11]/70 via-black/10 to-transparent" />
                     {o.tag && (
-                      <span className="absolute top-3 left-3 rounded-full bg-[#d4405e] text-white text-[10px] uppercase tracking-[0.22em] font-bold px-3 py-1">
+                      <span className="absolute top-3 left-3 rounded-full bg-[#ff2d7a] text-white text-[10px] uppercase tracking-[0.22em] font-bold px-3 py-1">
                         {o.tag}
                       </span>
                     )}
@@ -68,11 +68,11 @@ export default function OffersSection({ offers = [], variant = "home" }) {
                 )}
                 <div className="p-6 flex flex-col grow">
                   {!o.image_url && o.tag && (
-                    <span className="inline-flex self-start rounded-full bg-[#d4405e]/15 border border-[#d4405e]/30 text-[#d4405e] text-[10px] uppercase tracking-[0.22em] font-bold px-3 py-1 mb-3">
+                    <span className="inline-flex self-start rounded-full bg-[#ff2d7a]/15 border border-[#ff2d7a]/30 text-[#ff2d7a] text-[10px] uppercase tracking-[0.22em] font-bold px-3 py-1 mb-3">
                       {o.tag}
                     </span>
                   )}
-                  <h3 className="font-display text-xl md:text-2xl font-bold text-[#f5f5f7] leading-tight">
+                  <h3 className="font-display text-xl md:text-2xl font-bold text-white leading-tight">
                     {o.title}
                   </h3>
                   {o.description && (
@@ -97,7 +97,7 @@ export default function OffersSection({ offers = [], variant = "home" }) {
                       href={primaryStore.whatsappUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold bg-[#f5f5f7] text-[#0a0a0b] hover:bg-white transition-colors"
+                      className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold bg-[#ffffff] text-[#0a0a0b] hover:bg-white transition-colors"
                     >
                       <MessageCircle size={12} /> Claim
                     </a>

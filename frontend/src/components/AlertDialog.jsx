@@ -45,12 +45,12 @@ export default function AlertDialog({
         onClick={onCancel}
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
       />
-      <div className="relative w-full max-w-md rounded-2xl border border-white/10 bg-[#0a0a0b] p-6 md:p-7 dc-reveal">
+      <div className="relative w-full max-w-md rounded-2xl border border-white/10 bg-[#050505] p-6 md:p-7 dc-reveal">
         <button
           data-testid={`${testId}-close`}
           onClick={onCancel}
           aria-label="Close"
-          className="absolute top-4 right-4 text-[#6e6e73] hover:text-[#f5f5f7]"
+          className="absolute top-4 right-4 text-[#6e6e73] hover:text-white"
         >
           <X size={16} />
         </button>
@@ -60,7 +60,7 @@ export default function AlertDialog({
             className={`h-11 w-11 rounded-xl flex items-center justify-center shrink-0 ${
               danger
                 ? "bg-red-500/12 border border-red-500/30 text-red-400"
-                : "bg-[#d4405e]/15 border border-[#d4405e]/30 text-[#d4405e]"
+                : "bg-[#ff2d7a]/15 border border-[#ff2d7a]/30 text-[#ff2d7a]"
             }`}
           >
             <AlertTriangle size={20} />
@@ -68,7 +68,7 @@ export default function AlertDialog({
           <div className="min-w-0">
             <h3
               id={`${testId}-title`}
-              className="font-display text-xl font-black text-[#f5f5f7] leading-tight"
+              className="font-display text-xl font-black text-white leading-tight"
             >
               {title}
             </h3>
@@ -82,7 +82,7 @@ export default function AlertDialog({
           <button
             data-testid={`${testId}-cancel`}
             onClick={onCancel}
-            className="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-bold bg-white/[0.06] border border-white/10 text-[#f5f5f7] hover:bg-white/[0.08] transition-colors"
+            className="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-bold bg-white/[0.06] border border-white/10 text-white hover:bg-white/[0.08] transition-colors"
           >
             {cancelLabel}
           </button>
@@ -90,8 +90,8 @@ export default function AlertDialog({
             data-testid={`${testId}-confirm`}
             onClick={onConfirm}
             autoFocus
-            className={`inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-bold text-[#f5f5f7] transition-colors ${
-              danger ? "bg-red-500 hover:bg-red-600" : "bg-[#d4405e] hover:bg-[#b8324e]"
+            className={`inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-bold text-white transition-colors ${
+              danger ? "bg-red-500 hover:bg-red-600" : "bg-[#ff2d7a] hover:bg-[#e91764]"
             }`}
           >
             {confirmLabel}

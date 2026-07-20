@@ -19,7 +19,7 @@ export default function ContactPage() {
         <div className="dc-aurora" />
         <div className="relative max-w-6xl mx-auto">
           <p className="overline">Contact</p>
-          <h1 className="font-display font-black text-[#f5f5f7] tracking-tight leading-none text-5xl md:text-7xl mt-3 max-w-4xl">
+          <h1 className="font-display font-black text-white tracking-tight leading-none text-5xl md:text-7xl mt-3 max-w-4xl">
             No forms. <span className="dc-gradient-text italic">Just a chat.</span>
           </h1>
           <p className="mt-6 max-w-2xl text-[#a1a1a6] text-lg">
@@ -39,7 +39,7 @@ export default function ContactPage() {
         <div className="max-w-7xl mx-auto mt-6 dc-tile p-8 md:p-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div>
             <p className="overline">Follow us</p>
-            <h3 className="font-display text-2xl md:text-3xl font-black text-[#f5f5f7] mt-2 tracking-tight">
+            <h3 className="font-display text-2xl md:text-3xl font-black text-white mt-2 tracking-tight">
               Instagram is where the drop lands first.
             </h3>
             <p className="text-[#a1a1a6] text-sm mt-2">
@@ -51,7 +51,7 @@ export default function ContactPage() {
             href={INSTAGRAM_URL}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-bold bg-[#f5f5f7] text-[#0a0a0b] hover:bg-white transition-colors self-start md:self-auto"
+            className="inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-bold bg-[#ffffff] text-[#0a0a0b] hover:bg-white transition-colors self-start md:self-auto"
           >
             <Instagram size={16} /> Open Instagram
           </a>

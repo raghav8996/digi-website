@@ -19,14 +19,14 @@ export default function ProductCard({ product, index = 0 }) {
         )}
       </div>
       <div className="p-6 flex flex-col grow">
-        <p className="text-[10px] uppercase tracking-[0.22em] text-[#d4405e] font-bold">
+        <p className="text-[10px] uppercase tracking-[0.22em] text-[#ff2d7a] font-bold">
           {p.category}
         </p>
-        <h3 className="font-display font-bold text-[#f5f5f7] text-lg mt-1.5">{p.name}</h3>
+        <h3 className="font-display font-bold text-white text-lg mt-1.5">{p.name}</h3>
         <p className="text-[#a1a1a6] text-xs mt-2 leading-relaxed grow">{p.highlight}</p>
         <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between gap-3">
           {p.price ? (
-            <div className="text-[#f5f5f7]/85 text-sm font-semibold">{p.price}</div>
+            <div className="text-white/85 text-sm font-semibold">{p.price}</div>
           ) : (
             <div className="text-[#6e6e73] text-xs">In store</div>
           )}

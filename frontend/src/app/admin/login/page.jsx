@@ -38,7 +38,7 @@ export default function AdminLoginPage() {
           <Image src={LOGO_URL} alt="DigiConnect" width={44} height={44} className="rounded-xl" />
           <div>
             <p className="overline">Admin</p>
-            <p className="font-display text-xl font-black text-[#f5f5f7]">DigiConnect CMS</p>
+            <p className="font-display text-xl font-black text-white">DigiConnect CMS</p>
           </div>
         </div>
 
@@ -71,7 +71,7 @@ export default function AdminLoginPage() {
         {error && (
           <div
             data-testid="admin-login-error"
-            className="mt-4 text-sm text-[#d4405e] bg-[#d4405e]/10 border border-[#d4405e]/30 rounded-lg px-3 py-2"
+            className="mt-4 text-sm text-[#ff2d7a] bg-[#ff2d7a]/10 border border-[#ff2d7a]/30 rounded-lg px-3 py-2"
           >
             {error}
           </div>
@@ -81,7 +81,7 @@ export default function AdminLoginPage() {
           data-testid="admin-login-submit"
           type="submit"
           disabled={busy}
-          className="mt-8 w-full inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-bold bg-[#d4405e] text-white hover:bg-[#b8324e] transition-colors disabled:opacity-60"
+          className="mt-8 w-full inline-flex items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-bold bg-[#ff2d7a] text-white hover:bg-[#e91764] transition-colors disabled:opacity-60"
         >
           {busy ? "Signing in…" : (<> <LogIn size={16} /> Sign in </>)}
         </button>
@@ -89,7 +89,7 @@ export default function AdminLoginPage() {
         <p className="mt-6 text-xs text-white/50 flex items-center gap-1.5">
           <Lock size={12} /> Restricted area. Admins only.
         </p>
-        <Link href="/" className="mt-4 block text-center text-xs text-white/50 hover:text-[#f5f5f7] transition-colors">
+        <Link href="/" className="mt-4 block text-center text-xs text-white/50 hover:text-white transition-colors">
           ← Back to site
         </Link>
       </form>

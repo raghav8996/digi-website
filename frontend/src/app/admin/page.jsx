@@ -62,8 +62,8 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0b] text-[#f5f5f7] pb-24">
-      <div className="border-b border-white/10 bg-[#0a0a0b]/80 backdrop-blur-xl">
+    <div className="min-h-screen bg-[#050505] text-white pb-24">
+      <div className="border-b border-white/10 bg-[#050505]/80 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-5 md:px-10 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
             <Image src={LOGO_URL} alt="DigiConnect" width={36} height={36} className="rounded-lg" />
@@ -77,7 +77,7 @@ export default function AdminDashboardPage() {
             <Link
               href="/"
               data-testid="admin-view-site"
-              className="text-xs font-semibold text-[#a1a1a6] hover:text-[#f5f5f7] px-3 py-2 rounded-lg border border-white/10"
+              className="text-xs font-semibold text-[#a1a1a6] hover:text-white px-3 py-2 rounded-lg border border-white/10"
             >
               View site
             </Link>
@@ -136,7 +136,7 @@ export default function AdminDashboardPage() {
         <div
           data-testid="admin-toast"
           className={`fixed bottom-6 left-1/2 -translate-x-1/2 px-5 py-3 rounded-full text-sm font-bold z-50 ${
-            toast.ok ? "bg-[#d4405e] text-white" : "bg-red-500 text-[#f5f5f7]"
+            toast.ok ? "bg-[#ff2d7a] text-white" : "bg-red-500 text-white"
           }`}
         >
           {toast.msg}
@@ -153,8 +153,8 @@ function TabBtn({ active, onClick, icon: Icon, label, testId }) {
       onClick={onClick}
       className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold border transition-colors ${
         active
-          ? "bg-[#d4405e] text-white border-[#d4405e]"
-          : "bg-white/[0.04] text-[#a1a1a6] border-white/10 hover:text-[#f5f5f7]"
+          ? "bg-[#ff2d7a] text-white border-[#ff2d7a]"
+          : "bg-white/[0.04] text-[#a1a1a6] border-white/10 hover:text-white"
       }`}
     >
       <Icon size={14} /> {label}

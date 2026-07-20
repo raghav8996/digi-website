@@ -23,7 +23,7 @@ export default function AboutPage() {
         <div className="dc-aurora" />
         <div className="relative max-w-6xl mx-auto">
           <p className="overline">About DigiConnect</p>
-          <h1 className="font-display font-black text-[#0f0f11] tracking-tighter leading-none text-5xl md:text-7xl mt-3">
+          <h1 className="font-display font-black text-[#0f0f11] tracking-tight leading-none text-5xl md:text-7xl mt-3">
             Samsung, <span className="dc-gradient-text italic">unhurried.</span>
           </h1>
           <p className="mt-8 max-w-3xl text-[#0f0f11]/70 text-lg leading-relaxed">
@@ -38,7 +38,7 @@ export default function AboutPage() {
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-start">
           <div>
             <p className="overline">The story</p>
-            <h2 className="font-display text-3xl md:text-4xl font-black text-[#0f0f11] mt-3 tracking-tighter">
+            <h2 className="font-display text-3xl md:text-4xl font-black text-[#0f0f11] mt-3 tracking-tight">
               Two flagship stores. One obsession.
             </h2>
           </div>
@@ -66,7 +66,7 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto">
           <div className="max-w-2xl mb-14">
             <p className="overline">Core values</p>
-            <h2 className="font-display text-3xl md:text-5xl font-black text-[#0f0f11] mt-3 tracking-tighter">
+            <h2 className="font-display text-3xl md:text-5xl font-black text-[#0f0f11] mt-3 tracking-tight">
               What we care about.
             </h2>
           </div>
@@ -89,7 +89,7 @@ export default function AboutPage() {
           <div className="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-[#7a1b2e]/20 blur-3xl" />
           <div className="relative">
             <p className="overline">Our mission</p>
-            <p className="font-display text-2xl md:text-4xl font-black text-[#0f0f11] mt-4 leading-tight tracking-tighter">
+            <p className="font-display text-2xl md:text-4xl font-black text-[#0f0f11] mt-4 leading-tight tracking-tight">
               To build India&apos;s most-loved network of Samsung-exclusive Experience Stores — where
               customers discover the Galaxy ecosystem the way it&apos;s meant to be experienced.
             </p>

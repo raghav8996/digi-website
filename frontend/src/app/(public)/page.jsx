@@ -60,73 +60,87 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* HERO */}
+      {/* HERO — Apple/Samsung.com product-forward */}
       <section
         data-testid="hero-section"
-        className="relative overflow-hidden pt-16 md:pt-24 pb-24 md:pb-32 px-5 md:px-10 dc-grain"
+        className="relative overflow-hidden pt-14 md:pt-20 pb-16 md:pb-24 px-5 md:px-10"
       >
-        <div className="dc-aurora" />
+        <div className="relative max-w-7xl mx-auto grid lg:grid-cols-[1.15fr_1fr] gap-10 lg:gap-16 items-center">
+          <div>
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#86868b] mb-6 dc-reveal">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#7a1b2e]" />
+              Samsung Experience Store · Greater Noida
+            </div>
 
-        <div className="relative max-w-7xl mx-auto">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.22em] text-[#4a4a55] mb-8 dc-reveal">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#7a1b2e]" />
-            Samsung Experience Store · Greater Noida
+            <h1 className="dc-reveal font-display text-[#1d1d1f] tracking-tight leading-[1.03] text-4xl sm:text-5xl md:text-6xl lg:text-[76px] max-w-3xl">
+              The Samsung ecosystem,
+              <br />
+              <span className="text-[#86868b]">unboxed in person.</span>
+            </h1>
+
+            <p className="dc-reveal mt-6 max-w-xl text-lg text-[#515154] leading-relaxed">
+              Two Samsung-exclusive flagship stores in Greater Noida. Every Galaxy device — S, Z, A,
+              tablets, wearables and audio — live, hands-on, guided by people who actually use them.
+            </p>
+
+            <div className="dc-reveal mt-8 flex flex-wrap items-center gap-3">
+              <Link
+                data-testid="hero-cta-stores"
+                href="/stores"
+                className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold bg-[#1d1d1f] text-white hover:bg-black transition-colors"
+              >
+                Find a Store <ArrowUpRight size={15} />
+              </Link>
+              <Link
+                data-testid="hero-cta-offers"
+                href="/offers"
+                className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-[#1d1d1f] hover:bg-black/5 transition-colors"
+              >
+                See in-store offers →
+              </Link>
+            </div>
+
+            <AnnouncementStrip announcements={announcements} />
           </div>
 
-          <h1 className="dc-reveal font-display font-black text-[#0f0f11] tracking-tighter leading-[0.9] text-5xl sm:text-6xl md:text-7xl lg:text-[104px] max-w-5xl">
-            The Samsung
-            <br />
-            <span className="dc-gradient-text italic">ecosystem</span>,
-            <br />
-            unboxed in person.
-          </h1>
-
-          <p className="dc-reveal mt-8 max-w-2xl text-lg md:text-xl text-[#0f0f11]/70 leading-relaxed">
-            Two Samsung-exclusive flagship stores in Greater Noida. Every Galaxy device — S, Z, A,
-            tablets, wearables and audio — live, hands-on, guided by people who actually use them.
-          </p>
-
-          <div className="dc-reveal mt-10 flex flex-wrap items-center gap-4">
-            <Link
-              data-testid="hero-cta-stores"
-              href="/stores"
-              className="inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-bold bg-[#7a1b2e] text-white hover:bg-[#5f1524] hover:-translate-y-0.5 transition-all"
-            >
-              Find a Store <ArrowUpRight size={16} />
-            </Link>
-            <Link
-              data-testid="hero-cta-offers"
-              href="/offers"
-              className="inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-bold bg-black/[0.04] border border-black/12 text-[#0f0f11] hover:bg-black/[0.06] transition-colors"
-            >
-              <Sparkles size={16} /> In-Store Offers
-            </Link>
-            <a
-              data-testid="hero-cta-instagram"
-              href={INSTAGRAM_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-bold text-[#0f0f11]/70 hover:text-[#0f0f11] transition-colors"
-            >
-              <Instagram size={16} /> {INSTAGRAM_HANDLE}
-            </a>
-          </div>
-
-          <AnnouncementStrip announcements={announcements} />
-
-          <div className="dc-reveal mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 border-t border-black/8 pt-8">
-            {[
-              ["2", "Retail locations"],
-              ["100%", "Genuine Samsung"],
-              ["Since 2021", "Serving Greater Noida"],
-              ["Daily", "Live demos"],
-            ].map(([v, l]) => (
-              <div key={l}>
-                <div className="font-display text-3xl md:text-4xl font-black text-[#0f0f11]">{v}</div>
-                <div className="text-xs uppercase tracking-[0.18em] text-[#83838f] mt-1">{l}</div>
+          {/* Product hero image (right column on desktop) */}
+          <div className="relative dc-reveal">
+            <div className="relative aspect-[4/5] w-full max-w-md mx-auto rounded-3xl overflow-hidden bg-[#f5f5f7]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=1200&q=80"
+                alt="Galaxy device on display"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between bg-white/95 backdrop-blur rounded-2xl px-4 py-3 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.15)]">
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-[#86868b] font-semibold">Live demo</p>
+                  <p className="text-sm font-semibold text-[#1d1d1f]">Galaxy Z Fold — feel the fold in person.</p>
+                </div>
+                <Link
+                  href="/stores"
+                  className="text-xs font-semibold text-[#1d1d1f] hover:text-black inline-flex items-center gap-1 whitespace-nowrap"
+                >
+                  Visit <ArrowUpRight size={12} />
+                </Link>
               </div>
-            ))}
+            </div>
           </div>
+        </div>
+
+        {/* Metrics strip */}
+        <div className="max-w-7xl mx-auto mt-14 md:mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 border-t border-[#e5e5ea] pt-8">
+          {[
+            ["2", "Retail locations"],
+            ["100%", "Genuine Samsung"],
+            ["Since 2021", "Serving Greater Noida"],
+            ["Daily", "Live demos"],
+          ].map(([v, l]) => (
+            <div key={l}>
+              <div className="font-display text-2xl md:text-3xl font-bold text-[#1d1d1f]">{v}</div>
+              <div className="text-xs uppercase tracking-[0.16em] text-[#86868b] mt-1 font-medium">{l}</div>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -142,7 +156,7 @@ export default async function HomePage() {
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
             <div className="max-w-2xl">
               <p className="overline">Why DigiConnect</p>
-              <h2 className="font-display text-4xl md:text-5xl font-black text-[#0f0f11] mt-3 tracking-tighter">
+              <h2 className="font-display text-4xl md:text-5xl font-black text-[#0f0f11] mt-3 tracking-tight">
                 A Samsung-exclusive store, done right.
               </h2>
             </div>
@@ -178,7 +192,7 @@ export default async function HomePage() {
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14">
             <div className="max-w-2xl">
               <p className="overline">Featured in store</p>
-              <h2 className="font-display text-4xl md:text-5xl font-black text-[#0f0f11] mt-3 tracking-tighter">
+              <h2 className="font-display text-4xl md:text-5xl font-black text-[#0f0f11] mt-3 tracking-tight">
                 What&apos;s live at the SmartCafé.
               </h2>
             </div>
@@ -213,7 +227,7 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto">
           <div className="mb-14 max-w-2xl">
             <p className="overline">Visit us</p>
-            <h2 className="font-display text-4xl md:text-5xl font-black text-[#0f0f11] mt-3 tracking-tighter">
+            <h2 className="font-display text-4xl md:text-5xl font-black text-[#0f0f11] mt-3 tracking-tight">
               Two flagship stores. <span className="dc-gradient-text italic">Greater Noida.</span>
             </h2>
             <p className="text-[#4a4a55] mt-4">
@@ -238,7 +252,7 @@ export default async function HomePage() {
           <div className="absolute -top-32 -right-32 h-80 w-80 rounded-full bg-[#7a1b2e]/40 blur-3xl" />
           <div className="relative">
             <p className="overline">Say hi</p>
-            <h3 className="font-display italic text-3xl md:text-5xl font-black text-white mt-3 tracking-tight max-w-3xl leading-[1.05]">
+            <h3 className="font-display text-3xl md:text-5xl font-black text-white mt-3 tracking-tight max-w-3xl leading-[1.05]">
               Ping us on WhatsApp — we&apos;ll answer during store hours.
             </h3>
             <p className="text-white/70 mt-4 max-w-xl">
@@ -253,7 +267,7 @@ export default async function HomePage() {
                   href={s.whatsappUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold bg-[#7a1b2e] text-white hover:bg-[#5f1524] transition-colors"
+                  className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold bg-[#1d1d1f] text-white hover:bg-black transition-colors"
                 >
                   <MessageCircle size={16} /> {s.name}
                 </a>

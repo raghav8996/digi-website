@@ -1,14 +1,13 @@
-import { Manrope, Fraunces } from "next/font/google";
+import { Manrope, Geist } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import Analytics from "@/components/Analytics";
 import { fetchServer } from "@/lib/api";
 
-const fraunces = Fraunces({
+const geist = Geist({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800", "900"],
-  style: ["normal", "italic"],
-  variable: "--font-fraunces",
+  variable: "--font-geist",
   display: "swap",
 });
 
@@ -147,7 +146,7 @@ export default async function RootLayout({ children }) {
   const jsonLd = buildJsonLd(testimonials);
   const jsonLdHtml = { __html: JSON.stringify(jsonLd) };
   return (
-    <html lang="en" className={`${fraunces.variable} ${manrope.variable}`}>
+    <html lang="en" className={`${geist.variable} ${manrope.variable}`}>
       <head>
         <script
           type="application/ld+json"

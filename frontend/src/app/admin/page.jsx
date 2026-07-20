@@ -62,7 +62,7 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#faf7f2] text-[#0f0f11] pb-24">
+    <div className="min-h-screen bg-white text-[#0f0f11] pb-24">
       <div className="border-b border-black/8 bg-white/80 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-5 md:px-10 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3">
@@ -97,7 +97,7 @@ export default function AdminDashboardPage() {
 
       <div className="max-w-7xl mx-auto px-5 md:px-10 pt-10">
         <p className="overline">Dashboard</p>
-        <h1 className="font-display text-4xl md:text-5xl font-black tracking-tighter mt-2">
+        <h1 className="font-display text-4xl md:text-5xl font-black tracking-tight mt-2">
           Manage what shoppers see.
         </h1>
         <p className="text-[#4a4a55] mt-3 max-w-xl">

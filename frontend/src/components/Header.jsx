@@ -35,7 +35,7 @@ export default function Header() {
   return (
     <header
       data-testid="site-header"
-      className={`sticky top-0 z-40 transition-shadow duration-200 bg-[#faf7f2] ${
+      className={`sticky top-0 z-40 transition-shadow duration-200 bg-white ${
         scrolled ? "shadow-[0_1px_0_rgba(15,15,17,0.08)]" : ""
       }`}
     >
@@ -68,7 +68,7 @@ export default function Header() {
           <Link
             data-testid="header-visit-cta"
             href="/stores"
-            className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold bg-[#7a1b2e] text-white hover:bg-[#5f1524] transition-colors"
+            className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold bg-[#1d1d1f] text-white hover:bg-black transition-colors"
           >
             Visit a Store
           </Link>
@@ -87,7 +87,7 @@ export default function Header() {
       {open && (
         <div
           data-testid="mobile-menu"
-          className="md:hidden border-t border-black/8 bg-[#faf7f2] px-5 py-4 space-y-2"
+          className="md:hidden border-t border-black/8 bg-white px-5 py-4 space-y-2"
         >
           {NAV.map((item) => (
             <Link

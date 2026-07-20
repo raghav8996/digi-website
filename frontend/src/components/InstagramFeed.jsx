@@ -28,7 +28,7 @@ export default function InstagramFeed({ posts = [] }) {
             <span className="inline-flex items-center gap-2 rounded-full bg-[#7a1b2e]/12 border border-[#7a1b2e]/30 px-3 py-1 text-[10px] uppercase tracking-[0.22em] font-bold text-[#7a1b2e]">
               <Instagram size={12} /> {INSTAGRAM_HANDLE}
             </span>
-            <h2 className="font-display text-4xl md:text-5xl font-black text-[#0f0f11] mt-4 tracking-tighter">
+            <h2 className="font-display text-4xl md:text-5xl font-black text-[#0f0f11] mt-4 tracking-tight">
               Latest from the store.
             </h2>
             <p className="text-[#4a4a55] mt-3">
@@ -40,7 +40,7 @@ export default function InstagramFeed({ posts = [] }) {
             href={INSTAGRAM_URL}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold bg-[#7a1b2e] text-white hover:bg-[#5f1524] transition-colors self-start md:self-auto"
+            className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold bg-[#1d1d1f] text-white hover:bg-black transition-colors self-start md:self-auto"
           >
             <Instagram size={14} /> Follow on Instagram
           </a>

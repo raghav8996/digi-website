@@ -21,7 +21,7 @@ export default function OffersSection({ offers = [], variant = "home" }) {
             <span className="inline-flex items-center gap-2 rounded-full bg-[#7a1b2e]/12 border border-[#7a1b2e]/30 px-3 py-1 text-[10px] uppercase tracking-[0.22em] font-bold text-[#7a1b2e]">
               <Tag size={12} /> Limited time · In-store
             </span>
-            <h2 className="font-display text-4xl md:text-5xl font-black text-[#0f0f11] mt-4 tracking-tighter">
+            <h2 className="font-display text-4xl md:text-5xl font-black text-[#0f0f11] mt-4 tracking-tight">
               In-Store Offers.
             </h2>
             <p className="text-[#4a4a55] mt-3">
@@ -97,7 +97,7 @@ export default function OffersSection({ offers = [], variant = "home" }) {
                       href={primaryStore.whatsappUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold bg-[#7a1b2e] text-white hover:bg-[#5f1524] transition-colors"
+                      className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-bold bg-[#1d1d1f] text-white hover:bg-black transition-colors"
                     >
                       <MessageCircle size={12} /> Claim
                     </a>

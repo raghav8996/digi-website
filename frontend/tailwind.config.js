@@ -15,7 +15,7 @@ module.exports = {
         },
       },
       fontFamily: {
-        display: ["var(--font-fraunces)", "ui-serif", "Georgia", "serif"],
+        display: ["var(--font-geist)", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
         body: ["var(--font-manrope)", "ui-sans-serif", "system-ui", "sans-serif"],
       },
     },

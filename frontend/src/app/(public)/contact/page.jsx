@@ -19,7 +19,7 @@ export default function ContactPage() {
         <div className="dc-aurora" />
         <div className="relative max-w-6xl mx-auto">
           <p className="overline">Contact</p>
-          <h1 className="font-display font-black text-[#0f0f11] tracking-tighter leading-none text-5xl md:text-7xl mt-3 max-w-4xl">
+          <h1 className="font-display font-black text-[#0f0f11] tracking-tight leading-none text-5xl md:text-7xl mt-3 max-w-4xl">
             No forms. <span className="dc-gradient-text italic">Just a chat.</span>
           </h1>
           <p className="mt-6 max-w-2xl text-[#4a4a55] text-lg">
@@ -51,7 +51,7 @@ export default function ContactPage() {
             href={INSTAGRAM_URL}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-bold bg-[#7a1b2e] text-white hover:bg-[#5f1524] transition-colors self-start md:self-auto"
+            className="inline-flex items-center gap-2 rounded-full px-7 py-4 text-sm font-bold bg-[#1d1d1f] text-white hover:bg-black transition-colors self-start md:self-auto"
           >
             <Instagram size={16} /> Open Instagram
           </a>

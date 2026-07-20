@@ -44,7 +44,7 @@ export default function LocationCard({ store, testIdPrefix = "location" }) {
           href={store.whatsappUrl}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-bold bg-[#7a1b2e] text-white hover:bg-[#5f1524] transition-colors"
+          className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-bold bg-[#1d1d1f] text-white hover:bg-black transition-colors"
         >
           <MessageCircle size={16} /> WhatsApp
         </a>

@@ -3,18 +3,18 @@
 @tailwind utilities;
 
 :root {
-  --dc-bg: #faf7f2;        /* warm bone */
-  --dc-bg-alt: #ffffff;    /* card / surface */
-  --dc-ink: #0f0f11;       /* editorial near-black */
-  --dc-ink-2: #4a4a55;     /* body */
-  --dc-ink-3: #83838f;     /* mute */
-  --dc-border: rgba(15, 15, 17, 0.09);
-  --dc-border-2: rgba(15, 15, 17, 0.16);
-  --dc-accent: #7a1b2e;    /* oxblood */
-  --dc-accent-2: #5f1524;  /* deep hover */
-  --dc-accent-tint: #f4e6ea; /* blush wash */
-  --dc-dark: #101014;      /* editorial dark section */
-  --dc-dark-ink: #f5f0e6;  /* cream text on dark */
+  --dc-bg: #ffffff;
+  --dc-bg-alt: #f5f5f7;   /* Apple/Samsung soft grey */
+  --dc-bg-alt-2: #fafafa; /* subtler alt */
+  --dc-ink: #1d1d1f;      /* Apple near-black */
+  --dc-ink-2: #515154;    /* body grey */
+  --dc-ink-3: #86868b;    /* mute */
+  --dc-border: #e5e5ea;
+  --dc-border-2: #d2d2d7;
+  --dc-accent: #7a1b2e;   /* used minimally, primary CTAs only */
+  --dc-accent-2: #5f1524;
+  --dc-dark: #0a0a0a;     /* editorial dark section */
+  --dc-dark-ink: #f5f5f7;
 }
 
 * { box-sizing: border-box; }
@@ -25,164 +25,93 @@ body {
   padding: 0;
   background: var(--dc-bg);
   color: var(--dc-ink);
-  font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-geist), var(--font-manrope), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  letter-spacing: -0.011em;
 }
 
 ::selection {
-  background: var(--dc-accent);
+  background: var(--dc-ink);
   color: #fff;
 }
 
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: var(--dc-bg); }
-::-webkit-scrollbar-thumb { background: #d9d3c7; border-radius: 8px; }
-::-webkit-scrollbar-thumb:hover { background: var(--dc-accent); }
+::-webkit-scrollbar-thumb { background: var(--dc-border-2); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: var(--dc-ink-3); }
 
 .font-display {
-  font-family: var(--font-fraunces), ui-serif, Georgia, serif;
-  letter-spacing: -0.025em;
-  font-variation-settings: "SOFT" 30, "opsz" 144;
+  font-family: var(--font-geist), -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: -0.03em;
+  font-weight: 700;
 }
 
 .overline {
   text-transform: uppercase;
-  letter-spacing: 0.24em;
-  font-weight: 700;
+  letter-spacing: 0.18em;
+  font-weight: 600;
   font-size: 11px;
   color: var(--dc-ink-3);
 }
 
-/* Editorial card / tile — light */
 .dc-tile {
-  background: var(--dc-bg-alt);
+  background: #ffffff;
   border: 1px solid var(--dc-border);
-  border-radius: 22px;
-  transition:
-    border-color 0.3s ease,
-    box-shadow 0.4s cubic-bezier(0.2, 0.7, 0.2, 1),
-    transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+  border-radius: 18px;
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.35s ease, border-color 0.35s ease;
 }
 .dc-tile:hover {
+  transform: translateY(-2px);
   border-color: var(--dc-border-2);
-  transform: translateY(-3px);
-  box-shadow:
-    0 20px 40px -20px rgba(15, 15, 17, 0.14),
-    0 10px 20px -10px rgba(122, 27, 46, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.10);
 }
 
-/* Dark tile variant for use in dark sections */
 .dc-tile-dark {
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 22px;
-  transition: all 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 18px;
+  transition: all 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 .dc-tile-dark:hover {
-  border-color: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.20);
   background: rgba(255, 255, 255, 0.06);
-  transform: translateY(-3px);
 }
 
-/* Editorial gradient text: ink → oxblood */
+/* Kill italic gradient — plain monochrome; Samsung/Apple never gradient-italic */
 .dc-gradient-text {
-  background: linear-gradient(90deg, var(--dc-ink) 0%, var(--dc-ink) 50%, var(--dc-accent) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  font-style: italic;
+  color: var(--dc-ink);
+  font-style: normal;
 }
+.dc-gradient-text.italic { font-style: normal; }
 
-/* Soft blush aurora for hero */
-.dc-aurora {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-.dc-aurora::before,
-.dc-aurora::after {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(90px);
-}
-.dc-aurora::before {
-  width: 520px;
-  height: 520px;
-  background: #f0d4dc;
-  top: -160px;
-  right: -120px;
-  opacity: 0.55;
-}
-.dc-aurora::after {
-  width: 480px;
-  height: 480px;
-  background: #ecd8c6;
-  bottom: -180px;
-  left: -140px;
-  opacity: 0.45;
-}
+/* Kill aurora — Samsung/Apple don't do blush blobs */
+.dc-aurora { display: none; }
 
-/* Grain (very subtle for editorial texture) */
-.dc-grain::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.04;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.7'/></svg>");
-}
-
-/* Section flavours */
+.dc-section-alt { background: var(--dc-bg-alt); }
 .dc-section-dark {
   background: var(--dc-dark);
   color: var(--dc-dark-ink);
 }
-.dc-section-dark .overline { color: rgba(245, 240, 230, 0.55); }
-
-/* Buttons */
-.dc-btn-primary {
-  background: var(--dc-accent);
-  color: #fff;
-  transition: background 0.25s ease, transform 0.25s ease;
-}
-.dc-btn-primary:hover {
-  background: var(--dc-accent-2);
-  transform: translateY(-1px);
-}
-.dc-btn-ghost {
-  background: transparent;
-  border: 1px solid var(--dc-border-2);
-  color: var(--dc-ink);
-  transition: background 0.25s ease, border-color 0.25s ease;
-}
-.dc-btn-ghost:hover {
-  background: rgba(15, 15, 17, 0.04);
-  border-color: rgba(15, 15, 17, 0.28);
-}
+.dc-section-dark .overline { color: rgba(245, 245, 247, 0.55); }
 
 /* Reveal animation */
 @keyframes dc-reveal {
-  from { opacity: 0; transform: translateY(16px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.dc-reveal { animation: dc-reveal 0.75s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.dc-reveal { animation: dc-reveal 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
 
-/* Pulse for reserve FAB */
 @keyframes dc-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(122, 27, 46, 0.45); }
-  50% { box-shadow: 0 0 0 12px rgba(122, 27, 46, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(122, 27, 46, 0.35); }
+  50% { box-shadow: 0 0 0 10px rgba(122, 27, 46, 0); }
 }
 .dc-pulse { animation: dc-pulse 2.4s ease-out infinite; }
 
-/* Inputs */
 .dc-input {
   width: 100%;
-  background: rgba(15, 15, 17, 0.02);
+  background: #ffffff;
   border: 1px solid var(--dc-border);
   border-radius: 12px;
   padding: 10px 14px;
@@ -190,13 +119,14 @@ body {
   outline: none;
   font-size: 14px;
 }
-.dc-input:focus { border-color: var(--dc-accent); background: #fff; }
-
-/* On dark sections */
+.dc-input:focus { border-color: var(--dc-ink); }
 .dc-section-dark .dc-input {
   background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.12);
   color: var(--dc-dark-ink);
 }
+
+.dc-grain { position: relative; }
+.dc-grain::before { display: none; }
 
 button, a { cursor: pointer; }

@@ -99,7 +99,7 @@ export default function Testimonials({ items = [], variant = "home", storeFilter
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
           <div className="max-w-2xl">
             <p className="overline">Reviews</p>
-            <h2 className="font-display text-4xl md:text-5xl font-black text-[#0f0f11] mt-3 tracking-tighter">
+            <h2 className="font-display text-4xl md:text-5xl font-black text-[#0f0f11] mt-3 tracking-tight">
               {label}.
             </h2>
             <p className="text-[#4a4a55] mt-3">

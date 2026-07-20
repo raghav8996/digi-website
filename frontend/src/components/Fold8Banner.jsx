@@ -17,7 +17,7 @@ export default function Fold8Banner() {
             <span className="inline-flex items-center gap-2 rounded-full bg-[#7a1b2e]/12 border border-[#7a1b2e]/30 px-3 py-1 text-[10px] uppercase tracking-[0.22em] font-bold text-[#7a1b2e]">
               <Sparkles size={12} /> Coming soon · Pre-reserve
             </span>
-            <h2 className="mt-4 font-display text-3xl sm:text-4xl md:text-5xl font-black text-[#0f0f11] tracking-tighter leading-[0.95]">
+            <h2 className="mt-4 font-display text-3xl sm:text-4xl md:text-5xl font-black text-[#0f0f11] tracking-tight leading-[0.95]">
               Galaxy Z <span className="dc-gradient-text italic">Fold8</span>.
               <br />
               Be first in line.

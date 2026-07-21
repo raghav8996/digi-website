@@ -21,30 +21,25 @@
       "static/chunks/main-app.js",
       "static/chunks/app/(public)/page.js"
     ],
-    "/(public)/stores/page": [
+    "/next-api/revalidate/route": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(public)/stores/page.js"
+      "static/chunks/app/next-api/revalidate/route.js"
     ],
-    "/(public)/about/page": [
+    "/admin/login/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(public)/about/page.js"
-    ],
-    "/(public)/offers/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(public)/offers/page.js"
+      "static/chunks/app/admin/login/page.js"
     ],
     "/admin/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/admin/page.js"
     ],
-    "/admin/login/page": [
+    "/(public)/about/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/admin/login/page.js"
+      "static/chunks/app/(public)/about/page.js"
     ]
   }
 }

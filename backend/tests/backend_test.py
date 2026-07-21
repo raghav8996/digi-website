@@ -830,3 +830,52 @@ class TestSiteContent:
             timeout=15,
         )
         assert r.status_code == 400, r.text
+
+
+# ---------- On-demand ISR revalidate (Next.js route, not FastAPI) ----------
+# NOTE: /next-api/revalidate lives OUTSIDE /api/*. In preview it is served by
+# the Next.js server at the same host. Verifies the auth guard + happy path.
+class TestRevalidateEndpoint:
+    URL = f"{BASE_URL}/next-api/revalidate"
+
+    def test_get_hint(self, api):
+        r = api.get(self.URL, timeout=15)
+        assert r.status_code == 200, r.text
+        body = r.json()
+        assert isinstance(body.get("hint"), str) and len(body["hint"]) > 0
+
+    def test_post_no_auth_401(self, api):
+        # Fresh session (no Authorization header) — must be 401
+        r = requests.post(self.URL, timeout=15)
+        assert r.status_code == 401, r.text
+
+    def test_post_bad_bearer_401(self, api):
+        r = requests.post(
+            self.URL,
+            headers={"Authorization": "Bearer garbage.token.here"},
+            timeout=15,
+        )
+        assert r.status_code == 401, r.text
+
+    def test_post_non_bearer_401(self, api):
+        r = requests.post(
+            self.URL,
+            headers={"Authorization": "Basic dXNlcjpwYXNz"},
+            timeout=15,
+        )
+        assert r.status_code == 401, r.text
+
+    def test_post_admin_ok(self, api, admin_headers):
+        r = requests.post(self.URL, headers=admin_headers, timeout=15)
+        assert r.status_code == 200, r.text
+        body = r.json()
+        assert body.get("revalidated") is True
+        # public paths busted
+        paths = body.get("paths") or []
+        for p in ("/", "/about", "/stores", "/offers", "/contact"):
+            assert p in paths, f"missing revalidated path {p}: {paths}"
+        # fetch tags busted
+        tags = body.get("tags") or []
+        for t in ("site-content", "products", "offers", "announcements", "testimonials", "instagram-posts"):
+            assert t in tags, f"missing revalidated tag {t}: {tags}"
+

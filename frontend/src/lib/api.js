@@ -21,6 +21,27 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Fire on-demand ISR revalidation after every successful admin mutation
+// so Vercel serves fresh HTML immediately (instead of stale-cached SSR up to 60s).
+api.interceptors.response.use(async (response) => {
+  try {
+    if (typeof window === "undefined") return response;
+    const method = (response.config?.method || "").toLowerCase();
+    if (method === "post" || method === "patch" || method === "put" || method === "delete") {
+      const token = localStorage.getItem("dc_admin_token");
+      if (token) {
+        // Fire and forget — don't block the UI on this
+        fetch("/next-api/revalidate", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          cache: "no-store",
+        }).catch(() => {});
+      }
+    }
+  } catch {}
+  return response;
+});
+
 export default api;
 
 export function formatApiErrorDetail(detail) {
@@ -36,12 +57,14 @@ export function formatApiErrorDetail(detail) {
 }
 
 // ---- Server helpers with ISR (60s revalidate) ----
-export async function fetchServer(path, { revalidate = 60 } = {}) {
+export async function fetchServer(path, { revalidate = 60, tags } = {}) {
   try {
-    const res = await fetch(`${SERVER_API}${path}`, { next: { revalidate } });
+    const res = await fetch(`${SERVER_API}${path}`, {
+      next: { revalidate, ...(tags ? { tags } : {}) },
+    });
     if (!res.ok) return [];
     return await res.json();
-  } catch (e) {
+  } catch {
     return [];
   }
 }

@@ -1,7 +1,0 @@
-{
-  "/next-api/revalidate/route": "app/next-api/revalidate/route.js",
-  "/admin/login/page": "app/admin/login/page.js",
-  "/admin/page": "app/admin/page.js",
-  "/(public)/about/page": "app/(public)/about/page.js",
-  "/(public)/page": "app/(public)/page.js"
-}

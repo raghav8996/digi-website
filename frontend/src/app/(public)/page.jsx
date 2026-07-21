@@ -20,7 +20,7 @@ import ProductCard from "@/components/ProductCard";
 import Testimonials from "@/components/Testimonials";
 import InstagramFeed from "@/components/InstagramFeed";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 const FEATURES = [
   {

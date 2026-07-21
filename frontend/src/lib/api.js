@@ -36,12 +36,17 @@ export function formatApiErrorDetail(detail) {
 }
 
 // ---- Server helpers with ISR (60s revalidate) ----
-export async function fetchServer(path, { revalidate = 60 } = {}) {
+export async function fetchServer(path) {
   try {
-    const res = await fetch(`${SERVER_API}${path}`, { next: { revalidate } });
+    const res = await fetch(`${SERVER_API}${path}`, {
+      cache: "no-store",
+    });
+
     if (!res.ok) return [];
+
     return await res.json();
   } catch (e) {
     return [];
   }
 }
+

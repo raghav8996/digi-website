@@ -51,12 +51,12 @@ const FEATURES = [
 
 export default async function HomePage() {
   const [products, announcements, offers, testimonials, igPosts, siteContent] = await Promise.all([
-    fetchServer("/products?active_only=true"),
-    fetchServer("/announcements?active_only=true"),
-    fetchServer("/offers?active_only=true"),
-    fetchServer("/testimonials?active_only=true"),
-    fetchServer("/instagram-posts?active_only=true"),
-    fetchServer("/site-content"),
+    fetchServer("/products?active_only=true", { tags: ["products"] }),
+    fetchServer("/announcements?active_only=true", { tags: ["announcements"] }),
+    fetchServer("/offers?active_only=true", { tags: ["offers"] }),
+    fetchServer("/testimonials?active_only=true", { tags: ["testimonials"] }),
+    fetchServer("/instagram-posts?active_only=true", { tags: ["instagram-posts"] }),
+    fetchServer("/site-content", { tags: ["site-content"] }),
   ]);
 
   const hero = siteContent || {};

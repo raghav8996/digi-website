@@ -12,7 +12,7 @@ export const metadata = {
 };
 
 export default async function OffersPage() {
-  const offers = await fetchServer("/offers?active_only=true");
+  const offers = await fetchServer("/offers?active_only=true", { tags: ["offers"] });
 
   return (
     <>

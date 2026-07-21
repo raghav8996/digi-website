@@ -1,0 +1,40 @@
+{
+  "summary": "Iteration 6 — On-demand ISR revalidation to fix Vercel stale-cache bug. Backend pytest 49/49 pass (~6.4s) including 5 new TestRevalidateEndpoint tests (GET hint, POST no-auth 401, POST garbage-bearer 401, POST non-Bearer scheme 401, POST admin OK returning revalidated:true + all 5 paths + all 6 tags). Full E2E frontend flow verified: admin login → Hero tab → change hero_image_url AND story_image_url → Save → toast 'Hero content updated' → axios response interceptor fired POST /next-api/revalidate with Bearer auth exactly once after the PATCH → reload / (with cache-bust query) → both [data-testid=hero-image] and [data-testid=story-image] src attrs match the newly saved URLs immediately (no 60s wait needed even in preview). Products-panel regression also passed: toggling a product's active state fires PATCH /api/products/<id> AND the axios interceptor auto-fires POST /next-api/revalidate — confirming the interceptor is global (not just Hero tab). About static route regression clean: all 5 sections + 5 core-value cards + 3 forward pillars render. All 44 pre-existing backend tests still green (auth, products, offers, announcements, testimonials, instagram-posts, site-content).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "None blocking. Feature ships as designed."
+  ],
+  "critical_code_review_comments": [
+    "OK — /app/frontend/src/app/next-api/revalidate/route.js: dynamic='force-dynamic' + runtime='nodejs' (correct for Vercel serverless). Bearer parsing is strict ('Bearer ' prefix only). Verifies admin role via ${NEXT_PUBLIC_BACKEND_URL}/api/auth/me with cache:'no-store'. Correctly buckets both revalidatePath (5 public routes + layout) and revalidateTag (6 fetch tags). Returns 401 (not 403) for any non-admin, which is what the tests assert.",
+    "OK — /app/frontend/src/lib/api.js response interceptor is fire-and-forget (does not block the UI), gated on typeof window !== 'undefined' (won't run during SSR), and only fires on POST/PATCH/PUT/DELETE — so idempotent GETs never trigger revalidation. Silently swallows fetch errors, correct behaviour for a non-critical side effect.",
+    "OK — fetchServer now threads tags into next.revalidate config. Home page passes tags for all 6 resources (products, announcements, offers, testimonials, instagram-posts, site-content). /stores tags testimonials, /offers tags offers. This makes revalidateTag() calls actually reach the tagged server fetches.",
+    "MINOR — The interceptor uses window.location-relative fetch('/next-api/revalidate') which works both in preview and on Vercel; but if the app were ever embedded under a subpath, this would break. Not a real concern for this deployment. Leave as-is.",
+    "MINOR — verifyAdmin() returns false silently on any network or JSON error inside the try/catch. In production that means a transient outage of /api/auth/me during a mutation would yield 401 from the revalidate route, and the admin wouldn't know. Non-blocking — the mutation itself succeeded; only the cache-bust silently fails. Acceptable trade-off since ISR still expires naturally within 60s.",
+    "MINOR — CACHE_TAGS list is hardcoded in two places (revalidate route + home page fetchServer calls). If a new resource is added later, both must be kept in sync. Consider extracting to a shared constants module."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py (added TestRevalidateEndpoint class with 5 tests: GET hint, POST no-auth 401, POST bad bearer 401, POST non-Bearer scheme 401, POST admin OK with paths+tags assertions)"
+  ],
+  "success_rate": {
+    "backend": "100% (49/49 pytest, 5 new revalidate tests)",
+    "frontend": "100% (admin login + Hero image save + interceptor fires + home reflects both images + Products toggle interceptor fires + About regression)"
+  },
+  "test_credentials": "admin@digiconnect.net.in / DigiConnect@2026 — verified working (bcrypt $2b$, seeded idempotently).",
+  "seed_data_creation": "None persisted. Hero image URLs were changed to test values then restored to originals ('https://i.ytimg.com/vi/py8DWamxdHs/...' for hero, pexels 11297769 for story). Product active toggle was flipped and flipped back.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Regression cmd: pytest /app/backend/tests/backend_test.py -v --junitxml=/app/test_reports/pytest/pytest_results.xml (49 tests, ~6-7s, parallel via pytest-xdist). NEW iter-6 coverage lives in TestRevalidateEndpoint. The /next-api/revalidate endpoint is served by Next.js at the SAME host as the FastAPI /api/*, but it is NOT proxied to FastAPI — it works because the path prefix /next-api/ isn't matched by the /api/* → 8001 ingress rule. Do NOT rename to /api/revalidate or it will 404. To verify interceptor fires: attach page.on('request', ...) in playwright and filter for '/next-api/revalidate' after any admin POST/PATCH/PUT/DELETE. In local preview, Next dev mode doesn't cache aggressively so home reflects changes within a second; on Vercel it may take a hair longer but still << 60s thanks to on-demand ISR.",
+  "rca of the issue": "User bug on Vercel: admin edits weren't showing on the public site for up to 60s (sometimes longer via stale-while-revalidate). Root cause: every public Next page had `export const revalidate = 60` which tells Vercel to serve the last-built static HTML for 60s before rebuilding. There was no signal to the CDN that content changed. Fix (E1): a Next.js API route at /next-api/revalidate (deliberately OUTSIDE /api/* to avoid the FastAPI proxy) authenticates the caller via the admin JWT against /api/auth/me, then calls revalidatePath() for all 5 public routes + layout AND revalidateTag() for all 6 resource tags. The shared axios client's response interceptor (window-side only) fires this endpoint fire-and-forget after every 2xx POST/PATCH/PUT/DELETE. Every panel (Products, Offers, Testimonials, Instagram, Announcements, Hero) uses the same axios instance so all mutations automatically bust the cache. Server-side fetchServer() calls now thread tags into next.revalidate config so revalidateTag() actually reaches them. Verified end-to-end: PATCH /api/site-content → interceptor POST /next-api/revalidate (with Bearer) → GET / immediately renders the new hero_image_url and story_image_url. Auth guard properly rejects no-auth (401), garbage bearer (401), non-admin (401 by role check in /api/auth/me), and non-Bearer schemes (401)."
+}

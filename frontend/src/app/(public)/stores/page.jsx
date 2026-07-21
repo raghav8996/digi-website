@@ -13,7 +13,7 @@ export const metadata = {
 };
 
 export default async function StoresPage() {
-  const testimonials = await fetchServer("/testimonials?active_only=true");
+  const testimonials = await fetchServer("/testimonials?active_only=true", { tags: ["testimonials"] });
 
   return (
     <>

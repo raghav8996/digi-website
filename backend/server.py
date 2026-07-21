@@ -664,6 +664,16 @@ async def update_site_content(data: SiteContentUpdate, _: dict = Depends(get_cur
     )
     updated = await db.site_content.find_one({"_id": "singleton"}, {"_id": 0})
     return updated
+    
+@api_router.get("/debug-site-content")
+async def debug_site_content():
+    doc = await db.site_content.find_one({"_id": "singleton"})
+
+    return {
+        "mongo_database": db.name,
+        "mongo_host": mongo_url.split("@")[-1] if "@" in mongo_url else mongo_url,
+        "hero_image": doc.get("hero_image_url") if doc else None
+    }
 
 
 app.include_router(api_router)

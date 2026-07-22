@@ -39,11 +39,33 @@ export default function ImageInput({
     try {
       const fd = new FormData();
       fd.append("file", file);
-      const { data } = await api.post("/upload", fd);
+      const { data } = await api.post("/upload", fd, {
+        // Multipart uploads over slow mobile networks can take > 30s for larger images
+        timeout: 120000,
+        // Let axios detect the multipart boundary itself — don't override
+      });
       onChange(data.url); // e.g., "/api/files/digiconnect/uploads/<id>.png"
       showToast?.("Image uploaded");
     } catch (e) {
-      showToast?.(formatApiErrorDetail(e.response?.data?.detail) || "Upload failed", false);
+      // Surface the real reason so the user can diagnose (network vs auth vs server)
+      // eslint-disable-next-line no-console
+      console.error("Upload failed:", e);
+      let msg;
+      if (e?.response) {
+        const status = e.response.status;
+        const detail = formatApiErrorDetail(e.response.data?.detail);
+        if (status === 401) msg = "Session expired. Please log in again.";
+        else if (status === 413) msg = "File too large. Max 8 MB.";
+        else if (status === 503) msg = "Object storage isn't configured on the backend. Set EMERGENT_LLM_KEY in the backend .env and restart.";
+        else msg = `Upload failed (HTTP ${status}) — ${detail}`;
+      } else if (e?.code === "ECONNABORTED") {
+        msg = "Upload timed out. Try a smaller image or a stronger connection.";
+      } else if (e?.message) {
+        msg = `Network error: ${e.message}. Check that the backend URL is reachable and CORS is open.`;
+      } else {
+        msg = "Upload failed for an unknown reason. Open the browser console for details.";
+      }
+      showToast?.(msg, false);
     } finally {
       setUploading(false);
     }

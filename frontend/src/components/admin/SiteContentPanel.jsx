@@ -14,6 +14,16 @@ const empty = {
   hero_live_demo_href: "",
   story_image_url: "",
   story_image_alt: "",
+  banner_active: true,
+  banner_badge: "",
+  banner_title_line1: "",
+  banner_title_line2: "",
+  banner_description: "",
+  banner_button_text: "",
+  banner_image_url: "",
+  banner_image_alt: "",
+  banner_image_caption: "",
+  banner_whatsapp_message: "",
 };
 
 export default function SiteContentPanel({ showToast }) {
@@ -34,6 +44,16 @@ export default function SiteContentPanel({ showToast }) {
         hero_live_demo_href: data?.hero_live_demo_href || "",
         story_image_url: data?.story_image_url || "",
         story_image_alt: data?.story_image_alt || "",
+        banner_active: data?.banner_active ?? true,
+        banner_badge: data?.banner_badge || "",
+        banner_title_line1: data?.banner_title_line1 || "",
+        banner_title_line2: data?.banner_title_line2 || "",
+        banner_description: data?.banner_description || "",
+        banner_button_text: data?.banner_button_text || "",
+        banner_image_url: data?.banner_image_url || "",
+        banner_image_alt: data?.banner_image_alt || "",
+        banner_image_caption: data?.banner_image_caption || "",
+        banner_whatsapp_message: data?.banner_whatsapp_message || "",
       });
     } catch (e) {
       showToast(formatApiErrorDetail(e.response?.data?.detail), false);
@@ -172,6 +192,123 @@ export default function SiteContentPanel({ showToast }) {
             className="dc-input"
           />
         </FormRow>
+      </div>
+
+      {/* BANNER card (Pre-reserve / Coming soon) */}
+      <div className="dc-tile p-6 md:p-8 space-y-5">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.22em] text-[#ff2d7a] font-bold">Pre-reserve banner</p>
+            <p className="text-sm text-white font-semibold mt-1">The big &ldquo;Coming soon · Pre-reserve&rdquo; banner below the hero</p>
+          </div>
+          <label className="inline-flex items-center gap-2 cursor-pointer select-none shrink-0">
+            <input
+              type="checkbox"
+              data-testid="site-banner-active"
+              checked={!!form.banner_active}
+              onChange={(e) => setForm({ ...form, banner_active: e.target.checked })}
+              className="h-4 w-4 accent-[#ff2d7a]"
+            />
+            <span className="text-xs text-white font-semibold">{form.banner_active ? "Visible" : "Hidden"}</span>
+          </label>
+        </div>
+
+        <FormRow label="Small badge (pink pill)">
+          <input
+            data-testid="site-banner-badge"
+            value={form.banner_badge}
+            onChange={(e) => setForm({ ...form, banner_badge: e.target.value })}
+            placeholder="e.g., Coming soon · Pre-reserve"
+            className="dc-input"
+          />
+        </FormRow>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormRow label="Title — line 1">
+            <input
+              data-testid="site-banner-title1"
+              value={form.banner_title_line1}
+              onChange={(e) => setForm({ ...form, banner_title_line1: e.target.value })}
+              placeholder="e.g., Galaxy Z Fold8."
+              className="dc-input"
+            />
+          </FormRow>
+          <FormRow label="Title — line 2">
+            <input
+              data-testid="site-banner-title2"
+              value={form.banner_title_line2}
+              onChange={(e) => setForm({ ...form, banner_title_line2: e.target.value })}
+              placeholder="e.g., Be first in line."
+              className="dc-input"
+            />
+          </FormRow>
+        </div>
+
+        <FormRow label="Description paragraph">
+          <textarea
+            data-testid="site-banner-description"
+            value={form.banner_description}
+            onChange={(e) => setForm({ ...form, banner_description: e.target.value })}
+            rows={3}
+            placeholder="e.g., India's most anticipated foldable is landing at DigiConnect…"
+            className="dc-input resize-none"
+          />
+        </FormRow>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormRow label="Button text (prefix)">
+            <input
+              data-testid="site-banner-button"
+              value={form.banner_button_text}
+              onChange={(e) => setForm({ ...form, banner_button_text: e.target.value })}
+              placeholder="e.g., Reserve"
+              className="dc-input"
+            />
+            <p className="text-[11px] text-[#6e6e73] mt-1.5">Shown as &ldquo;{form.banner_button_text || "Reserve"} · Gaur City&rdquo; on each store button.</p>
+          </FormRow>
+          <FormRow label="WhatsApp pre-filled message">
+            <input
+              data-testid="site-banner-wa-message"
+              value={form.banner_whatsapp_message}
+              onChange={(e) => setForm({ ...form, banner_whatsapp_message: e.target.value })}
+              placeholder="e.g., Hi DigiConnect, I'd like to pre-reserve…"
+              className="dc-input"
+            />
+          </FormRow>
+        </div>
+
+        <div className="h-px bg-white/10" />
+
+        <FormRow label="Banner image URL">
+          <input
+            data-testid="site-banner-image-url"
+            value={form.banner_image_url}
+            onChange={(e) => setForm({ ...form, banner_image_url: e.target.value })}
+            placeholder="https://…/product.jpg"
+            className="dc-input"
+          />
+        </FormRow>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormRow label="Banner image alt text">
+            <input
+              data-testid="site-banner-image-alt"
+              value={form.banner_image_alt}
+              onChange={(e) => setForm({ ...form, banner_image_alt: e.target.value })}
+              placeholder="e.g., Galaxy Z Fold concept"
+              className="dc-input"
+            />
+          </FormRow>
+          <FormRow label="Image caption (small text over image)">
+            <input
+              data-testid="site-banner-image-caption"
+              value={form.banner_image_caption}
+              onChange={(e) => setForm({ ...form, banner_image_caption: e.target.value })}
+              placeholder="e.g., Concept · Actual product may vary"
+              className="dc-input"
+            />
+          </FormRow>
+        </div>
       </div>
 
       {/* SAVE */}

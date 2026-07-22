@@ -12,7 +12,10 @@ export const metadata = {
 };
 
 export default async function OffersPage() {
-  const offers = await fetchServer("/offers?active_only=true", { tags: ["offers"] });
+  const [offers, siteContent] = await Promise.all([
+    fetchServer("/offers?active_only=true", { tags: ["offers"] }),
+    fetchServer("/site-content", { tags: ["site-content"] }),
+  ]);
 
   return (
     <>
@@ -33,7 +36,7 @@ export default async function OffersPage() {
         </div>
       </section>
 
-      <Fold8Banner />
+      <Fold8Banner content={siteContent || {}} />
 
       <OffersSection offers={offers} variant="page" />
     </>

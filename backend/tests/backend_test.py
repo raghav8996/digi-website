@@ -832,6 +832,117 @@ class TestSiteContent:
         assert r.status_code == 400, r.text
 
 
+# ---------- Site Content — Pre-reserve BANNER fields (iter 7) ----------
+class TestSiteContentBanner:
+    """Iteration 7 — 10 new banner_* fields on the site-content singleton."""
+
+    BANNER_FIELDS = (
+        ("banner_active", bool),
+        ("banner_badge", str),
+        ("banner_title_line1", str),
+        ("banner_title_line2", str),
+        ("banner_description", str),
+        ("banner_button_text", str),
+        ("banner_image_url", str),
+        ("banner_image_alt", str),
+        ("banner_image_caption", str),
+        ("banner_whatsapp_message", str),
+    )
+
+    def test_get_returns_all_banner_fields(self, api):
+        r = api.get(f"{BASE_URL}/api/site-content", timeout=15)
+        assert r.status_code == 200
+        data = r.json()
+        for field, expected_type in self.BANNER_FIELDS:
+            assert field in data, f"missing banner field {field}: keys={list(data.keys())}"
+            assert isinstance(data[field], expected_type), (
+                f"{field} wrong type: expected {expected_type.__name__}, got {type(data[field]).__name__}"
+            )
+        # Existing hero_* and story_* fields still present (backward compat)
+        for legacy in (
+            "hero_image_url", "hero_image_alt", "hero_live_demo_label",
+            "hero_live_demo_title", "hero_live_demo_cta", "hero_live_demo_href",
+            "story_image_url", "story_image_alt",
+        ):
+            assert legacy in data, f"legacy field {legacy} missing"
+
+    def test_patch_all_banner_fields(self, api, admin_headers):
+        original = api.get(f"{BASE_URL}/api/site-content", timeout=15).json()
+        unique = uuid.uuid4().hex[:8]
+        payload = {
+            "banner_active": False,
+            "banner_badge": f"TEST_badge_{unique}",
+            "banner_title_line1": f"TEST_line1_{unique}",
+            "banner_title_line2": f"TEST_line2_{unique}",
+            "banner_description": f"TEST_desc_{unique}",
+            "banner_button_text": f"TEST_btn_{unique}",
+            "banner_image_url": f"https://example.com/banner_{unique}.jpg",
+            "banner_image_alt": f"TEST_alt_{unique}",
+            "banner_image_caption": f"TEST_cap_{unique}",
+            "banner_whatsapp_message": f"TEST_wa_{unique}",
+        }
+        try:
+            r = api.patch(
+                f"{BASE_URL}/api/site-content",
+                json=payload,
+                headers=admin_headers,
+                timeout=15,
+            )
+            assert r.status_code == 200, r.text
+            updated = r.json()
+            for k, v in payload.items():
+                assert updated[k] == v, f"{k} mismatch: got {updated[k]} expected {v}"
+
+            # Persistence via public GET
+            got = api.get(f"{BASE_URL}/api/site-content", timeout=15).json()
+            for k, v in payload.items():
+                assert got[k] == v, f"persistence mismatch {k}: got {got[k]}"
+        finally:
+            # Restore originals so we don't corrupt production content
+            restore = {k: original.get(k) for k, _ in self.BANNER_FIELDS if k in original}
+            api.patch(
+                f"{BASE_URL}/api/site-content",
+                json=restore,
+                headers=admin_headers,
+                timeout=15,
+            )
+
+    def test_patch_banner_partial_leaves_others_intact(self, api, admin_headers):
+        original = api.get(f"{BASE_URL}/api/site-content", timeout=15).json()
+        unique = uuid.uuid4().hex[:6]
+        new_badge = f"TEST_partial_badge_{unique}"
+        try:
+            r = api.patch(
+                f"{BASE_URL}/api/site-content",
+                json={"banner_badge": new_badge},
+                headers=admin_headers,
+                timeout=15,
+            )
+            assert r.status_code == 200
+            data = r.json()
+            assert data["banner_badge"] == new_badge
+            # Other banner fields unchanged
+            for k, _ in self.BANNER_FIELDS:
+                if k == "banner_badge":
+                    continue
+                assert data[k] == original.get(k), f"{k} changed unexpectedly"
+        finally:
+            api.patch(
+                f"{BASE_URL}/api/site-content",
+                json={"banner_badge": original.get("banner_badge", "Coming soon · Pre-reserve")},
+                headers=admin_headers,
+                timeout=15,
+            )
+
+    def test_patch_banner_requires_auth(self, api):
+        r = api.patch(
+            f"{BASE_URL}/api/site-content",
+            json={"banner_badge": "no auth attempt"},
+            timeout=15,
+        )
+        assert r.status_code == 401
+
+
 # ---------- On-demand ISR revalidate (Next.js route, not FastAPI) ----------
 # NOTE: /next-api/revalidate lives OUTSIDE /api/*. In preview it is served by
 # the Next.js server at the same host. Verifies the auth guard + happy path.

@@ -134,7 +134,7 @@ export default async function HomePage() {
         </div>
 
         {/* Metrics strip */}
-        <div className="max-w-7xl mx-auto mt-14 md:mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 border-t border-white/10 pt-8">
+        <div className="max-w-7xl mx-auto mt-14 md:mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 border-t border-white/10 pt-8 text-center">
           {[
             ["2", "Retail locations"],
             ["100%", "Genuine Samsung"],
@@ -150,7 +150,7 @@ export default async function HomePage() {
       </section>
 
       {/* FOLD8 BANNER */}
-      <Fold8Banner />
+      <Fold8Banner content={hero} />
 
       {/* BRAND STORY — Since 2021 */}
       <section

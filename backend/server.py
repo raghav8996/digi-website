@@ -297,6 +297,20 @@ class SiteContent(BaseModel):
     hero_live_demo_href: str = "/stores"
     story_image_url: str = "https://images.pexels.com/photos/11297769/pexels-photo-11297769.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1200&w=940"
     story_image_alt: str = "DigiConnect Samsung Experience Store interior"
+    # Fold8 / Pre-reserve banner (fully editable)
+    banner_active: bool = True
+    banner_badge: str = "Coming soon · Pre-reserve"
+    banner_title_line1: str = "Galaxy Z Fold8."
+    banner_title_line2: str = "Be first in line."
+    banner_description: str = (
+        "India's most anticipated foldable is landing at DigiConnect. Reserve your unit today, "
+        "unlock launch-day priority pickup and an exclusive in-store gift bundle."
+    )
+    banner_button_text: str = "Reserve"
+    banner_image_url: str = "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=940&q=80"
+    banner_image_alt: str = "Galaxy Z Fold concept"
+    banner_image_caption: str = "Concept · Actual product may vary"
+    banner_whatsapp_message: str = "Hi DigiConnect, I'd like to pre-reserve the Galaxy Z Fold8."
 
 
 class SiteContentUpdate(BaseModel):
@@ -308,6 +322,16 @@ class SiteContentUpdate(BaseModel):
     hero_live_demo_href: Optional[str] = None
     story_image_url: Optional[str] = None
     story_image_alt: Optional[str] = None
+    banner_active: Optional[bool] = None
+    banner_badge: Optional[str] = None
+    banner_title_line1: Optional[str] = None
+    banner_title_line2: Optional[str] = None
+    banner_description: Optional[str] = None
+    banner_button_text: Optional[str] = None
+    banner_image_url: Optional[str] = None
+    banner_image_alt: Optional[str] = None
+    banner_image_caption: Optional[str] = None
+    banner_whatsapp_message: Optional[str] = None
 
 
 # ---------- Startup ----------

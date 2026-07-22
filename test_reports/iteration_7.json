@@ -1,0 +1,42 @@
+{
+  "summary": "Iteration 7 — Fold8 pre-reserve banner is now fully editable via Admin → Hero tab (10 banner_* fields + banner_active toggle) and the home-page metrics strip is centered. Backend pytest 53/53 pass in ~5s (49 previous + 4 new TestSiteContentBanner tests): GET /api/site-content includes all 10 banner_* fields with correct types + all legacy hero_/story_ fields; PATCH with admin token updates any subset and persists (verified via public GET); PATCH without auth returns 401; partial PATCH leaves other banner fields intact. Full frontend E2E: admin login → Hero tab → change banner_badge='TEST BADGE' & banner_button_text='Book now' → Save → axios interceptor fired POST /next-api/revalidate → reload /?_cb=… → [data-testid=banner-badge] now reads 'TEST BADGE' AND fold8-reserve-gaur-city button reads 'Book now · Gaur City Mall'. Also verified: banner_active checkbox → save → home no longer contains [data-testid=fold8-banner] (null return). Restored originals afterwards and confirmed home reverts to prior badge ('Pre-Book' — pre-customized in DB). Metrics strip container className is 'max-w-7xl mx-auto mt-14 md:mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 border-t border-white/10 pt-8 text-center' — text-center present and visually centered. Fold8Banner on /offers page renders identical dynamic content. Total revalidate POSTs observed across 3 saves = 3, confirming interceptor still fires per-mutation.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "None blocking. Feature ships as designed."
+  ],
+  "critical_code_review_comments": [
+    "OK — /app/backend/server.py: SiteContent and SiteContentUpdate models extended with 10 banner_* fields (banner_active as bool, rest as str). _seed_site_content() backfills the singleton with only missing keys on startup, correctly preserving prior admin edits. update_site_content correctly avoids overlapping $set/$setOnInsert paths.",
+    "OK — /app/frontend/src/components/Fold8Banner.jsx: pure server component, returns null when content.banner_active === false (strict equality, so `undefined` still renders as visible — correct default). All required data-testids present (banner-badge, banner-title, banner-description, banner-image, fold8-reserve-<store-id>). Encodes WhatsApp message via encodeURIComponent.",
+    "OK — /app/frontend/src/app/(public)/page.jsx: metrics strip grid container has `text-center` class; siteContent passed to <Fold8Banner content={hero}/>. All 6 fetchServer calls include cache tags so revalidateTag() is effective.",
+    "OK — /app/frontend/src/app/(public)/offers/page.jsx: now Promise.all-fetches site-content with `site-content` tag alongside offers.",
+    "OK — /app/frontend/src/components/admin/SiteContentPanel.jsx: new BANNER card with all 10 test-ids. banner_active is a controlled checkbox that toggles form state; save() PATCHes the entire form and the shared axios interceptor auto-fires revalidation.",
+    "MINOR — Fold8Banner uses ?? (nullish coalescing) for strings: content.banner_badge ?? default. This means an intentional empty string from admin ('') will render as empty rather than falling back to default. If E1 wants empty-string-clears-to-default behaviour, switch to `||`. Non-blocking — current behaviour lets admins deliberately blank a field.",
+    "MINOR — SiteContentPanel.jsx save() PATCHes ALL fields on every save (not a diff). Harmless but sends ~18 KB of unchanged form data on every save. Consider only sending changed fields if payload size ever matters. Non-blocking.",
+    "MINOR — File length /app/frontend/src/components/admin/SiteContentPanel.jsx is 377 lines — approaching the 700 threshold but still comfortably below. If more sections are added, consider splitting into HeroCard, StoryCard, BannerCard sub-components."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py (added TestSiteContentBanner class with 4 tests: field presence, full PATCH+persist, partial PATCH isolation, auth-required)"
+  ],
+  "success_rate": {
+    "backend": "100% (53/53 pytest — 4 new banner tests + 49 prior all green)",
+    "frontend": "100% (admin banner edit → home reflect ✓, banner_active toggle hides ✓, restore ✓, offers page banner ✓, metrics strip text-center ✓, revalidate interceptor still firing per-mutation ✓)"
+  },
+  "test_credentials": "admin@digiconnect.net.in / DigiConnect@2026 — verified via login.",
+  "seed_data_creation": "None persisted. banner_badge and banner_button_text were temporarily set to 'TEST BADGE' / 'Book now', then banner_active toggled off, then all restored to whatever values existed pre-test (observed originals: badge='Pre-Book', button='Book' — these were already customised before this iteration, likely by manual admin edits). All test-created products/offers/testimonials/ig-posts within CRUD tests are self-cleanup via try/finally.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Regression cmd: pytest /app/backend/tests/backend_test.py -v --junitxml=/app/test_reports/pytest/pytest_results.xml (53 tests, ~5s, xdist parallel). Iter-7 coverage lives in TestSiteContentBanner. The site-content singleton now has 18 fields total (8 hero+story legacy + 10 banner). SiteContentUpdate is fully partial — every field is Optional and exclude_unset filters out non-provided fields. When testing admin UI, the tabs are 'Products / Offers / Reviews / Instagram / Announcements / Hero' — Hero is the last tab. Login on preview: use keyboard.type() with small delay after page.click() on the input; page.fill('','') then re-fill sometimes leaves React state stale and triggers 'Please fill out this field' browser validation.",
+  "rca of the issue": "Not a bug — feature-addition iteration. Feature: 10 new editable banner_* fields on the site-content singleton plus a visibility toggle, wired through Admin → Hero tab → PATCH /api/site-content → Next.js on-demand ISR revalidation → Fold8Banner server component on / and /offers. Metrics strip centering was a one-line CSS addition (text-center on the grid container at page.jsx:137). All 8 acceptance criteria in the review request verified end-to-end."
+}

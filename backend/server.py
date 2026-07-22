@@ -18,7 +18,6 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, Field, EmailStr
-import requests
 
 
 # ---------- Config ----------
@@ -69,13 +68,6 @@ async def lifespan(_: FastAPI):
         logger.info("Updated admin password for: %s", admin_email)
 
     await _seed_defaults()
-
-    # Initialise Emergent object storage (best-effort — don't crash if it fails)
-    try:
-        _init_storage()
-        logger.info("Object storage initialised")
-    except Exception as e:  # noqa
-        logger.warning("Object storage init failed (uploads will 503): %s", e)
 
     yield
 
@@ -692,10 +684,8 @@ async def delete_instagram_post(post_id: str, _: dict = Depends(get_current_admi
     return {"success": True}
 
 
-# ---------- Object Storage (Emergent) ----------
-_STORAGE_URL = "https://integrations.emergentagent.com/objstore/api/v1/storage"
-_APP_STORAGE_NAME = os.environ.get("APP_STORAGE_NAME", "digiconnect")
-_MAX_UPLOAD_BYTES = 8 * 1024 * 1024  # 8 MB per file
+# ---------- File Storage (MongoDB — binary in db.files) ----------
+_MAX_UPLOAD_BYTES = 8 * 1024 * 1024  # 8 MB per file (well under MongoDB's 16MB doc limit)
 _ALLOWED_MIME = {
     "image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif",
 }
@@ -703,63 +693,6 @@ _MIME_EXT = {
     "image/jpeg": "jpg", "image/jpg": "jpg", "image/png": "png",
     "image/webp": "webp", "image/gif": "gif",
 }
-_storage_key: Optional[str] = None
-
-
-def _init_storage() -> str:
-    global _storage_key
-    if _storage_key:
-        return _storage_key
-    emergent_key = os.environ.get("EMERGENT_LLM_KEY")
-    if not emergent_key:
-        raise RuntimeError("EMERGENT_LLM_KEY not configured")
-    resp = requests.post(f"{_STORAGE_URL}/init", json={"emergent_key": emergent_key}, timeout=30)
-    resp.raise_for_status()
-    _storage_key = resp.json()["storage_key"]
-    return _storage_key
-
-
-def _put_object(path: str, data: bytes, content_type: str) -> dict:
-    key = _init_storage()
-    resp = requests.put(
-        f"{_STORAGE_URL}/objects/{path}",
-        headers={"X-Storage-Key": key, "Content-Type": content_type},
-        data=data,
-        timeout=120,
-    )
-    if resp.status_code == 403:
-        # Refresh key once and retry
-        global _storage_key
-        _storage_key = None
-        key = _init_storage()
-        resp = requests.put(
-            f"{_STORAGE_URL}/objects/{path}",
-            headers={"X-Storage-Key": key, "Content-Type": content_type},
-            data=data,
-            timeout=120,
-        )
-    resp.raise_for_status()
-    return resp.json()
-
-
-def _get_object(path: str) -> tuple[bytes, str]:
-    key = _init_storage()
-    resp = requests.get(
-        f"{_STORAGE_URL}/objects/{path}",
-        headers={"X-Storage-Key": key},
-        timeout=60,
-    )
-    if resp.status_code == 403:
-        global _storage_key
-        _storage_key = None
-        key = _init_storage()
-        resp = requests.get(
-            f"{_STORAGE_URL}/objects/{path}",
-            headers={"X-Storage-Key": key},
-            timeout=60,
-        )
-    resp.raise_for_status()
-    return resp.content, resp.headers.get("Content-Type", "application/octet-stream")
 
 
 # ---------- Routes: Uploads ----------
@@ -775,42 +708,34 @@ async def upload_image(file: UploadFile = File(...), current: dict = Depends(get
         raise HTTPException(status_code=413, detail=f"File too large. Max {_MAX_UPLOAD_BYTES // (1024 * 1024)} MB.")
     ext = _MIME_EXT.get(content_type, "bin")
     file_id = str(uuid.uuid4())
-    path = f"{_APP_STORAGE_NAME}/uploads/{file_id}.{ext}"
-    try:
-        result = _put_object(path, data, content_type)
-    except requests.RequestException as e:
-        logger.exception("Upload failed")
-        raise HTTPException(status_code=503, detail=f"Storage service unavailable: {e}") from e
-    stored_path = result.get("path", path)
+    stored_path = f"uploads/{file_id}.{ext}"
     await db.files.insert_one({
         "id": file_id,
         "storage_path": stored_path,
         "original_filename": file.filename or f"{file_id}.{ext}",
         "content_type": content_type,
         "size": len(data),
+        "data": data,  # BSON Binary — Motor accepts raw bytes
         "uploaded_by": current.get("id"),
         "is_deleted": False,
         "created_at": now_utc().isoformat(),
     })
-    # Public URL served by our own backend (no auth needed for GET — images are public site assets)
+    # Public URL served by our own backend
     public_url = f"/api/files/{stored_path}"
     return {"id": file_id, "url": public_url, "size": len(data), "content_type": content_type}
 
 
 @api_router.get("/files/{path:path}")
 async def download_file(path: str):
-    # Public read: these are marketing images (products, hero, banner). Access controlled by DB record existence.
-    record = await db.files.find_one({"storage_path": path, "is_deleted": False}, {"_id": 0})
-    if not record:
+    record = await db.files.find_one(
+        {"storage_path": path, "is_deleted": False},
+        {"_id": 0, "data": 1, "content_type": 1},
+    )
+    if not record or not record.get("data"):
         raise HTTPException(status_code=404, detail="File not found")
-    try:
-        data, content_type = _get_object(path)
-    except requests.RequestException as e:
-        logger.exception("Download failed")
-        raise HTTPException(status_code=502, detail="Storage fetch failed") from e
     return Response(
-        content=data,
-        media_type=record.get("content_type") or content_type,
+        content=bytes(record["data"]),
+        media_type=record.get("content_type") or "application/octet-stream",
         headers={"Cache-Control": "public, max-age=86400, immutable"},
     )
 

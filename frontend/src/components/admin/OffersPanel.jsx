@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import api, { formatApiErrorDetail } from "@/lib/api";
+import ImageInput, { resolveImageUrl } from "@/components/admin/ImageInput";
 import {
   PanelHead,
   FormPanel,
@@ -149,13 +150,14 @@ export default function OffersPanel({ items, reload, showToast }) {
               </select>
             </FormRow>
           </div>
-          <FormRow label="Image URL">
-            <input
-              data-testid="offer-form-image"
+          <FormRow label="Offer image">
+            <ImageInput
+              testIdPrefix="offer-form-image"
               value={form.image_url}
-              onChange={(e) => setForm({ ...form, image_url: e.target.value })}
-              className="dc-input"
+              onChange={(v) => setForm({ ...form, image_url: v })}
               placeholder="https://…"
+              showToast={showToast}
+              aspect="aspect-video"
             />
           </FormRow>
           <div className="grid grid-cols-2 gap-4">
@@ -185,7 +187,7 @@ export default function OffersPanel({ items, reload, showToast }) {
             <div className="h-24 w-24 rounded-xl overflow-hidden bg-black/60 shrink-0">
               {o.image_url && (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={o.image_url} alt={o.title} className="w-full h-full object-cover" />
+                <img src={resolveImageUrl(o.image_url)} alt={o.title} className="w-full h-full object-cover" />
               )}
             </div>
             <div className="flex-1 min-w-0">

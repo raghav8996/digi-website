@@ -1,5 +1,6 @@
 import { Sparkles, ArrowUpRight } from "lucide-react";
 import { STORE_LOCATIONS } from "@/lib/stores";
+import { resolveImageUrl } from "@/lib/images";
 
 // Server component — receives editable content from the parent server page.
 // `content` is the singleton /site-content document; falls back to hardcoded defaults if fields missing.
@@ -14,7 +15,7 @@ export default function Fold8Banner({ content = {} }) {
     "India's most anticipated foldable is landing at DigiConnect. Reserve your unit today, unlock launch-day priority pickup and an exclusive in-store gift bundle.";
   const buttonText = content.banner_button_text ?? "Reserve";
   const imageUrl =
-    content.banner_image_url ||
+    resolveImageUrl(content.banner_image_url) ||
     "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=940&q=80";
   const imageAlt = content.banner_image_alt ?? "Galaxy Z Fold concept";
   const imageCaption = content.banner_image_caption ?? "Concept · Actual product may vary";

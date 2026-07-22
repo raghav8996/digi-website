@@ -1,0 +1,41 @@
+{
+  "summary": "Iteration 8 — Direct image upload (Emergent object storage) fully working. Added 10 new pytest tests (TestUploads class) covering: 401 without token, PNG upload+GET byte-for-byte roundtrip (200/image/png), all 4 allowed types (JPG/PNG/WEBP/GIF), text/plain rejection (400), empty file rejection (400), 9MB rejection (413), unknown path 404, and db.files metadata record (is_deleted=false, uploaded_by=admin id, storage_path=digiconnect/uploads/<uuid>.<ext>, size, content_type). Total pytest: 63/63 pass in ~8s (53 legacy + 10 new). Backend startup log 'Object storage initialised' confirmed. Frontend E2E via Playwright: (1) Admin login OK → Hero tab renders ImageInput with url/upload/preview/clear test-ids present. (2) Switch to Upload → POST /api/upload returns 200, url field auto-fills with /api/files/digiconnect/uploads/<uuid>.png, preview thumbnail loads via resolveImageUrl (backend prefix applied). (3) Save → PATCH /api/site-content 200 → revalidate interceptor POST /next-api/revalidate 200 → reload / → [data-testid=hero-image] src=https://<BACKEND>/api/files/digiconnect/uploads/<uuid>.png. Curl on that URL returned HTTP 200, Content-Type image/png, 80 bytes, PIL parses as valid 10x10 PNG (durable). (4) Restore of original URL worked. (5) Non-image file (text/plain) triggers client-side toast 'Please choose an image file (JPG, PNG, WEBP or GIF)' and does NOT POST to /api/upload. (6) All 4 ImageInput wire-ups verified: site-hero-image / product-form-image / offer-form-image / ig-form-image all render mode-url + mode-upload test-ids. Zero regressions in existing endpoints.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "None blocking. Feature ships as designed."
+  ],
+  "critical_code_review_comments": [
+    "OK — /app/backend/server.py: _init_storage() lazy-inits + caches storage_key; _put_object/_get_object both retry once on 403 by refreshing key (correct handling of stale keys). POST /api/upload gates on _ALLOWED_MIME (5 mime variants including image/jpg alias), reads bytes once, then enforces 8MB via len(data), returns 200 with {id, url, size, content_type}. Public GET /api/files/{path:path} guards on db.files record existence with is_deleted=false — good soft-delete-friendly ACL. db.files.storage_path has unique index (line 46). Cache-Control public/immutable on downloads is correct for immutable UUID-named assets.",
+    "OK — /app/frontend/src/components/admin/ImageInput.jsx: pre-upload client-side gates (type.startsWith('image/') and size<=8MB) match backend limits — bad files never hit the wire. Toast wired via optional showToast prop; when parent doesn't pass showToast the component still degrades gracefully (?. chain). All 7 required data-testid attributes present with the testIdPrefix pattern. Multipart upload sends file via FormData — axios auto-sets multipart boundary. e.target.value='' after pick allows re-picking same file (nice UX detail).",
+    "OK — /app/frontend/src/lib/images.js resolveImageUrl handles http(s)/data:/blob: passthrough + leading-slash prefixing. Works in both server and client because it only touches process.env.NEXT_PUBLIC_BACKEND_URL (build-time embedded). Empty string / null returns '' (safe for <img src=''>).",
+    "OK — Wire-ups verified in DOM: ProductsPanel (product-form-image), OffersPanel (offer-form-image), InstagramPanel (ig-form-image), SiteContentPanel (site-hero-image + site-story-image + site-banner-image). All 6 usages present.",
+    "MINOR — /app/backend/server.py _put_object/_get_object are sync `requests` calls inside an async endpoint. For low-volume marketing uploads this is fine, but each upload blocks the FastAPI event loop for the storage RTT (~100-500ms). If upload volume grows, switch to httpx.AsyncClient or wrap in asyncio.to_thread(). Non-blocking for MVP.",
+    "MINOR — No cleanup/delete endpoint for /api/files. When admin swaps an image URL, the old object stays in storage forever (db.files record too — no is_deleted=true flip). Future enhancement, non-blocking (marketing sites accumulate few images).",
+    "MINOR — GET /api/files/{path:path} does a full storage fetch + returns bytes through FastAPI. For a marketing site this is fine, but adds bandwidth pressure. Could redirect (302) to a signed storage URL if the object storage supports it. Non-blocking."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py (added TestUploads class with 10 tests: 401, allowed-types param, roundtrip, text/plain 400, empty 400, 9MB 413, unknown 404, db metadata)"
+  ],
+  "success_rate": {
+    "backend": "100% (63/63 pytest — 10 new upload tests + 53 prior all green)",
+    "frontend": "100% (ImageInput URL+Upload modes render on all 4 panels, POST /api/upload succeeds with 200, PATCH /api/site-content persists /api/files/... URL, resolveImageUrl prefixes backend on public render, [data-testid=hero-image] on public / shows uploaded PNG, curl returns 200 image/png valid PNG bytes, invalid-file toast blocks the request, restore path verified)"
+  },
+  "test_credentials": "admin@digiconnect.net.in / DigiConnect@2026 — verified via login.",
+  "seed_data_creation": "Uploaded 4 test PNG/JPG/WEBP/GIF files during pytest into digiconnect/uploads/ (each ~80-200 bytes). One additional PNG uploaded during Playwright e2e and cleaned up (hero_image_url restored to original unsplash URL). db.files records for these test uploads persist (is_deleted=false) — this is expected behaviour of the feature; no cleanup endpoint exists yet. Roughly 8-12 tiny test uploads accumulated in this iteration. Not a blocker.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Regression cmd: pytest /app/backend/tests/backend_test.py -v --junitxml=/app/test_reports/pytest/pytest_results.xml (63 tests, ~8s with xdist). Iter-8 coverage lives in TestUploads. To validate an uploaded URL, GET the returned .url with the base URL prefix — no auth needed. If storage init fails (missing EMERGENT_LLM_KEY), upload endpoint returns 503 (best-effort try/except in lifespan). Instagram panel uses testIdPrefix='ig-form-image' NOT 'instagram-form-image' — remember when writing new UI tests. All 4 admin panels that surface an image field now go through ImageInput: Products (product-form-image), Offers (offer-form-image), Instagram (ig-form-image), SiteContent (site-hero-image, site-story-image, site-banner-image).",
+  "rca of the issue": "Not a bug — feature-addition iteration. Feature: direct image upload via Emergent object storage with a dual-mode (URL / Upload) picker on every image field in the admin panel. Backend adds POST /api/upload (admin-only, 8MB cap, allowed JPG/PNG/WEBP/GIF) + GET /api/files/{path:path} (public read, gated by db.files record existence). Frontend adds ImageInput component + resolveImageUrl helper that prefixes NEXT_PUBLIC_BACKEND_URL onto relative /api/files/... paths at render time on public pages. All 10 acceptance criteria from the review verified end-to-end. NB: Iter-1..7's 53 tests all still pass, no endpoints regressed."
+}

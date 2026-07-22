@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import api, { formatApiErrorDetail } from "@/lib/api";
+import ImageInput, { resolveImageUrl } from "@/components/admin/ImageInput";
 import {
   PanelHead,
   FormPanel,
@@ -126,13 +127,14 @@ export default function ProductsPanel({ items, reload, showToast }) {
               placeholder="From ₹79,999"
             />
           </FormRow>
-          <FormRow label="Image URL">
-            <input
-              data-testid="product-form-image"
+          <FormRow label="Product image">
+            <ImageInput
+              testIdPrefix="product-form-image"
               value={form.image_url}
-              onChange={(e) => setForm({ ...form, image_url: e.target.value })}
-              className="dc-input"
+              onChange={(v) => setForm({ ...form, image_url: v })}
               placeholder="https://…"
+              showToast={showToast}
+              aspect="aspect-square"
             />
           </FormRow>
           <FormRow label="Highlight / tagline">
@@ -170,7 +172,7 @@ export default function ProductsPanel({ items, reload, showToast }) {
             <div className="h-24 w-24 rounded-xl overflow-hidden bg-black/60 shrink-0">
               {p.image_url && (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={p.image_url} alt={p.name} className="w-full h-full object-cover" />
+                <img src={resolveImageUrl(p.image_url)} alt={p.name} className="w-full h-full object-cover" />
               )}
             </div>
             <div className="flex-1 min-w-0">

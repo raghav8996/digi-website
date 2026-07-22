@@ -990,3 +990,180 @@ class TestRevalidateEndpoint:
         for t in ("site-content", "products", "offers", "announcements", "testimonials", "instagram-posts"):
             assert t in tags, f"missing revalidated tag {t}: {tags}"
 
+
+
+# ---------- Uploads (iter 8 — Emergent object storage) ----------
+class TestUploads:
+    """POST /api/upload + GET /api/files/{path} coverage."""
+
+    @staticmethod
+    def _make_png(size_px: int = 8) -> bytes:
+        from PIL import Image
+        import io
+        buf = io.BytesIO()
+        img = Image.new("RGB", (size_px, size_px), color=(255, 45, 122))
+        img.save(buf, format="PNG")
+        return buf.getvalue()
+
+    @staticmethod
+    def _make_jpg(size_px: int = 8) -> bytes:
+        from PIL import Image
+        import io
+        buf = io.BytesIO()
+        Image.new("RGB", (size_px, size_px), color=(20, 200, 100)).save(buf, format="JPEG")
+        return buf.getvalue()
+
+    @staticmethod
+    def _make_webp(size_px: int = 8) -> bytes:
+        from PIL import Image
+        import io
+        buf = io.BytesIO()
+        Image.new("RGB", (size_px, size_px), color=(10, 90, 200)).save(buf, format="WEBP")
+        return buf.getvalue()
+
+    @staticmethod
+    def _make_gif(size_px: int = 8) -> bytes:
+        from PIL import Image
+        import io
+        buf = io.BytesIO()
+        Image.new("P", (size_px, size_px), color=5).save(buf, format="GIF")
+        return buf.getvalue()
+
+    def test_upload_requires_auth(self, api):
+        r = requests.post(
+            f"{BASE_URL}/api/upload",
+            files={"file": ("t.png", self._make_png(), "image/png")},
+            timeout=30,
+        )
+        assert r.status_code == 401, r.text
+
+    def test_upload_png_success_and_download_roundtrip(self, admin_token):
+        png_bytes = self._make_png(16)
+        r = requests.post(
+            f"{BASE_URL}/api/upload",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            files={"file": ("shot.png", png_bytes, "image/png")},
+            timeout=60,
+        )
+        assert r.status_code == 200, r.text
+        body = r.json()
+        for k in ("id", "url", "size", "content_type"):
+            assert k in body, f"missing key {k}: {body}"
+        assert body["size"] == len(png_bytes)
+        assert body["content_type"] == "image/png"
+        assert body["url"].startswith("/api/files/"), body["url"]
+        assert body["url"].endswith(".png"), body["url"]
+        assert "digiconnect/uploads/" in body["url"], body["url"]
+
+        # GET (public) — no auth needed
+        get_r = requests.get(f"{BASE_URL}{body['url']}", timeout=60)
+        assert get_r.status_code == 200, get_r.text
+        ctype = get_r.headers.get("Content-Type", "")
+        assert ctype.startswith("image/png"), ctype
+        # Exact byte-for-byte roundtrip
+        assert get_r.content == png_bytes, "downloaded bytes differ from uploaded"
+
+    @pytest.mark.parametrize("fmt,mime,ext", [
+        ("jpeg", "image/jpeg", ".jpg"),
+        ("webp", "image/webp", ".webp"),
+        ("gif",  "image/gif",  ".gif"),
+    ])
+    def test_upload_allowed_types(self, admin_token, fmt, mime, ext):
+        if fmt == "jpeg":
+            data = self._make_jpg(12)
+        elif fmt == "webp":
+            data = self._make_webp(12)
+        else:
+            data = self._make_gif(12)
+        r = requests.post(
+            f"{BASE_URL}/api/upload",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            files={"file": (f"t.{fmt}", data, mime)},
+            timeout=60,
+        )
+        assert r.status_code == 200, r.text
+        body = r.json()
+        assert body["content_type"] == mime
+        assert body["url"].endswith(ext), body["url"]
+        # Fetch back
+        got = requests.get(f"{BASE_URL}{body['url']}", timeout=60)
+        assert got.status_code == 200
+        assert got.headers.get("Content-Type", "").startswith(mime)
+
+    def test_upload_rejects_text_plain(self, admin_token):
+        r = requests.post(
+            f"{BASE_URL}/api/upload",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            files={"file": ("note.txt", b"hello world", "text/plain")},
+            timeout=30,
+        )
+        assert r.status_code == 400, r.text
+        detail = (r.json().get("detail") or "").lower()
+        assert "content-type" in detail or "unsupported" in detail
+
+    def test_upload_rejects_empty_file(self, admin_token):
+        r = requests.post(
+            f"{BASE_URL}/api/upload",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            files={"file": ("empty.png", b"", "image/png")},
+            timeout=30,
+        )
+        assert r.status_code == 400, r.text
+        assert "empty" in (r.json().get("detail") or "").lower()
+
+    def test_upload_rejects_9mb_file(self, admin_token):
+        # 9 MB payload with image/png content-type to reach the size check
+        payload = b"\x89PNG\r\n\x1a\n" + os.urandom(9 * 1024 * 1024 - 8)
+        r = requests.post(
+            f"{BASE_URL}/api/upload",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            files={"file": ("big.png", payload, "image/png")},
+            timeout=120,
+        )
+        assert r.status_code == 413, r.text
+        assert "large" in (r.json().get("detail") or "").lower()
+
+    def test_download_unknown_path_404(self, api):
+        r = requests.get(
+            f"{BASE_URL}/api/files/digiconnect/uploads/does-not-exist-{uuid.uuid4().hex}.png",
+            timeout=30,
+        )
+        assert r.status_code == 404, r.text
+
+    def test_upload_records_db_metadata(self, admin_token):
+        """DB record present + is_deleted=False + uploaded_by=admin id + storage_path/content_type/size."""
+        try:
+            from pymongo import MongoClient
+        except ImportError:
+            pytest.skip("pymongo not available")
+        mongo_url = os.environ.get("MONGO_URL", "mongodb://localhost:27017")
+        db_name = os.environ.get("DB_NAME", "digiconnect_db")
+        c = MongoClient(mongo_url, serverSelectionTimeoutMS=3000)
+        try:
+            c.admin.command("ping")
+        except Exception as e:
+            pytest.skip(f"cannot reach mongo locally: {e}")
+        db = c[db_name]
+        admin = db.users.find_one({"email": ADMIN_EMAIL})
+        assert admin, "admin missing"
+
+        png_bytes = self._make_png(20)
+        r = requests.post(
+            f"{BASE_URL}/api/upload",
+            headers={"Authorization": f"Bearer {admin_token}"},
+            files={"file": ("meta.png", png_bytes, "image/png")},
+            timeout=60,
+        )
+        assert r.status_code == 200, r.text
+        file_id = r.json()["id"]
+
+        rec = db.files.find_one({"id": file_id})
+        assert rec is not None, "db.files record missing"
+        assert rec.get("is_deleted") is False
+        assert rec.get("uploaded_by") == admin["id"]
+        assert rec.get("content_type") == "image/png"
+        assert rec.get("size") == len(png_bytes)
+        assert rec.get("storage_path", "").startswith("digiconnect/uploads/")
+        assert rec.get("storage_path", "").endswith(".png")
+
+

@@ -11,6 +11,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { fetchServer } from "@/lib/api";
+import { resolveImageUrl } from "@/lib/images";
 import { STORE_LOCATIONS, INSTAGRAM_URL, INSTAGRAM_HANDLE } from "@/lib/stores";
 import Fold8Banner from "@/components/Fold8Banner";
 import AnnouncementStrip from "@/components/AnnouncementStrip";
@@ -112,7 +113,7 @@ export default async function HomePage() {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 data-testid="hero-image"
-                src={hero.hero_image_url || "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=1200&q=80"}
+                src={resolveImageUrl(hero.hero_image_url) || "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=1200&q=80"}
                 alt={hero.hero_image_alt || "Galaxy device on display"}
                 className="w-full h-full object-cover"
               />
@@ -163,7 +164,7 @@ export default async function HomePage() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               data-testid="story-image"
-              src={hero.story_image_url || "https://images.pexels.com/photos/11297769/pexels-photo-11297769.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1200&w=940"}
+              src={resolveImageUrl(hero.story_image_url) || "https://images.pexels.com/photos/11297769/pexels-photo-11297769.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1200&w=940"}
               alt={hero.story_image_alt || "DigiConnect Samsung Experience Store interior"}
               className="w-full h-full object-cover"
             />

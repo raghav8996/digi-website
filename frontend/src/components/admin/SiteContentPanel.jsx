@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Save } from "lucide-react";
 import api, { formatApiErrorDetail } from "@/lib/api";
 import { FormRow } from "@/components/admin/shared";
+import ImageInput, { resolveImageUrl } from "@/components/admin/ImageInput";
 
 const empty = {
   hero_image_url: "",
@@ -100,15 +101,16 @@ export default function SiteContentPanel({ showToast }) {
           </div>
         </div>
 
-        <FormRow label="Hero image URL">
-          <input
-            data-testid="site-hero-image-url"
+        <FormRow label="Hero image">
+          <ImageInput
+            testIdPrefix="site-hero-image"
             value={form.hero_image_url}
-            onChange={(e) => setForm({ ...form, hero_image_url: e.target.value })}
+            onChange={(v) => setForm({ ...form, hero_image_url: v })}
             placeholder="https://…/hero.jpg"
-            className="dc-input"
+            showToast={showToast}
+            aspect="aspect-[4/5]"
           />
-          <p className="text-[11px] text-[#6e6e73] mt-1.5">Paste any hosted image URL. Rendered at 4:5 aspect on the home hero.</p>
+          <p className="text-[11px] text-[#6e6e73] mt-1.5">Rendered at 4:5 aspect on the home hero. Paste a URL or upload directly.</p>
         </FormRow>
 
         <FormRow label="Hero image alt text (SEO / accessibility)">
@@ -172,13 +174,14 @@ export default function SiteContentPanel({ showToast }) {
           <p className="text-sm text-white font-semibold mt-1">Store photo on the home &ldquo;Our story&rdquo; section</p>
         </div>
 
-        <FormRow label="Story image URL">
-          <input
-            data-testid="site-story-image-url"
+        <FormRow label="Story image">
+          <ImageInput
+            testIdPrefix="site-story-image"
             value={form.story_image_url}
-            onChange={(e) => setForm({ ...form, story_image_url: e.target.value })}
+            onChange={(v) => setForm({ ...form, story_image_url: v })}
             placeholder="https://…/store-photo.jpg"
-            className="dc-input"
+            showToast={showToast}
+            aspect="aspect-[4/5]"
           />
           <p className="text-[11px] text-[#6e6e73] mt-1.5">Portrait 4:5 works best — a real photo of your storefront or interior lands stronger than stock.</p>
         </FormRow>
@@ -279,13 +282,14 @@ export default function SiteContentPanel({ showToast }) {
 
         <div className="h-px bg-white/10" />
 
-        <FormRow label="Banner image URL">
-          <input
-            data-testid="site-banner-image-url"
+        <FormRow label="Banner image">
+          <ImageInput
+            testIdPrefix="site-banner-image"
             value={form.banner_image_url}
-            onChange={(e) => setForm({ ...form, banner_image_url: e.target.value })}
+            onChange={(v) => setForm({ ...form, banner_image_url: v })}
             placeholder="https://…/product.jpg"
-            className="dc-input"
+            showToast={showToast}
+            aspect="aspect-[3/4]"
           />
         </FormRow>
 
@@ -331,7 +335,7 @@ export default function SiteContentPanel({ showToast }) {
             {form.hero_image_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                src={form.hero_image_url}
+                src={resolveImageUrl(form.hero_image_url)}
                 alt={form.hero_image_alt || "Hero preview"}
                 className="w-full h-full object-cover"
               />
@@ -356,7 +360,7 @@ export default function SiteContentPanel({ showToast }) {
             {form.story_image_url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                src={form.story_image_url}
+                src={resolveImageUrl(form.story_image_url)}
                 alt={form.story_image_alt || "Story preview"}
                 className="w-full h-full object-cover"
               />

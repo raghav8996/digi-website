@@ -63,8 +63,10 @@ export async function fetchServer(path, { revalidate = 60, tags } = {}) {
       next: { revalidate, ...(tags ? { tags } : {}) },
     });
     if (!res.ok) return [];
+
     return await res.json();
   } catch {
     return [];
   }
 }
+

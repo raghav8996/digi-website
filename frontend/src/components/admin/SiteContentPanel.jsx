@@ -15,6 +15,8 @@ const empty = {
   hero_live_demo_href: "",
   story_image_url: "",
   story_image_alt: "",
+  about_hero_image_url: "",
+  about_hero_image_alt: "",
   banner_active: true,
   banner_badge: "",
   banner_title_line1: "",
@@ -45,6 +47,8 @@ export default function SiteContentPanel({ showToast }) {
         hero_live_demo_href: data?.hero_live_demo_href || "",
         story_image_url: data?.story_image_url || "",
         story_image_alt: data?.story_image_alt || "",
+        about_hero_image_url: data?.about_hero_image_url || "",
+        about_hero_image_alt: data?.about_hero_image_alt || "",
         banner_active: data?.banner_active ?? true,
         banner_badge: data?.banner_badge || "",
         banner_title_line1: data?.banner_title_line1 || "",
@@ -192,6 +196,36 @@ export default function SiteContentPanel({ showToast }) {
             value={form.story_image_alt}
             onChange={(e) => setForm({ ...form, story_image_alt: e.target.value })}
             placeholder="e.g., DigiConnect Samsung Experience Store at Gaur City Mall"
+            className="dc-input"
+          />
+        </FormRow>
+      </div>
+
+      {/* ABOUT HERO card */}
+      <div className="dc-tile p-6 md:p-8 space-y-5">
+        <div>
+          <p className="text-[10px] uppercase tracking-[0.22em] text-[#ff2d7a] font-bold">About page hero</p>
+          <p className="text-sm text-white font-semibold mt-1">Optional photo shown next to the &ldquo;Where technology, meets people.&rdquo; heading</p>
+        </div>
+
+        <FormRow label="About hero image (optional)">
+          <ImageInput
+            testIdPrefix="site-about-hero-image"
+            value={form.about_hero_image_url}
+            onChange={(v) => setForm({ ...form, about_hero_image_url: v })}
+            placeholder="https://…/team-photo.jpg"
+            showToast={showToast}
+            aspect="aspect-[4/5]"
+          />
+          <p className="text-[11px] text-[#6e6e73] mt-1.5">Portrait 4:5 works best. Leave empty to hide the image column and center the heading.</p>
+        </FormRow>
+
+        <FormRow label="About hero image alt text (SEO / accessibility)">
+          <input
+            data-testid="site-about-hero-image-alt"
+            value={form.about_hero_image_alt}
+            onChange={(e) => setForm({ ...form, about_hero_image_alt: e.target.value })}
+            placeholder="e.g., DigiConnect team at the Samsung Experience Store"
             className="dc-input"
           />
         </FormRow>

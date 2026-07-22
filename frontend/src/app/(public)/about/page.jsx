@@ -1,4 +1,6 @@
 import { Heart, ShieldCheck, Zap, TrendingUp, BadgeCheck, Compass, Handshake, Building2 } from "lucide-react";
+import { fetchServer } from "@/lib/api";
+import { resolveImageUrl } from "@/lib/images";
 
 export const metadata = {
   title: "About DigiConnect",
@@ -53,23 +55,41 @@ const FORWARD_PILLARS = [
   },
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const siteContent = await fetchServer("/site-content", { tags: ["site-content"] });
+  const heroImg = resolveImageUrl(siteContent?.about_hero_image_url || "");
+  const heroAlt = siteContent?.about_hero_image_alt || "DigiConnect Samsung Experience Store";
+
   return (
     <>
       {/* HERO */}
-      <section data-testid="about-hero" className="pt-20 md:pt-28 pb-16 px-5 md:px-10 border-b border-white/5 relative overflow-hidden">
+      <section data-testid="about-hero" className="pt-20 md:pt-28 pb-16 md:pb-24 px-5 md:px-10 border-b border-white/5 relative overflow-hidden">
         <div className="dc-aurora" />
-        <div className="relative max-w-6xl mx-auto">
-          <p className="overline">About DigiConnect</p>
-          <h1 className="font-display font-black text-white tracking-tight leading-none text-5xl md:text-7xl mt-3">
-            Where technology, <span className="dc-gradient-text italic">meets people.</span>
-          </h1>
-          <p className="mt-8 max-w-3xl text-[#a1a1a6] text-lg leading-relaxed">
-            Since its inception, DigiConnect has expanded from a single store to two successful
-            locations, both in prime retail areas — a reflection of the demand for quality Samsung
-            products and genuine customer satisfaction. Our growth strategy focuses on expanding our
-            physical presence with plans to open more stores in key locations in the years ahead.
-          </p>
+        <div className="relative max-w-7xl mx-auto grid md:grid-cols-[1.15fr_1fr] gap-10 md:gap-16 items-center">
+          <div>
+            <p className="overline">About DigiConnect</p>
+            <h1 className="font-display font-black text-white tracking-tight leading-none text-5xl md:text-7xl mt-3">
+              Where technology, <span className="dc-gradient-text italic">meets people.</span>
+            </h1>
+            <p className="mt-8 max-w-2xl text-[#a1a1a6] text-lg leading-relaxed">
+              Since its inception, DigiConnect has expanded from a single store to two successful
+              locations, both in prime retail areas — a reflection of the demand for quality Samsung
+              products and genuine customer satisfaction. Our growth strategy focuses on expanding our
+              physical presence with plans to open more stores in key locations in the years ahead.
+            </p>
+          </div>
+          {heroImg ? (
+            <div className="relative aspect-[4/5] w-full max-w-md md:ml-auto rounded-3xl overflow-hidden border border-white/10 bg-[#0d0d0f]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                data-testid="about-hero-image"
+                src={heroImg}
+                alt={heroAlt}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/10 to-transparent pointer-events-none" />
+            </div>
+          ) : null}
         </div>
       </section>
 

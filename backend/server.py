@@ -317,6 +317,9 @@ class SiteContent(BaseModel):
     banner_image_alt: str = "Galaxy Z Fold concept"
     banner_image_caption: str = "Concept · Actual product may vary"
     banner_whatsapp_message: str = "Hi DigiConnect, I'd like to pre-reserve the Galaxy Z Fold8."
+    # About page hero
+    about_hero_image_url: str = ""
+    about_hero_image_alt: str = "DigiConnect Samsung Experience Store"
 
 
 class SiteContentUpdate(BaseModel):
@@ -338,6 +341,8 @@ class SiteContentUpdate(BaseModel):
     banner_image_alt: Optional[str] = None
     banner_image_caption: Optional[str] = None
     banner_whatsapp_message: Optional[str] = None
+    about_hero_image_url: Optional[str] = None
+    about_hero_image_alt: Optional[str] = None
 
 
 # ---------- Startup ----------
@@ -510,6 +515,8 @@ async def update_product(product_id: str, data: ProductUpdate, _: dict = Depends
     updates = {k: v for k, v in data.model_dump(exclude_unset=True).items()}
     if not updates:
         raise HTTPException(status_code=400, detail="No fields to update")
+    if "image_url" in updates:
+        await _cleanup_old_image(db.products, "id", product_id, updates["image_url"])
     result = await db.products.update_one({"id": product_id}, {"$set": updates})
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -519,9 +526,12 @@ async def update_product(product_id: str, data: ProductUpdate, _: dict = Depends
 
 @api_router.delete("/products/{product_id}")
 async def delete_product(product_id: str, _: dict = Depends(get_current_admin)):
+    doc = await db.products.find_one({"id": product_id}, {"image_url": 1})
     result = await db.products.delete_one({"id": product_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Product not found")
+    if doc:
+        await _soft_delete_upload(doc.get("image_url"))
     return {"success": True}
 
 
@@ -580,6 +590,8 @@ async def update_offer(offer_id: str, data: OfferUpdate, _: dict = Depends(get_c
     updates = {k: v for k, v in data.model_dump(exclude_unset=True).items()}
     if not updates:
         raise HTTPException(status_code=400, detail="No fields to update")
+    if "image_url" in updates:
+        await _cleanup_old_image(db.offers, "id", offer_id, updates["image_url"])
     result = await db.offers.update_one({"id": offer_id}, {"$set": updates})
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Offer not found")
@@ -589,9 +601,12 @@ async def update_offer(offer_id: str, data: OfferUpdate, _: dict = Depends(get_c
 
 @api_router.delete("/offers/{offer_id}")
 async def delete_offer(offer_id: str, _: dict = Depends(get_current_admin)):
+    doc = await db.offers.find_one({"id": offer_id}, {"image_url": 1})
     result = await db.offers.delete_one({"id": offer_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Offer not found")
+    if doc:
+        await _soft_delete_upload(doc.get("image_url"))
     return {"success": True}
 
 
@@ -654,6 +669,8 @@ async def update_instagram_post(post_id: str, data: InstagramPostUpdate, _: dict
     updates = {k: v for k, v in data.model_dump(exclude_unset=True).items()}
     if not updates:
         raise HTTPException(status_code=400, detail="No fields to update")
+    if "image_url" in updates:
+        await _cleanup_old_image(db.instagram_posts, "id", post_id, updates["image_url"])
     result = await db.instagram_posts.update_one({"id": post_id}, {"$set": updates})
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Instagram post not found")
@@ -663,9 +680,12 @@ async def update_instagram_post(post_id: str, data: InstagramPostUpdate, _: dict
 
 @api_router.delete("/instagram-posts/{post_id}")
 async def delete_instagram_post(post_id: str, _: dict = Depends(get_current_admin)):
+    doc = await db.instagram_posts.find_one({"id": post_id}, {"image_url": 1})
     result = await db.instagram_posts.delete_one({"id": post_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Instagram post not found")
+    if doc:
+        await _soft_delete_upload(doc.get("image_url"))
     return {"success": True}
 
 
@@ -792,6 +812,44 @@ async def download_file(path: str):
     )
 
 
+def _extract_upload_path(url: str) -> Optional[str]:
+    """Return the storage_path if the URL points to our own /api/files/... uploads, else None."""
+    if not url or not isinstance(url, str):
+        return None
+    marker = "/api/files/"
+    idx = url.find(marker)
+    if idx == -1:
+        return None
+    return url[idx + len(marker):]
+
+
+async def _soft_delete_upload(url: Optional[str]) -> None:
+    """Mark an uploaded file as deleted so /api/files/<path> starts returning 404 and it stops appearing in listings.
+    No-op for external URLs. Errors are swallowed — image swaps must never fail on cleanup issues."""
+    try:
+        path = _extract_upload_path(url or "")
+        if not path:
+            return
+        await db.files.update_one(
+            {"storage_path": path, "is_deleted": False},
+            {"$set": {"is_deleted": True, "deleted_at": now_utc().isoformat()}},
+        )
+    except Exception:
+        logger.exception("Soft-delete failed for %s", url)
+
+
+async def _cleanup_old_image(collection, doc_id_field: str, doc_id, new_image_url: Optional[str]) -> None:
+    """If a doc's image_url changed to a different value, soft-delete the previous uploaded file."""
+    if new_image_url is None:
+        return
+    old = await collection.find_one({doc_id_field: doc_id}, {"image_url": 1})
+    if not old:
+        return
+    old_url = old.get("image_url") or ""
+    if old_url and old_url != new_image_url:
+        await _soft_delete_upload(old_url)
+
+
 # ---------- Routes: Site Content (singleton) ----------
 @api_router.get("/site-content")
 async def get_site_content():
@@ -807,6 +865,18 @@ async def update_site_content(data: SiteContentUpdate, _: dict = Depends(get_cur
     updates = {k: v for k, v in data.model_dump(exclude_unset=True).items()}
     if not updates:
         raise HTTPException(status_code=400, detail="No fields to update")
+    # Soft-delete any uploaded images being replaced (hero / story / banner / about_hero)
+    image_fields = {
+        "hero_image_url", "story_image_url", "banner_image_url", "about_hero_image_url",
+    }
+    changed_image_fields = image_fields & set(updates.keys())
+    if changed_image_fields:
+        current = await db.site_content.find_one({"_id": "singleton"}) or {}
+        for f in changed_image_fields:
+            old = current.get(f) or ""
+            new = updates.get(f) or ""
+            if old and old != new:
+                await _soft_delete_upload(old)
     defaults = SiteContent().model_dump()
     # Only insert defaults for fields NOT being $set (MongoDB rejects overlapping paths)
     set_on_insert = {k: v for k, v in defaults.items() if k not in updates}

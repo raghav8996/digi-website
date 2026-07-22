@@ -1,6 +1,7 @@
 import { Instagram, ExternalLink, ArrowUpRight } from "lucide-react";
 import Script from "next/script";
 import { INSTAGRAM_URL, INSTAGRAM_HANDLE } from "@/lib/stores";
+import { resolveImageUrl } from "@/lib/images";
 
 /**
  * InstagramFeed — free-tier friendly IG embed with graceful fallback.
@@ -91,7 +92,7 @@ export default function InstagramFeed({ posts = [] }) {
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={p.image_url}
+                  src={resolveImageUrl(p.image_url)}
                   alt={p.caption || "Instagram post"}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Tag, Clock, MapPin, MessageCircle } from "lucide-react";
 import { STORE_LOCATIONS } from "@/lib/stores";
+import { resolveImageUrl } from "@/lib/images";
 
 function findStore(id) {
   return STORE_LOCATIONS.find((s) => s.id === id);
@@ -54,7 +55,7 @@ export default function OffersSection({ offers = [], variant = "home" }) {
                   <div className="aspect-[16/10] overflow-hidden bg-black relative">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={o.image_url}
+                      src={resolveImageUrl(o.image_url)}
                       alt={o.title}
                       className="w-full h-full object-cover"
                     />

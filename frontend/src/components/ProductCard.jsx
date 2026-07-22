@@ -1,5 +1,6 @@
 import { Layers } from "lucide-react";
 import ReserveButton from "@/components/ReserveButton";
+import { resolveImageUrl } from "@/lib/images";
 
 export default function ProductCard({ product, index = 0 }) {
   const p = product;
@@ -11,7 +12,7 @@ export default function ProductCard({ product, index = 0 }) {
       <div className="aspect-[4/3] overflow-hidden bg-black relative">
         {p.image_url ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={p.image_url} alt={p.name} className="w-full h-full object-cover" />
+          <img src={resolveImageUrl(p.image_url)} alt={p.name} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-[#6e6e73]/70">
             <Layers size={28} />

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import api, { formatApiErrorDetail } from "@/lib/api";
+import ImageInput, { resolveImageUrl } from "@/components/admin/ImageInput";
 import {
   PanelHead,
   FormPanel,
@@ -123,13 +124,14 @@ export default function InstagramPanel({ items, reload, showToast }) {
       />
       {draft && (
         <FormPanel testIdPrefix="ig-form" onCancel={cancel} onSave={save}>
-          <FormRow label="Image URL">
-            <input
-              data-testid="ig-form-image"
+          <FormRow label="Post image">
+            <ImageInput
+              testIdPrefix="ig-form-image"
               value={form.image_url}
-              onChange={(e) => setForm({ ...form, image_url: e.target.value })}
-              className="dc-input"
+              onChange={(v) => setForm({ ...form, image_url: v })}
               placeholder="https://…"
+              showToast={showToast}
+              aspect="aspect-square"
             />
           </FormRow>
           <FormRow label="Caption">
@@ -176,7 +178,7 @@ export default function InstagramPanel({ items, reload, showToast }) {
             <div className="aspect-square bg-black">
               {p.image_url && (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={p.image_url} alt={p.caption} className="w-full h-full object-cover" />
+                <img src={resolveImageUrl(p.image_url)} alt={p.caption} className="w-full h-full object-cover" />
               )}
             </div>
             <div className="p-4">

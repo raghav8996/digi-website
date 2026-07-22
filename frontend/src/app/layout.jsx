@@ -77,7 +77,7 @@ const jsonLdBase = {
       image: LOGO_URL,
       url: SITE_URL + "/",
       telephone: "+91-7302441893",
-      email: "digiconnect.gm@gmail.com",
+      email: "gaurmall@digiconnect.net.in",
       priceRange: "₹₹",
       address: {
         "@type": "PostalAddress",
@@ -96,7 +96,7 @@ const jsonLdBase = {
       image: LOGO_URL,
       url: SITE_URL + "/",
       telephone: "+91-9205497881",
-      email: "digiconnect.gv@gmail.com",
+      email: "venicemall@digiconnect.net.in",
       priceRange: "₹₹",
       address: {
         "@type": "PostalAddress",

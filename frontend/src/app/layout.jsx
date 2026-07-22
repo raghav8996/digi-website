@@ -2,6 +2,7 @@ import { Manrope, Geist } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import Analytics from "@/components/Analytics";
+import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
 import { fetchServer } from "@/lib/api";
 
 const geist = Geist({
@@ -156,6 +157,7 @@ export default async function RootLayout({ children }) {
       <body>
         <AuthProvider>{children}</AuthProvider>
         <Analytics />
+        <VercelAnalytics />
       </body>
     </html>
   );

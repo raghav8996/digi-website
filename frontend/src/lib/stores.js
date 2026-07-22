@@ -4,7 +4,7 @@ export const STORE_LOCATIONS = [
     name: "Gaur City Mall",
     city: "Greater Noida West",
     address: "GF 29, Ground Floor, Samsung Store, Gaur City Mall, Greater Noida West",
-    email: "digiconnect.gm@gmail.com",
+    email: "gaurmall@digiconnect.net.in",
     phone: "+91 7302441893",
     whatsapp: "917302441893",
     whatsappUrl:
@@ -17,7 +17,7 @@ export const STORE_LOCATIONS = [
     name: "Grand Venice Mall",
     city: "Greater Noida",
     address: "LGF 57, Lower Ground Floor, Samsung Store, Grand Venice Mall, Greater Noida",
-    email: "digiconnect.gv@gmail.com",
+    email: "venicemall@digiconnect.net.in",
     phone: "+91 9205497881",
     whatsapp: "919205497881",
     whatsappUrl:
